@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 import HeroSection from "./storefront/HeroSection";
 import ManifestoSection from "./storefront/ManifestoSection";
 import CarouselSection from "./storefront/CarouselSection";
@@ -154,44 +155,55 @@ function BrandMark({ settings, light = false, lang }: { settings: SiteSettings; 
   const subColor = light ? "rgba(0,0,0,.54)" : "rgba(255,255,255,.68)";
 
   return (
-    <Stack direction="row" gap={lang === "ar" ? 3.5 : 2} alignItems="center">
-      <Box 
-        component="img" 
-        src="/brand/logo.png" 
-        alt={settings.title || "Fashion Gate"} 
-        sx={{ 
-          height: { xs: 34, md: 44 }, 
-          width: "auto",
-          objectFit: "contain",
-          filter: light ? "brightness(0)" : "none"
-        }} 
-      />
-      <Stack spacing={0.1} alignItems="flex-start" sx={{ display: { xs: "none", sm: "flex" } }}>
-        <Typography 
+    <Box
+      component={Link}
+      href={`/${lang}#arrival`}
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        textDecoration: "none",
+        cursor: "pointer"
+      }}
+    >
+      <Stack direction="row" gap={lang === "ar" ? 3.5 : 2} alignItems="center">
+        <Box 
+          component="img" 
+          src="/brand/logo.png" 
+          alt={settings.title || "Fashion Gate"} 
           sx={{ 
-            fontFamily: "var(--heading-font)", 
-            fontWeight: 600, 
-            fontSize: { xs: 14, md: 17 }, 
-            lineHeight: 1, 
-            textTransform: "uppercase", 
-            color: textColor,
-            letterSpacing: "0.08em"
-          }}
-        >
-          Fashion Gate
-        </Typography>
-        <Typography 
-          sx={{ 
-            fontSize: 8, 
-            letterSpacing: "0.1em", 
-            textTransform: "uppercase", 
-            color: subColor 
-          }}
-        >
-          On Boulevard. For the world.
-        </Typography>
+            height: { xs: 34, md: 44 }, 
+            width: "auto",
+            objectFit: "contain",
+            filter: light ? "brightness(0)" : "none"
+          }} 
+        />
+        <Stack spacing={0.1} alignItems="flex-start" sx={{ display: { xs: "none", sm: "flex" } }}>
+          <Typography 
+            sx={{ 
+              fontFamily: "var(--heading-font)", 
+              fontWeight: 600, 
+              fontSize: { xs: 14, md: 17 }, 
+              lineHeight: 1, 
+              textTransform: "uppercase", 
+              color: textColor,
+              letterSpacing: "0.08em"
+            }}
+          >
+            Fashion Gate
+          </Typography>
+          <Typography 
+            sx={{ 
+              fontSize: 8, 
+              letterSpacing: "0.1em", 
+              textTransform: "uppercase", 
+              color: subColor 
+            }}
+          >
+            On Boulevard. For the world.
+          </Typography>
+        </Stack>
       </Stack>
-    </Stack>
+    </Box>
   );
 }
 
@@ -259,7 +271,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; lang: "ar" | "en"; setLang: () => void; t: (s?: string) => string }) {
+function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { settings: SiteSettings; lang: "ar" | "en"; setLang: () => void; t: (s?: string) => string; isLangTransitioning: boolean }) {
   const [open, setOpen] = useState(false);
   const nav = shopNavigation;
 
@@ -346,6 +358,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
             {/* Language Selector */}
             <Button 
               onClick={setLang}
+              disabled={isLangTransitioning}
               sx={{ 
                 color: "primary.main", 
                 textTransform: "uppercase", 
@@ -358,13 +371,17 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
                 borderColor: "primary.main",
                 borderRadius: 0,
                 fontFamily: '"Cairo", sans-serif',
+                transition: "all 0.25s ease-in-out",
+                opacity: isLangTransitioning ? 0.55 : 1,
+                transform: isLangTransitioning ? "scale(0.96)" : "scale(1)",
+                cursor: isLangTransitioning ? "wait" : "pointer",
                 "&:hover": {
                   bgcolor: "rgba(203, 97, 22, 0.08)",
                   borderColor: "primary.main"
                 }
               }}
             >
-              {lang === "ar" ? "EN" : "AR"}
+              {lang === "ar" ? "En" : "Ar"}
             </Button>
 
             <Button 
@@ -395,6 +412,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: "flex", lg: "none" }, ml: "auto" }}>
             <Button 
               onClick={setLang}
+              disabled={isLangTransitioning}
               size="small"
               sx={{ 
                 color: "primary.main", 
@@ -408,7 +426,11 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
                 border: "1px solid",
                 borderColor: "primary.main",
                 borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif'
+                fontFamily: '"Cairo", sans-serif',
+                transition: "all 0.25s ease-in-out",
+                opacity: isLangTransitioning ? 0.55 : 1,
+                transform: isLangTransitioning ? "scale(0.96)" : "scale(1)",
+                cursor: isLangTransitioning ? "wait" : "pointer"
               }}
             >
               {lang === "ar" ? "EN" : "AR"}
@@ -636,11 +658,11 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
   }, [lang]);
 
   const handleLangToggle = () => {
+    if (isLangTransitioning) return;
+
     setIsLangTransitioning(true);
-    setTimeout(() => {
-      const nextLang = lang === "ar" ? "en" : "ar";
-      router.push(`/${nextLang}`);
-    }, 250);
+    const nextLang = lang === "ar" ? "en" : "ar";
+    router.push(`/${nextLang}`);
   };
 
   // Snappy loading duration for cinematic entry
@@ -792,13 +814,8 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
           minHeight: "100vh"
         }}
       >
-        <Box 
-          sx={{ 
-            opacity: isLangTransitioning ? 0 : 1, 
-            transition: "opacity 0.25s ease-in-out" 
-          }}
-        >
-          <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} />
+        <Box>
+          <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} isLangTransitioning={isLangTransitioning} />
           {sections.map((section, index) => (
             <SectionRenderer 
               key={section._id || `${section.type}-${index}`} 
