@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { imageUrl } from "@/lib/sanity";
 import type { CollectionItem, MediaItem, SanityImage, Section, SiteSettings } from "@/lib/types";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
 import SiteFooter from "@/components/SiteFooter";
 import HeroSection from "./storefront/HeroSection";
@@ -317,7 +318,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
             <Button href="#brand" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Brand")}
             </Button>
-            <Button component={Link} href="/blogs" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Blogs")}
             </Button>
             
@@ -487,7 +488,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
             >
               <Button 
                 component={Link}
-                href="/blogs" 
+                href={`/${lang}/blogs`} 
                 onClick={() => setOpen(false)} 
                 endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
                 startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
@@ -565,31 +566,22 @@ function SectionRenderer({
 
 
 export default function Storefront({ settings, sections }: { settings: SiteSettings; sections: Section[] }) {
-  // Default language set to Arabic ('ar') to show Arabic words first
-  const [lang, setLang] = useState<"ar" | "en">("ar");
+  const params = useParams();
+  const router = useRouter();
+  const lang = (params?.lang === "en" ? "en" : "ar") as "ar" | "en";
+  const [isLangTransitioning, setIsLangTransitioning] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
-console.log(sections,'sections')
-  // Sync state with URL parameter on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const urlLang = params.get("lang");
-      if (urlLang === "en" || urlLang === "ar") {
-        setLang(urlLang);
-      }
-    }
-  }, []);
+    setIsLangTransitioning(false);
+  }, [lang]);
 
   const handleLangToggle = () => {
-    const nextLang = lang === "ar" ? "en" : "ar";
-    setLang(nextLang);
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.set("lang", nextLang);
-      window.history.replaceState({}, "", url.toString());
-    }
+    setIsLangTransitioning(true);
+    setTimeout(() => {
+      const nextLang = lang === "ar" ? "en" : "ar";
+      router.push(`/${nextLang}`);
+    }, 250);
   };
 
   // Snappy loading duration for cinematic entry (skipped on subsequent hits in same session)
@@ -741,7 +733,16 @@ console.log(sections,'sections')
       </AnimatePresence>
 
 
-      <Box dir={lang === "ar" ? "rtl" : "ltr"} sx={{ bgcolor: "var(--fg-white)", color: "#111", minHeight: "100vh" }}>
+      <Box 
+        dir={lang === "ar" ? "rtl" : "ltr"} 
+        sx={{ 
+          bgcolor: "var(--fg-white)", 
+          color: "#111", 
+          minHeight: "100vh",
+          opacity: isLangTransitioning ? 0 : 1,
+          transition: "opacity 0.25s ease-in-out"
+        }}
+      >
         <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} />
         {sections.map((section, index) => (
           <SectionRenderer 

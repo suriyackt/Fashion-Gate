@@ -163,7 +163,7 @@ export default function CategoryProductSections({
                   return (
                     <Link
                       key={`${activeTab}-${product.id}`}
-                      href={`/product/${product.id}?lang=${lang}`}
+                      href={`/${lang}/product/${product.id}`}
                       style={{ color: "inherit", textDecoration: "none" }}
                     >
                       <Box

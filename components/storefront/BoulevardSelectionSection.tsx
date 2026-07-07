@@ -123,7 +123,7 @@ export default function BoulevardSelectionSection({
                 }}
               >
                 <Link 
-                  href={`/product/${product.id}?lang=${lang}`}
+                  href={`/${lang}/product/${product.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Box

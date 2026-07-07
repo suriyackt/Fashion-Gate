@@ -8,6 +8,7 @@ import NorthEastIcon from "@mui/icons-material/NorthEast";
 import { Box, Button, Container, Stack, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import { blogPosts, featuredBlogPost } from "@/lib/blogData";
@@ -15,6 +16,9 @@ import { blogPosts, featuredBlogPost } from "@/lib/blogData";
 const MotionBox = motion.create(Box);
 
 function JournalHeader() {
+  const params = useParams();
+  const lang = params?.lang === "en" ? "en" : "ar";
+
   return (
     <Box
       component="header"
@@ -27,7 +31,7 @@ function JournalHeader() {
       }}
     >
       <Stack direction="row" alignItems="center" sx={{ minHeight: { xs: 64, md: 74 }, px: { xs: 2, md: 4 } }}>
-        <Button component={Link} href="/" sx={{ color: "#111111", px: 0, minWidth: 0, textTransform: "none" }}>
+        <Button component={Link} href={`/${lang}`} sx={{ color: "#111111", px: 0, minWidth: 0, textTransform: "none" }}>
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ height: { xs: 32, md: 38 }, width: "auto", filter: "invert(1)" }} />
             <Stack spacing={0.1} sx={{ display: { xs: "none", sm: "flex" } }}>
@@ -42,10 +46,10 @@ function JournalHeader() {
         </Button>
 
         <Stack direction="row" spacing={{ xs: 2.5, md: 4 }} alignItems="center" sx={{ ml: "auto" }}>
-          <Button component={Link} href="/" sx={{ color: "rgba(0,0,0,0.64)", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { color: "primary.main" } }}>
+          <Button component={Link} href={`/${lang}`} sx={{ color: "rgba(0,0,0,0.64)", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { color: "primary.main" } }}>
             Home
           </Button>
-          <Button component={Link} href="/blogs" sx={{ color: "primary.main", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
+          <Button component={Link} href={`/${lang}/blogs`} sx={{ color: "primary.main", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
             Blogs
           </Button>
           <Button href="#journal" endIcon={<NorthEastIcon sx={{ fontSize: 13 }} />} sx={{ display: { xs: "none", sm: "inline-flex" }, color: "#111111", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 0, px: 2.2, py: 0.6, fontSize: 11, letterSpacing: "0.14em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { bgcolor: "rgba(0,0,0,0.03)" } }}>

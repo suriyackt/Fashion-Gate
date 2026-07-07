@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: "Fashion Gate Journal: elegant editorial stories, project notes, and luxury design insights."
 };
 
+export async function generateStaticParams() {
+  return [{ lang: "en" }, { lang: "ar" }];
+}
+
 export default function BlogsPage() {
   return <BlogExperience />;
 }

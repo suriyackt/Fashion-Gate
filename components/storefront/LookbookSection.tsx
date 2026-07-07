@@ -135,7 +135,7 @@ export default function LookbookSection({
               return (
                 <Link 
                   key={`${product.id}-${idx}`}
-                  href={`/product/${product.id}?lang=${lang}`}
+                  href={`/${lang}/product/${product.id}`}
                   style={{ textDecoration: "none" }}
                   draggable="false"
                   onDragStart={(e) => e.preventDefault()}

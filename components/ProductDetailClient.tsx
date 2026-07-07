@@ -1,9 +1,10 @@
 "use client";
 
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { getProductById, products } from "@/lib/productData";
+import { getProductById, products, type Product } from "@/lib/productData";
 import { Box, Button, Container, Typography, Stack, Modal, ThemeProvider, createTheme } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ShareIcon from "@mui/icons-material/Share";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -75,19 +76,32 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
+interface ProductDetailClientProps {
+  product: Product;
+  initialLang: "ar" | "en";
+}
+
+export default function ProductDetailClient({ product, initialLang }: ProductDetailClientProps) {
   const router = useRouter();
   
-  const id = params.id as string;
-  const product = getProductById(id);
-  
-  // Resolve language from query parameter
-  const lang = searchParams.get("lang") === "en" ? "en" : "ar";
-  
-  const [inquirySuccess, setInquirySuccess] = useState(false);
+  const lang = initialLang;
+  const [isLangTransitioning, setIsLangTransitioning] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLangTransitioning(false);
+  }, [initialLang]);
+
+  const handleShare = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => {
+        setShareCopied(false);
+      }, 2000);
+    }
+  };
 
   // Intercept back / related link clicks to show loader instantly during compilation/fetching
   useEffect(() => {
@@ -97,7 +111,7 @@ export default function ProductDetailPage() {
       while (target && target !== document.body) {
         if (target.tagName === "A") {
           const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href === "/" || href.startsWith("/?"))) {
+          if (href && (href.includes("/product/") || href === "/" || href === "/en" || href === "/ar" || href.endsWith("/blogs"))) {
             setPageLoading(true);
             break;
           }
@@ -127,10 +141,8 @@ export default function ProductDetailPage() {
   const uiTranslations = {
     en: {
       back: "Back to Storefront",
-      viewing: "Request Private Viewing",
-      inquiryTitle: "An Acquisition of Distinction",
-      inquiryBody: "Your selection will be presented in our signature hand-finished textured bag. Our private concierge will contact you within 24 hours to coordinate your exclusive viewing.",
-      close: "Close",
+      share: "Share Masterpiece",
+      shareCopied: "Link Copied to Clipboard",
       related: "Related Masterpieces",
       details: "Specification & Details",
       origin: "Origin & Craftsmanship",
@@ -138,10 +150,8 @@ export default function ProductDetailPage() {
     },
     ar: {
       back: "العودة إلى المتجر",
-      viewing: "طلب معاينة خاصة",
-      inquiryTitle: "اقتناء متميز",
-      inquiryBody: "سيتم تقديم اختيارك في حقيبتنا المميزة المنسوجة والمصنوعة يدوياً. سيتصل بك مستشارنا الخاص خلال ٢٤ ساعة لتنسيق معاينتك الخاصة.",
-      close: "إغلاق",
+      share: "مشاركة التحفة الفنية",
+      shareCopied: "تم نسخ الرابط إلى الحافظة",
       related: "روائع ذات صلة",
       details: "المواصفات والتفاصيل",
       origin: "المنشأ والحرفية",
@@ -170,10 +180,6 @@ export default function ProductDetailPage() {
     .filter(p => p.id !== product.id && p.category === product.category)
     .slice(0, 3);
 
-  const handleInquiry = () => {
-    setInquirySuccess(true);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <Box 
@@ -183,7 +189,9 @@ export default function ProductDetailPage() {
           color: "#000000", // Solid Black text
           minHeight: "100vh",
           pb: 6, 
-          position: "relative"
+          position: "relative",
+          opacity: isLangTransitioning ? 0 : 1,
+          transition: "opacity 0.25s ease-in-out"
         }}
       >
         {/* Unified Cinematic Dark Preloader (Matching Homepage Loader) */}
@@ -266,90 +274,7 @@ export default function ProductDetailPage() {
           )}
         </AnimatePresence>
 
-        {/* Custom success modal (Orange, Black, White, Grey - No Blue!) */}
-        <Modal
-          open={inquirySuccess}
-          onClose={() => setInquirySuccess(false)}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            p: 2
-          }}
-        >
-          <Box 
-            sx={{ 
-              bgcolor: "#ffffff", 
-              border: "1px solid #111111", 
-              p: 4, 
-              maxWidth: 480, 
-              width: "100%",
-              textAlign: "center",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.15)",
-              position: "relative"
-            }}
-          >
-            <Box 
-              component="img"
-              src="/assets/baglight.png"
-              alt="Fashion Gate Signature Presentation Bag"
-              sx={{ 
-                width: 140, 
-                height: "auto", 
-                objectFit: "contain", 
-                mb: 3,
-                animation: "modal-bag-float 6s ease-in-out infinite",
-                "@keyframes modal-bag-float": {
-                  "0%": { transform: "translateY(0px) rotate(0deg)" },
-                  "50%": { transform: "translateY(-10px) rotate(2deg)" },
-                  "100%": { transform: "translateY(0px) rotate(0deg)" }
-                }
-              }}
-            />
-            <Typography 
-              sx={{ 
-                fontFamily: "var(--heading-font)", 
-                fontSize: 24, 
-                color: "#CB6116", 
-                mb: 1.5 
-              }}
-            >
-              {t.inquiryTitle}
-            </Typography>
-            <Typography 
-              sx={{ 
-                fontFamily: '"Cairo", sans-serif', 
-                fontSize: 14, 
-                color: "rgba(0,0,0,0.72)", 
-                lineHeight: 1.6,
-                mb: 3.5 
-              }}
-            >
-              {t.inquiryBody}
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => setInquirySuccess(false)}
-              sx={{
-                bgcolor: "#000000",
-                color: "#ffffff",
-                borderRadius: 0,
-                px: 4,
-                py: 1.2,
-                fontFamily: '"Cairo", sans-serif',
-                fontSize: 12,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                "&:hover": {
-                  bgcolor: "#222222"
-                }
-              }}
-            >
-              {t.close}
-            </Button>
-          </Box>
-        </Modal>
+
 
         {/* Header bar matching the main website theme */}
         <Box 
@@ -373,9 +298,9 @@ export default function ProductDetailPage() {
               px: { xs: 2.5, md: 5 }
             }}
           >
-          <Container maxWidth="xl" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            {/* Logo Monogram */}
-            <Link href={`/?lang=${lang}`} style={{ display: "flex", alignItems: "center" }}>
+            <Container maxWidth="xl" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              {/* Logo Monogram */}
+              <Link href={`/${lang}`} style={{ display: "flex", alignItems: "center" }}>
               <Box 
                 component="img" 
                 src="/brand/logo.png" 
@@ -386,7 +311,12 @@ export default function ProductDetailPage() {
             
             {/* Language Toggle (Always identical orange styling, English characters only) */}
             <Button 
-              onClick={() => router.push(`/product/${product.id}?lang=${lang === "en" ? "ar" : "en"}`)}
+              onClick={() => {
+                setIsLangTransitioning(true);
+                setTimeout(() => {
+                  router.push(`/${lang === "en" ? "ar" : "en"}/product/${product.id}`);
+                }, 250);
+              }}
               sx={{ 
                 color: "primary.main", 
                 textTransform: "uppercase", 
@@ -410,12 +340,12 @@ export default function ProductDetailPage() {
           </Container>
         </Box>
       </Box>
-
+ 
         {/* Main product columns */}
         <Container maxWidth="xl" sx={{ mt: { xs: 4, md: 6 } }}>
-          {/* Back Link (Persists correct language choice in query parameter and scrolls to lookbook) */}
+          {/* Back Link (Persists correct language choice and scrolls to lookbook) */}
           <Link 
-            href={`/?lang=${lang}#lookbook`} 
+            href={`/${lang}#lookbook`} 
             style={{ 
               textDecoration: "none", 
               color: "#D1D1D1", 
@@ -551,12 +481,13 @@ export default function ProductDetailPage() {
                   </Stack>
                 </Box>
 
-                {/* CTA Button styled as fitting block button in black / orange on hover */}
+                {/* Share Masterpiece Button */}
                 <Button
                   variant="contained"
-                  onClick={handleInquiry}
+                  onClick={handleShare}
+                  startIcon={<ShareIcon sx={{ mr: lang === "ar" ? 0 : 1, ml: lang === "ar" ? 1 : 0 }} />}
                   sx={{
-                    bgcolor: "#000000", // Solid black base
+                    bgcolor: shareCopied ? "primary.main" : "#000000", // FGB Signature Orange on success, black otherwise
                     color: "#ffffff",
                     borderRadius: 0,
                     py: 1.8,
@@ -575,7 +506,7 @@ export default function ProductDetailPage() {
                     }
                   }}
                 >
-                  {t.viewing}
+                  {shareCopied ? t.shareCopied : t.share}
                 </Button>
               </Stack>
             </Box>
@@ -622,7 +553,7 @@ export default function ProductDetailPage() {
                   return (
                     <Link 
                       key={p.id}
-                      href={`/product/${p.id}?lang=${lang}`}
+                      href={`/${lang}/product/${p.id}`}
                       style={{ textDecoration: "none" }}
                     >
                       <Box
