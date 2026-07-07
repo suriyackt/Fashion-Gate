@@ -149,12 +149,12 @@ export function imageLayer(url: string) {
   return `linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.68)), url(${url})`;
 }
 
-function BrandMark({ settings, light = false }: { settings: SiteSettings; light?: boolean }) {
+function BrandMark({ settings, light = false, lang }: { settings: SiteSettings; light?: boolean; lang: "ar" | "en" }) {
   const textColor = light ? "#111111" : "#ffffff";
   const subColor = light ? "rgba(0,0,0,.54)" : "rgba(255,255,255,.68)";
 
   return (
-    <Stack direction="row" spacing={1.5} alignItems="center">
+    <Stack direction="row" gap={lang === "ar" ? 3.5 : 2} alignItems="center">
       <Box 
         component="img" 
         src="/brand/logo.png" 
@@ -245,7 +245,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           style={{
             fontFamily: '"Cairo", sans-serif',
-            fontSize: "14px",
+            fontSize: "13px",
             fontWeight: 600,
             letterSpacing: "0.08em",
             textAlign: "center",
@@ -317,7 +317,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
           
           {/* Centered Brand Name & Logo */}
           <Box sx={{ flex: { xs: 1, lg: "none" }, position: { lg: "absolute" }, left: { lg: "50%" }, transform: { lg: "translateX(-50%)" } }}>
-            <BrandMark settings={settings} />
+            <BrandMark settings={settings} lang={lang} />
           </Box>
 
           {/* Right navigation */}
@@ -445,7 +445,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
         <Stack spacing={5} sx={{ height: "100%", justifyContent: "space-between" }}>
           {/* Top Bar inside Overlay */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <BrandMark settings={settings} />
+            <BrandMark settings={settings} lang={lang} />
             <IconButton onClick={() => setOpen(false)} sx={{ color: "#fff", border: "1px solid rgba(255,255,255,0.1)", p: 1, borderRadius: "50%" }}>
               <CloseIcon sx={{ fontSize: 20 }} />
             </IconButton>
@@ -533,6 +533,44 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
               </Button>
               <Typography sx={{ color: "rgba(255,255,255,0.42)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
                 {menuDescriptions["Blogs"]?.[lang] || ""}
+              </Typography>
+            </Stack>
+
+            {/* Contact Link */}
+            <Stack 
+              spacing={0.5} 
+              sx={{ 
+                borderBottom: "1px solid rgba(255,255,255,0.05)", 
+                pb: 1.5,
+                alignItems: lang === "ar" ? "flex-end" : "flex-start" 
+              }}
+            >
+              <Button 
+                component={Link}
+                href={`/${lang}/contact`} 
+                onClick={() => setOpen(false)} 
+                endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
+                startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
+                sx={{ 
+                  p: 0,
+                  color: "rgba(255,255,255,0.9)", 
+                  fontSize: { xs: 24, sm: 32 }, 
+                  fontWeight: 500,
+                  fontFamily: "var(--heading-font)",
+                  textTransform: "none",
+                  letterSpacing: "0.02em",
+                  textAlign: lang === "ar" ? "right" : "left",
+                  "&:hover": {
+                    color: "primary.main",
+                    transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
+                  },
+                  transition: "transform 0.3s ease, color 0.3s ease"
+                }}
+              >
+                {lang === "ar" ? "اتصل بنا" : "Contact"}
+              </Button>
+              <Typography sx={{ color: "rgba(255,255,255,0.42)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
+                {lang === "ar" ? "تواصل مع مستشارنا الخاص" : "Connect with our private concierge"}
               </Typography>
             </Stack>
           </Stack>
@@ -751,23 +789,28 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
         sx={{ 
           bgcolor: "var(--fg-white)", 
           color: "#111", 
-          minHeight: "100vh",
-          opacity: isLangTransitioning ? 0 : 1,
-          transition: "opacity 0.25s ease-in-out"
+          minHeight: "100vh"
         }}
       >
-        <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} />
-        {sections.map((section, index) => (
-          <SectionRenderer 
-            key={section._id || `${section.type}-${index}`} 
-            section={section} 
-            t={t} 
-            lang={lang} 
-          />
-        ))}
-        <CategoryProductSections t={t} lang={lang} />
-        <AtelierShowcaseSection t={t} lang={lang} />
-        <SiteFooter />
+        <Box 
+          sx={{ 
+            opacity: isLangTransitioning ? 0 : 1, 
+            transition: "opacity 0.25s ease-in-out" 
+          }}
+        >
+          <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} />
+          {sections.map((section, index) => (
+            <SectionRenderer 
+              key={section._id || `${section.type}-${index}`} 
+              section={section} 
+              t={t} 
+              lang={lang} 
+            />
+          ))}
+          <CategoryProductSections t={t} lang={lang} />
+          <AtelierShowcaseSection t={t} lang={lang} />
+          <SiteFooter />
+        </Box>
       </Box>
     </ThemeProvider>
   );

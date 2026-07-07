@@ -117,7 +117,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
       while (target && target !== document.body) {
         if (target.tagName === "A") {
           const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href === "/" || href === "/en" || href === "/ar" || href.endsWith("/blogs"))) {
+          if (href && (href.includes("/product/") || href.endsWith("/blogs"))) {
             setPageLoading(true);
             break;
           }
@@ -146,7 +146,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
   // Simple translations for detail page UI
   const uiTranslations = {
     en: {
-      back: "Back to Storefront",
+      back: "Back",
       share: "Share Masterpiece",
       shareCopied: "Link Copied to Clipboard",
       related: "Related Masterpieces",
@@ -155,7 +155,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
       explore: "Explore Piece"
     },
     ar: {
-      back: "العودة إلى المتجر",
+      back: "رجوع",
       share: "مشاركة التحفة الفنية",
       shareCopied: "تم نسخ الرابط إلى الحافظة",
       related: "روائع ذات صلة",
@@ -195,9 +195,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           color: "#000000", // Solid Black text
           minHeight: "100vh",
           pb: 6, 
-          position: "relative",
-          opacity: isLangTransitioning ? 0 : 1,
-          transition: "opacity 0.25s ease-in-out"
+          position: "relative"
         }}
       >
         {/* Unified Cinematic Dark Preloader (Matching Homepage Loader) */}
@@ -280,7 +278,12 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           )}
         </AnimatePresence>
 
-
+        <Box 
+          sx={{ 
+            opacity: isLangTransitioning ? 0 : 1, 
+            transition: "opacity 0.25s ease-in-out" 
+          }}
+        >
 
         {/* Header bar matching the main website theme */}
         <Box 
@@ -350,26 +353,34 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
         {/* Main product columns */}
         <Container maxWidth="xl" sx={{ mt: { xs: 4, md: 6 } }}>
           {/* Back Link (Persists correct language choice and scrolls to lookbook) */}
-          <Link 
-            href={`/${lang}#lookbook`} 
-            style={{ 
+          <Button
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push(`/${lang}`);
+              }
+            }}
+            sx={{ 
               textDecoration: "none", 
               color: "#D1D1D1", 
               display: "inline-flex",
               alignItems: "center",
-              gap: 8,
+              gap: 1,
               fontSize: 13,
               fontWeight: 600,
               fontFamily: '"Cairo", sans-serif',
-              marginBottom: 24,
-              transition: "color 0.3s ease"
+              marginBottom: 3,
+              textTransform: "none",
+              p: 0,
+              minWidth: 0,
+              transition: "color 0.3s ease",
+              "&:hover": { color: "primary.main" }
             }}
-            onMouseOver={(e) => e.currentTarget.style.color = "#CB6116"}
-            onMouseOut={(e) => e.currentTarget.style.color = "#D1D1D1"}
           >
-            <ArrowBackIcon sx={{ fontSize: 16, transform: lang === "ar" ? "rotate(180deg)" : "none" }} />
+            <ArrowBackIcon sx={{ fontSize: 16, mr: lang === "ar" ? 0 : 1, ml: lang === "ar" ? 1 : 0, transform: lang === "ar" ? "rotate(180deg)" : "none" }} />
             {t.back}
-          </Link>
+          </Button>
 
           {/* Dynamic Two-Column Layout */}
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.1fr 0.9fr" }, gap: { xs: 4, md: 8, lg: 10 } }}>
@@ -632,8 +643,9 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
             </Box>
           )}
         </Container>
+        <SiteFooter />
+        </Box>
       </Box>
-      <SiteFooter />
     </ThemeProvider>
   );
 }

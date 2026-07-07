@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { products } from "@/lib/productData";
 import type { Section } from "@/lib/types";
+
+const MotionBox = motion.create(Box);
 
 export default function LookbookSection({ 
   section, 
@@ -16,7 +18,33 @@ export default function LookbookSection({
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
-  const marqueeProducts = useMemo(() => [...products, ...products], []);
+  const constraintsRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    const updateConstraints = () => {
+      if (trackRef.current && constraintsRef.current) {
+        const trackWidth = trackRef.current.scrollWidth;
+        const containerWidth = constraintsRef.current.offsetWidth;
+        const maxDrag = trackWidth - containerWidth;
+        setConstraints({
+          left: maxDrag > 0 ? -maxDrag - 40 : 0,
+          right: 40
+        });
+      }
+    };
+    
+    updateConstraints();
+    const timer = setTimeout(updateConstraints, 600);
+    window.addEventListener("resize", updateConstraints);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateConstraints);
+    };
+  }, []);
 
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 10, md: 16 }, bgcolor: "#080808", overflow: "hidden", color: "#fff" }}>
@@ -72,7 +100,9 @@ export default function LookbookSection({
           </Box>
         </Box>
 
+        {/* Draggable Carousel Container */}
         <Box 
+          ref={constraintsRef}
           sx={{ 
             overflow: "hidden", 
             width: "100%", 
@@ -84,7 +114,7 @@ export default function LookbookSection({
               position: "absolute",
               top: 0,
               bottom: 0,
-              width: { xs: 38, md: 110 },
+              width: { xs: 24, md: 80 },
               zIndex: 5,
               pointerEvents: "none"
             },
@@ -95,40 +125,34 @@ export default function LookbookSection({
             "&::after": {
               right: 0,
               background: "linear-gradient(270deg, #080808 0%, rgba(8,8,8,0) 100%)"
-            },
-            "@keyframes lookbook-marquee-ltr": {
-              "0%": { transform: "translate3d(0, 0, 0)" },
-              "100%": { transform: "translate3d(-50%, 0, 0)" }
-            },
-            "@keyframes lookbook-marquee-rtl": {
-              "0%": { transform: "translate3d(-50%, 0, 0)" },
-              "100%": { transform: "translate3d(0, 0, 0)" }
             }
           }}
         >
-          <Box 
+          <MotionBox 
+            ref={trackRef}
+            drag="x"
+            dragConstraints={constraints}
+            dragElastic={0.15}
+            dragTransition={{ power: 0.2, timeConstant: 300 }}
+            onDragStart={() => {
+              isDraggingRef.current = true;
+            }}
+            onDragEnd={() => {
+              setTimeout(() => {
+                isDraggingRef.current = false;
+              }, 50);
+            }}
+            whileTap={{ cursor: "grabbing" }}
             sx={{ 
               display: "flex", 
               gap: { xs: 2.5, md: 4 }, 
               width: "max-content",
               px: 4,
-              willChange: "transform",
-              transform: "translate3d(0,0,0)",
-              animation: `${lang === "ar" ? "lookbook-marquee-rtl" : "lookbook-marquee-ltr"} 95s linear infinite`,
-              "&:hover": {
-                animationPlayState: "running"
-              },
-              "@media (prefers-reduced-motion: reduce)": {
-                animation: "none",
-                overflowX: "auto",
-                width: "100%",
-                scrollSnapType: "x mandatory",
-                px: 0,
-                pb: 1
-              }
+              cursor: "grab",
+              touchAction: "pan-y"
             }}
           >
-            {marqueeProducts.map((product, idx) => {
+            {products.map((product, idx) => {
               const title = lang === "ar" ? product.titleAr : product.title;
               const category = lang === "ar" ? product.categoryAr : product.category;
 
@@ -138,18 +162,24 @@ export default function LookbookSection({
                   href={`/${lang}/product/${product.id}`}
                   style={{ textDecoration: "none" }}
                   draggable="false"
+                  onClick={(e) => {
+                    if (isDraggingRef.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   onDragStart={(e) => e.preventDefault()}
                 >
                   <Box
                     sx={{
-                      width: { xs: 280, md: 460 }, 
+                      width: { xs: 280, md: 440 }, 
                       aspectRatio: "4 / 5",
                       position: "relative",
                       overflow: "hidden",
                       border: "1px solid rgba(255,255,255,0.06)",
-                      cursor: "pointer",
                       flex: "0 0 auto",
-                      scrollSnapAlign: "start",
+                      userSelect: "none",
+                      pointerEvents: "auto",
                       "&::after": {
                         content: '""',
                         position: "absolute",
@@ -182,7 +212,7 @@ export default function LookbookSection({
                     <motion.img 
                       src={product.imageUrl} 
                       alt={title} 
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={{ scale: 1.04 }}
                       transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
                       style={{
                         width: "100%",
@@ -260,7 +290,7 @@ export default function LookbookSection({
                 </Link>
               );
             })}
-          </Box>
+          </MotionBox>
         </Box>
       </Container>
     </Box>

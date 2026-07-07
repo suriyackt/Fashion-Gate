@@ -52,22 +52,43 @@ export default function HeroSection({
           zIndex: 10
         }}
       >
-        <Typography 
-          component="h1" 
-          className="animate-tracking"
-          sx={{ 
-            fontFamily: "var(--heading-font)", 
-            fontSize: { xs: "2.4rem", sm: "4.2rem", md: "6rem", lg: "7.8rem" },
-            fontWeight: 500,
-            lineHeight: 0.9, 
-            textTransform: "uppercase", 
-            color: "#ffffffb5",
-            letterSpacing: lang === "ar" ? "0.02em" : "0.06em",
-            textShadow: "0 4px 25px rgba(0,0,0,0.5)"
-          }}
-        >
-          {lang === "ar" ? "بوابة الأزياء" : (section.headline || "Fashion Gate")}
-        </Typography>
+        <Stack spacing={0.5} alignItems="flex-end" sx={{ maxWidth: "100%", width: "fit-content" }}>
+          <Typography 
+            component="h1" 
+            className="animate-tracking"
+            sx={{ 
+              fontFamily: "var(--heading-font)", 
+              fontSize: { xs: "2.4rem", sm: "4.2rem", md: "6rem", lg: "7.8rem" },
+              fontWeight: 500,
+              lineHeight: 0.9, 
+              textTransform: "uppercase", 
+              color: "#ffffffb5",
+              letterSpacing: lang === "ar" ? "0.02em" : "0.06em",
+              textShadow: "0 4px 25px rgba(0,0,0,0.5)",
+              textAlign: "center"
+            }}
+          >
+            {lang === "ar" ? "بوابة الأزياء" : (section.headline || "Fashion Gate")}
+          </Typography>
+          
+          <Typography 
+            sx={{ 
+              fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', 
+              fontSize: { xs: "1.2rem", sm: "1.8rem", md: "2.4rem" }, 
+              color: "#ffffff",
+              textTransform: "none",
+              fontWeight: 400,
+              alignSelf: lang === "ar" ? "flex-start" : "flex-end",
+              textShadow: "0 4px 15px rgba(0,0,0,0.5)",
+              mr: lang === "ar" ? 0 : { xs: 1, md: 3 },
+              ml: lang === "ar" ? { xs: 1, md: 3 } : 0,
+              mt: -0.5,
+              whiteSpace: "nowrap"
+            }}
+          >
+            {lang === "ar" ? "أول متجر أقسام دولي فاخر في سوريا" : "Syria's first international luxury department store"}
+          </Typography>
+        </Stack>
       </Box>
 
       <Container maxWidth="xl" sx={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 12, pb: { xs: 3, md: 5 } }}>

@@ -24,7 +24,9 @@ const footerTranslations = {
       { label: "Home & Deco", href: "#home-deco" },
       { label: "The Boulevard", href: "#boulevard" },
       { label: "Brand", href: "#brand" },
-      { label: "Journal", href: "blogs" }
+      { label: "Journal", href: "blogs" },
+      { label: "Contact", href: "contact" },
+      { label: "Atelier", href: "#brand" }
     ]
   },
   ar: {
@@ -42,7 +44,9 @@ const footerTranslations = {
       { label: "منزل وديكور", href: "#home-deco" },
       { label: "البوليفارد", href: "#boulevard" },
       { label: "العلامة", href: "#brand" },
-      { label: "المدونة", href: "blogs" }
+      { label: "المدونة", href: "blogs" },
+      { label: "اتصل بنا", href: "contact" },
+      { label: "الأتيلييه", href: "#brand" }
     ]
   }
 };
