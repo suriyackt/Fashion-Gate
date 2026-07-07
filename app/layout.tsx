@@ -6,7 +6,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Fashion Gate",
-  description: "Fashion Gate boutique ecommerce experience powered by Sanity CMS."
+  description: "Fashion Gate boutique ecommerce experience powered by Sanity CMS.",
+  icons: {
+    icon: "/brand/logo.png"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
