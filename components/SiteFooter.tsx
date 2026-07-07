@@ -6,22 +6,56 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { Box, Button, Container, IconButton, InputBase, Stack, Typography } from "@mui/material";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-const footerLinks = [
-  { label: "Home", href: "/" },
-  { label: "Women", href: "/#women" },
-  { label: "Men", href: "/#men" },
-  { label: "Beauty", href: "/#beauty" },
-  { label: "Home & Deco", href: "/#home-deco" },
-  { label: "The Boulevard", href: "/#boulevard" },
-  { label: "Brand", href: "/#brand" },
-  { label: "Journal", href: "/blogs" }
-];
+const footerTranslations = {
+  en: {
+    description: "Syria's first luxury department destination. Integrating fine apparel, curated beauty, and bespoke boutique shopping under a modern architectural vision.",
+    explore: "Explore",
+    updates: "Bespoke Updates",
+    subscribeText: "Subscribe to receive private invitations, seasonal collection launches, and atelier journal notes.",
+    emailPlaceholder: "Email address",
+    copyright: "All rights reserved.",
+    links: [
+      { label: "Home", href: "" },
+      { label: "Women", href: "#women" },
+      { label: "Men", href: "#men" },
+      { label: "Beauty", href: "#beauty" },
+      { label: "Home & Deco", href: "#home-deco" },
+      { label: "The Boulevard", href: "#boulevard" },
+      { label: "Brand", href: "#brand" },
+      { label: "Journal", href: "blogs" }
+    ]
+  },
+  ar: {
+    description: "أول وجهة للمتاجر الكبرى الفاخرة في سوريا. دمج الملابس الراقية، الجمال المنسق، والتسوق الحصري تحت رؤية معمارية حديثة.",
+    explore: "استكشف",
+    updates: "تحديثات مخصصة",
+    subscribeText: "اشترك لتلقي الدعوات الخاصة، وإطلاق المجموعات الموسمية، وملاحظات مجلة الأتيلييه.",
+    emailPlaceholder: "البريد الإلكتروني",
+    copyright: "جميع الحقوق محفوظة.",
+    links: [
+      { label: "الرئيسية", href: "" },
+      { label: "سيدات", href: "#women" },
+      { label: "رجال", href: "#men" },
+      { label: "جمال", href: "#beauty" },
+      { label: "منزل وديكور", href: "#home-deco" },
+      { label: "البوليفارد", href: "#boulevard" },
+      { label: "العلامة", href: "#brand" },
+      { label: "المدونة", href: "blogs" }
+    ]
+  }
+};
 
 export default function SiteFooter() {
+  const params = useParams();
+  const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
+  const t = footerTranslations[lang];
+
   return (
     <Box
       component="footer"
+      dir={lang === "ar" ? "rtl" : "ltr"}
       sx={{
         bgcolor: "#FAF8F5",
         color: "#111111",
@@ -42,8 +76,8 @@ export default function SiteFooter() {
           }}
         >
           {/* Brand Info Column */}
-          <Stack spacing={3}>
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifyContent: lang === "ar" ? "flex-start" : "flex-start" }}>
               <Box
                 sx={{
                   width: 48,
@@ -56,7 +90,7 @@ export default function SiteFooter() {
               >
                 <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ width: 28, height: "auto" }} />
               </Box>
-              <Stack spacing={0.1}>
+              <Stack spacing={0.1} sx={{ textAlign: "left" }}>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, fontWeight: 600, color: "#111111", lineHeight: 1 }}>
                   Fashion Gate
                 </Typography>
@@ -67,14 +101,14 @@ export default function SiteFooter() {
             </Stack>
 
             <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14.5, lineHeight: 1.8, maxWidth: 360 }}>
-              Syria's first luxury department destination. Integrating fine apparel, curated beauty, and bespoke boutique shopping under a modern architectural vision.
+              {t.description}
             </Typography>
           </Stack>
 
           {/* Quick Links Column */}
-          <Stack spacing={2.5}>
+          <Stack spacing={2.5} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
             <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              Explore
+              {t.explore}
             </Typography>
             <Box
               sx={{
@@ -83,33 +117,41 @@ export default function SiteFooter() {
                 gap: 1.5
               }}
             >
-              {footerLinks.map((link) => (
-                <Typography
-                  key={link.label}
-                  component={Link}
-                  href={link.href}
-                  sx={{
-                    color: "rgba(0,0,0,0.6)",
-                    fontSize: 13.5,
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "color 0.3s ease",
-                    "&:hover": { color: "primary.main" }
-                  }}
-                >
-                  {link.label}
-                </Typography>
-              ))}
+              {t.links.map((link, index) => {
+                const destination = link.href.startsWith("#") 
+                  ? `/${lang}${link.href}` 
+                  : link.href === "" 
+                    ? `/${lang}` 
+                    : `/${lang}/${link.href}`;
+
+                return (
+                  <Typography
+                    key={index}
+                    component={Link}
+                    href={destination}
+                    sx={{
+                      color: "rgba(0,0,0,0.6)",
+                      fontSize: 13.5,
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "color 0.3s ease",
+                      "&:hover": { color: "primary.main" }
+                    }}
+                  >
+                    {link.label}
+                  </Typography>
+                );
+              })}
             </Box>
           </Stack>
 
           {/* Newsletter Column */}
-          <Stack spacing={2.5}>
+          <Stack spacing={2.5} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
             <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              Bespoke Updates
+              {t.updates}
             </Typography>
             <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14, lineHeight: 1.6 }}>
-              Subscribe to receive private invitations, seasonal collection launches, and atelier journal notes.
+              {t.subscribeText}
             </Typography>
             <Box
               sx={{
@@ -121,7 +163,7 @@ export default function SiteFooter() {
               }}
             >
               <InputBase
-                placeholder="Email address"
+                placeholder={t.emailPlaceholder}
                 sx={{
                   flex: 1,
                   px: 0.5,
@@ -130,7 +172,7 @@ export default function SiteFooter() {
                   "& input::placeholder": { color: "rgba(0,0,0,0.42)", opacity: 1 }
                 }}
               />
-              <IconButton sx={{ color: "#111111", p: 0.5, "&:hover": { color: "primary.main" } }}>
+              <IconButton sx={{ color: "#111111", p: 0.5, "&:hover": { color: "primary.main" }, transform: lang === "ar" ? "rotate(180deg)" : "none" }}>
                 <ArrowForwardIcon sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
@@ -146,7 +188,7 @@ export default function SiteFooter() {
           sx={{ pt: 4 }}
         >
           <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12.5 }}>
-            © {new Date().getFullYear()} Fashion Gate. All rights reserved.
+            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت" : "Fashion Gate"}. {t.copyright}
           </Typography>
 
           {/* Social Links */}
@@ -177,7 +219,8 @@ export default function SiteFooter() {
         aria-label="WhatsApp"
         sx={{
           position: "fixed",
-          right: { xs: 16, md: 24 },
+          right: lang === "ar" ? "auto" : { xs: 16, md: 24 },
+          left: lang === "ar" ? { xs: 16, md: 24 } : "auto",
           bottom: { xs: 16, md: 24 },
           zIndex: 90,
           bgcolor: "#111111",

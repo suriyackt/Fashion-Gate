@@ -77,7 +77,7 @@ const stringMap: Record<string, string> = {
   "Beauty": "الجمال",
   "Home & Deco": "المنزل والديكور",
   "Brand": "العلامة التجارية",
-  "Blogs": "Blogs",
+  "Blogs": "المدونة",
   "Explore": "استكشف",
   "Read the manifesto": "اقرأ البيان",
   "Menu": "القائمة",
@@ -259,7 +259,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; lang: "ar" | "en"; setLang: (l: "ar" | "en") => void; t: (s?: string) => string }) {
+function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; lang: "ar" | "en"; setLang: () => void; t: (s?: string) => string }) {
   const [open, setOpen] = useState(false);
   const nav = shopNavigation;
 
@@ -293,7 +293,17 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
         <AnnouncementBar lang={lang} />
         <Stack direction="row" alignItems="center" sx={{ minHeight: { xs: 64, md: 74 }, px: { xs: 2.5, md: 4 } }}>
           {/* Left navigation */}
-          <Stack direction="row" spacing={lang === "ar" ? 4 : 3} alignItems="center" sx={{ flex: 1, display: { xs: "none", lg: "flex" } }}>
+          <Stack 
+            direction="row" 
+            gap={lang === "ar" ? 4.5 : 3.5} 
+            alignItems="center" 
+            sx={{ 
+              flex: 1, 
+              display: { xs: "none", lg: "flex" },
+              pr: lang === "ar" ? 0 : 8,
+              pl: lang === "ar" ? 8 : 0
+            }}
+          >
             <Button href="#women" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Women")}
             </Button>
@@ -311,7 +321,18 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
           </Box>
 
           {/* Right navigation */}
-          <Stack direction="row" spacing={lang === "ar" ? 4 : 3} justifyContent="flex-end" alignItems="center" sx={{ flex: 1, display: { xs: "none", lg: "flex" } }}>
+          <Stack 
+            direction="row" 
+            gap={lang === "ar" ? 4.5 : 3.5} 
+            justifyContent="flex-end" 
+            alignItems="center" 
+            sx={{ 
+              flex: 1, 
+              display: { xs: "none", lg: "flex" },
+              pl: lang === "ar" ? 0 : 8,
+              pr: lang === "ar" ? 8 : 0
+            }}
+          >
             <Button href="#home-deco" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Home & Deco")}
             </Button>
@@ -324,7 +345,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
             
             {/* Language Selector */}
             <Button 
-              onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+              onClick={setLang}
               sx={{ 
                 color: "primary.main", 
                 textTransform: "uppercase", 
@@ -373,7 +394,7 @@ function FloatingMenu({ settings, lang, setLang, t }: { settings: SiteSettings; 
           {/* Mobile Header elements */}
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: "flex", lg: "none" }, ml: "auto" }}>
             <Button 
-              onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+              onClick={setLang}
               size="small"
               sx={{ 
                 color: "primary.main", 
@@ -584,20 +605,12 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
     }, 250);
   };
 
-  // Snappy loading duration for cinematic entry (skipped on subsequent hits in same session)
+  // Snappy loading duration for cinematic entry
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hasLoadedBefore = sessionStorage.getItem("fg_loaded");
-      if (hasLoadedBefore) {
-        setLoading(false);
-      } else {
-        const timer = setTimeout(() => {
-          setLoading(false);
-          sessionStorage.setItem("fg_loaded", "true");
-        }, 800);
-        return () => clearTimeout(timer);
-      }
-    }
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2800);
+    return () => clearTimeout(timer);
   }, []);
 
   // Intercept product/blog link clicks to show loader instantly during compilation/fetching

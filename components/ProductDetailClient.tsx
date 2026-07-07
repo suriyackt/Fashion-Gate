@@ -93,6 +93,12 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
     setIsLangTransitioning(false);
   }, [initialLang]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [product.id]);
+
   const handleShare = () => {
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.href);
