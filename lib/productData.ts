@@ -41,7 +41,7 @@ export const products: Product[] = [
       "بطانة داخلية من حرير الساتان",
       "صنع في فرنسا"
     ],
-    imageUrl: "/brand/fgb_silk_oversized_shirt_1783335379894.png",
+    imageUrl: "/assets/uploaded_products/product_5.png",
     brandId: "chanel",
     relatedIds: ["prada-oversized-wool-coat", "dior-bar-jacket"]
   },
@@ -69,7 +69,7 @@ export const products: Product[] = [
       "بخاخ حجم ١٠٠ مل",
       "صنع في فرنسا"
     ],
-    imageUrl: "/brand/si_passione_armani_perfume_1783335364665.png",
+    imageUrl: "/assets/uploaded_products/product_6.png",
     brandId: "chanel",
     relatedIds: ["dior-sauvage-elixir", "chanel-classic-flap-bag"]
   },
@@ -82,7 +82,7 @@ export const products: Product[] = [
     slogan: "A timeless masterpiece of leather design.",
     sloganAr: "تحفة فنية خالدة في عالم المنتجات الجلدية.",
     description: "Crafted in premium quilted caviar calfskin, featuring a double-flap closure and the signature metal interlaced leather shoulder strap. A legendary accessory investment.",
-    descriptionAr: "مصنوعة من جلد العجل الفاخر المبطن، وتتميز بإغلاق مزدوج وحزام كتف جلدي متداخل مع المعدن. قطعة إكسسوار أسطورية للاقتناء.",
+    descriptionAr: "مأخوذة من جلد العجل الفاخر المبطن، وتتميز بإغلاق مزدوج وحزام كتف جلدي متداخل مع المعدن. قطعة إكسسوار أسطورية للاقتناء.",
     details: [
       "Quilted Caviar Leather",
       "Gold-tone metal hardware and CC clasp",
@@ -97,7 +97,7 @@ export const products: Product[] = [
       "حزام سلسلة قابل للتعديل من الجلد والمعدن",
       "الأبعاد: ١٩.٥ × ٣٠ × ١٠ سم"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "chanel",
     relatedIds: ["hermes-birkin-30", "prada-galleria-tote"]
   },
@@ -127,7 +127,7 @@ export const products: Product[] = [
       "شعار معدني مثلث مطلي بالمينا",
       "صنع في إيطاليا"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "prada",
     relatedIds: ["chanel-classic-flap-bag", "gucci-marmont-shoulder-bag"]
   },
@@ -155,7 +155,7 @@ export const products: Product[] = [
       "حمالات كتف مبطنة وقابلة للتعديل",
       "جيبان خارجيان بإبزيم"
     ],
-    imageUrl: "/brand/fgb_urban_active_footwear_1783335307173.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "prada",
     relatedIds: ["adidas-y3-sneakers", "gucci-horsebit-loafers"]
   },
@@ -183,7 +183,7 @@ export const products: Product[] = [
       "جيوب جانبية عميقة",
       "تنظيف جاف فقط"
     ],
-    imageUrl: "/brand/lookbook_trench_1783317167514.png",
+    imageUrl: "/assets/uploaded_products/product_7.png",
     brandId: "prada",
     relatedIds: ["chanel-tweed-jacket", "dior-bar-jacket"]
   },
@@ -213,7 +213,7 @@ export const products: Product[] = [
       "بطانة من الألياف الدقيقة بلمسة نهائية تشبه الجلد المدبوغ",
       "صنع في إيطاليا"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "gucci",
     relatedIds: ["prada-galleria-tote", "chanel-classic-flap-bag"]
   },
@@ -241,7 +241,7 @@ export const products: Product[] = [
       "نعل وبطانة من الجلد",
       "تفاصيل مخيطة يدوياً"
     ],
-    imageUrl: "/brand/fgb_urban_active_footwear_1783335307173.png",
+    imageUrl: "/assets/uploaded_products/product_2.png",
     brandId: "gucci",
     relatedIds: ["prada-nylon-backpack", "hermes-h-hour-watch"]
   },
@@ -269,7 +269,7 @@ export const products: Product[] = [
       "الأبعاد: ٩٠ × ٩٠ سم",
       "صنع في إيطاليا"
     ],
-    imageUrl: "/brand/fgb_silk_oversized_shirt_1783335379894.png",
+    imageUrl: "/assets/uploaded_products/product_4.png",
     brandId: "gucci",
     relatedIds: ["prada-oversized-wool-coat", "chanel-tweed-jacket"]
   },
@@ -299,7 +299,7 @@ export const products: Product[] = [
       "بخاخ حجم ٦٠ مل",
       "صنع في فرنسا"
     ],
-    imageUrl: "/brand/si_passione_armani_perfume_1783335364665.png",
+    imageUrl: "/assets/uploaded_products/product_6.png",
     brandId: "dior",
     relatedIds: ["chanel-no5-perfume", "hermes-birkin-30"]
   },
@@ -327,7 +327,7 @@ export const products: Product[] = [
       "جيب داخلي بسحاب ومقصورات للبطاقات",
       "الأبعاد: ١٧ × ٢٠ × ٨ سم"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "dior",
     relatedIds: ["hermes-birkin-30", "chanel-classic-flap-bag"]
   },
@@ -355,7 +355,7 @@ export const products: Product[] = [
       "بطانة داخلية من حرير الكريب",
       "تنظيف جاف فقط"
     ],
-    imageUrl: "/brand/fgb_white_lace_midi_dress_1783335335253.png",
+    imageUrl: "/assets/uploaded_products/product_5.png",
     brandId: "dior",
     relatedIds: ["chanel-tweed-jacket", "prada-oversized-wool-coat"]
   },
@@ -385,7 +385,7 @@ export const products: Product[] = [
       "بطانة داخلية من حرير الساتان",
       "صنع في إيطاليا"
     ],
-    imageUrl: "/brand/brand_blazer_1783319542486.png",
+    imageUrl: "/brand/modern-sophistication.png",
     brandId: "ysl",
     relatedIds: ["gucci-horsebit-loafers", "prada-nylon-backpack"]
   },
@@ -413,7 +413,7 @@ export const products: Product[] = [
       "قفل قابل للإزالة مع غلاف جلدي",
       "صنع في إيطاليا"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "ysl",
     relatedIds: ["prada-galleria-tote", "gucci-marmont-shoulder-bag"]
   },
@@ -443,7 +443,7 @@ export const products: Product[] = [
       "خياطة سرج مخيطة يدوياً بالكامل",
       "تتضمن كلوشيت مفاتيح وقفل وحقيبة غبار"
     ],
-    imageUrl: "/brand/lookbook_tote_1783317197281.png",
+    imageUrl: "/brand/lookbook-tote.png",
     brandId: "hermes",
     relatedIds: ["chanel-classic-flap-bag", "dior-lady-dior-handbag"]
   },
@@ -471,7 +471,7 @@ export const products: Product[] = [
       "حزام جلدي ناعم يلتف حول المعصم",
       "مقاومة للماء حتى عمق ٣٠ متراً"
     ],
-    imageUrl: "/brand/brand_blazer_1783319542486.png",
+    imageUrl: "/brand/signature-accents.png",
     brandId: "hermes",
     relatedIds: ["gucci-horsebit-loafers", "ysl-tuxedo-suit"]
   },
@@ -499,7 +499,7 @@ export const products: Product[] = [
       "الأبعاد: القطر ٢١ سم",
       "صنع في فرنسا"
     ],
-    imageUrl: "/brand/brand_honey_1783319582434.png",
+    imageUrl: "/brand/honey.png",
     brandId: "hermes",
     relatedIds: ["hermes-h-hour-watch", "chanel-tweed-jacket"]
   },
@@ -529,7 +529,7 @@ export const products: Product[] = [
       "نعل أنبوبي مبطن خفيف الوزن",
       "تصميم حذاء رياضي مرتفع الكاحل"
     ],
-    imageUrl: "/brand/fgb_urban_active_footwear_1783335307173.png",
+    imageUrl: "/assets/uploaded_products/product_2.png",
     brandId: "adidas",
     relatedIds: ["adidas-originals-track-jacket", "prada-nylon-backpack"]
   },
@@ -557,7 +557,7 @@ export const products: Product[] = [
       "أطراف أكمام وحاشية مضلعة",
       "جيوب جانبية بسحاب"
     ],
-    imageUrl: "/brand/adidas_originals_sportswear_1783335319603.png",
+    imageUrl: "/assets/uploaded_products/product_3.png",
     brandId: "adidas",
     relatedIds: ["adidas-y3-sneakers", "gucci-horsebit-loafers"]
   }

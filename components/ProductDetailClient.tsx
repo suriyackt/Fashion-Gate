@@ -26,7 +26,6 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
   const lang = initialLang;
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
     setIsLangTransitioning(false);
@@ -48,25 +47,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
     }
   };
 
-  // Intercept back / related link clicks to show loader instantly during compilation/fetching
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const handleGlobalClick = (e: MouseEvent) => {
-      let target = e.target as HTMLElement | null;
-      while (target && target !== document.body) {
-        if (target.tagName === "A") {
-          const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href.endsWith("/blogs"))) {
-            setPageLoading(true);
-            break;
-          }
-        }
-        target = target.parentElement;
-      }
-    };
-    window.addEventListener("click", handleGlobalClick);
-    return () => window.removeEventListener("click", handleGlobalClick);
-  }, []);
+
 
   // Unified theme mapping - strictly Orange, Black, White, and Grey (no blue!)
   const theme = useMemo(() => createTheme({
@@ -137,85 +118,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           position: "relative"
         }}
       >
-        {/* Unified Cinematic Dark Preloader (Matching Homepage Loader) */}
-        <AnimatePresence>
-          {pageLoading && (
-            <MotionBox
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              sx={{
-                position: "fixed",
-                inset: 0,
-                zIndex: 99999,
-                bgcolor: "#050505", // Matching Dark homepage background
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <Stack spacing={3.5} alignItems="center">
-                {/* Glowing Monogram script logo */}
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  src="/brand/logo.png"
-                  alt="Fashion Gate"
-                  style={{ width: "80px", maxWidth: "100px", height: "auto", objectFit: "contain" }}
-                />
-                
-                <MotionBox
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Typography 
-                    sx={{ 
-                      fontFamily: "var(--heading-font)", 
-                      fontSize: "1.4rem", 
-                      fontWeight: 500, 
-                      letterSpacing: "0.25em", 
-                      color: "#ffffff",
-                      textTransform: "uppercase"
-                    }}
-                  >
-                    FASHION GATE
-                  </Typography>
-                  <Typography 
-                    sx={{ 
-                      fontFamily: '"Cairo", sans-serif', 
-                      fontSize: 10, 
-                      fontWeight: 600, 
-                      letterSpacing: "0.4em", 
-                      color: "#CB6116", // Orange
-                      textTransform: "uppercase",
-                      mt: 0.5
-                    }}
-                  >
-                    BOULEVARD
-                  </Typography>
-                </MotionBox>
-                
-                {/* Orange progress line */}
-                <Box sx={{ width: 120, height: 1.5, bgcolor: "rgba(255,255,255,0.15)", mt: 3, position: "relative", overflow: "hidden" }}>
-                  <MotionBox 
-                    initial={{ left: "-100%" }}
-                    animate={{ left: "0%" }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    sx={{ 
-                      position: "absolute",
-                      top: 0,
-                      bottom: 0,
-                      width: "100%",
-                      bgcolor: "#CB6116"
-                    }}
-                  />
-                </Box>
-              </Stack>
-            </MotionBox>
-          )}
-        </AnimatePresence>
+
 
         <Box 
           sx={{ 

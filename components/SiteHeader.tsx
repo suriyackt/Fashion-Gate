@@ -207,13 +207,26 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
   const [open, setOpen] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
+  const [loadingTimer, setLoadingTimer] = useState<NodeJS.Timeout | null>(null);
 
-  // Turn off loading when pathname changes
+  // Turn off loading and clear timers when pathname changes
   useEffect(() => {
     setPageLoading(false);
+    if (loadingTimer) {
+      clearTimeout(loadingTimer);
+    }
   }, [pathname]);
 
-  // Intercept global link clicks to show loader instantly
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimer) {
+        clearTimeout(loadingTimer);
+      }
+    };
+  }, [loadingTimer]);
+
+  // Intercept global link clicks to show loader deferredly (prevents flash on fast loads)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const handleGlobalClick = (e: MouseEvent) => {
@@ -232,11 +245,19 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             try {
               const url = new URL(href, window.location.origin);
               if (url.pathname !== window.location.pathname) {
-                setPageLoading(true);
+                // Clear any active timer
+                if (loadingTimer) clearTimeout(loadingTimer);
+                const timer = setTimeout(() => {
+                  setPageLoading(true);
+                }, 150);
+                setLoadingTimer(timer);
               }
             } catch (err) {
-              // fallback
-              setPageLoading(true);
+              if (loadingTimer) clearTimeout(loadingTimer);
+              const timer = setTimeout(() => {
+                setPageLoading(true);
+              }, 150);
+              setLoadingTimer(timer);
             }
             break;
           }
@@ -246,7 +267,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
     };
     window.addEventListener("click", handleGlobalClick);
     return () => window.removeEventListener("click", handleGlobalClick);
-  }, []);
+  }, [loadingTimer]);
 
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;

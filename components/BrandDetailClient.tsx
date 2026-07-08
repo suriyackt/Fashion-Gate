@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, ThemeProvider, createTheme } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
@@ -11,6 +11,13 @@ import { Brand } from "@/lib/brandData";
 import { getProductsByBrandId } from "@/lib/productData";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+
+const theme = createTheme({
+  palette: {
+    primary: { main: "#CB6116" },
+    secondary: { main: "#111111" }
+  }
+});
 
 const brandVectorLogos: Record<string, React.ReactNode> = {
   chanel: (
@@ -111,17 +118,18 @@ export default function BrandDetailClient({
   };
 
   return (
-    <Box 
-      dir={lang === "ar" ? "rtl" : "ltr"} 
-      sx={{ 
-        bgcolor: "#FAF8F5", 
-        color: "#111111", 
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: lang === "ar" ? '"Cairo", sans-serif' : '"Inter", sans-serif'
-      }}
-    >
+    <ThemeProvider theme={theme}>
+      <Box 
+        dir={lang === "ar" ? "rtl" : "ltr"} 
+        sx={{ 
+          bgcolor: "#FAF8F5", 
+          color: "#111111", 
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          fontFamily: lang === "ar" ? '"Cairo", sans-serif' : '"Inter", sans-serif'
+        }}
+      >
       {/* Reusable Header (handles global transition loaders automatically) */}
       <SiteHeader 
         settings={{ title: "Fashion Gate" }} 
@@ -189,7 +197,7 @@ export default function BrandDetailClient({
                 fontWeight: 400, 
                 maxWidth: 720, 
                 lineHeight: 1.25,
-                color: "primary.main" // brand orange
+                color: "#CB6116" // brand orange
               }}
             >
               {lang === "ar" ? brand.headlineAr : brand.headline}
@@ -391,5 +399,6 @@ export default function BrandDetailClient({
       {/* Shared Footer */}
       <SiteFooter />
     </Box>
+    </ThemeProvider>
   );
 }
