@@ -123,9 +123,10 @@ export default function BrandDetailClient({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box 
-        dir={lang === "ar" ? "rtl" : "ltr"} 
+    <>
+      <ThemeProvider theme={theme}>
+        <Box 
+          dir={lang === "ar" ? "rtl" : "ltr"} 
         sx={{ 
           bgcolor: "#FAF8F5", 
           color: "#111111", 
@@ -401,9 +402,10 @@ export default function BrandDetailClient({
         </Container>
       </Box>
 
-      {/* Shared Footer */}
-      <SiteFooter />
     </Box>
     </ThemeProvider>
+    {/* Shared Footer is placed OUTSIDE the brand theme provider to keep styles original */}
+    <SiteFooter />
+    </>
   );
 }

@@ -349,29 +349,33 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
       </Stack>
 
       {/* Popover overlay dropdown */}
-      {searchActive && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "100%", // Align exactly with the bottom of the header stack
-            right: { xs: 0, sm: lang === "ar" ? "auto" : 0 },
-            left: { xs: 0, sm: lang === "ar" ? 0 : "auto" },
-            width: { xs: "100vw", sm: "400px", md: "520px" },
-            maxHeight: "75vh",
-            overflowY: "auto",
-            bgcolor: "#ffffff", // Pure light mode background
-            boxShadow: "0 20px 45px rgba(0,0,0,0.16)",
-            borderBottom: "1px solid rgba(0,0,0,0.08)",
-            borderLeft: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
-            borderRight: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
-            p: 3,
-            zIndex: 1000,
-            color: "#111111", // Dark text
-            borderRadius: 0,
-            textAlign: lang === "ar" ? "right" : "left",
-            transform: "none"
-          }}
-        >
+      <AnimatePresence>
+        {searchActive && (
+          <MotionBox
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            sx={{
+              position: "absolute",
+              top: "100%", // Align exactly with the bottom of the header stack
+              right: { xs: 0, sm: lang === "ar" ? "auto" : 0 },
+              left: { xs: 0, sm: lang === "ar" ? 0 : "auto" },
+              width: { xs: "100vw", sm: "400px", md: "520px" },
+              maxHeight: "75vh",
+              overflowY: "auto",
+              bgcolor: "#ffffff", // Pure light mode background
+              boxShadow: "0 20px 45px rgba(0,0,0,0.16)",
+              borderBottom: "1px solid rgba(0,0,0,0.08)",
+              borderLeft: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
+              borderRight: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
+              p: 3,
+              zIndex: 1000,
+              color: "#111111", // Dark text
+              borderRadius: 0,
+              textAlign: lang === "ar" ? "right" : "left"
+            }}
+          >
           {!searchQuery.trim() ? (
             <Box 
               sx={{ 
@@ -529,8 +533,9 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
               )}
             </Box>
           )}
-        </Box>
-      )}
+          </MotionBox>
+        )}
+      </AnimatePresence>
 
       {/* Styled hover link style override inside the light-mode popover */}
       <style>{`
@@ -563,7 +568,14 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   }, []);
 
   useEffect(() => {
-    const delay = isHome ? 2600 : 180;
+    let isLangSwitch = false;
+    if (typeof window !== "undefined") {
+      isLangSwitch = sessionStorage.getItem("pendingLangSwitch") === "true";
+      if (isLangSwitch) {
+        sessionStorage.removeItem("pendingLangSwitch");
+      }
+    }
+    const delay = (isHome || isLangSwitch) ? 2600 : 180;
     const timer = setTimeout(() => {
       setLoading(false);
     }, delay);
@@ -595,6 +607,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const handleLangToggle = () => {
     if (typeof window === "undefined") return;
+    sessionStorage.setItem("pendingLangSwitch", "true");
     setLoading(true); // Trigger the preloader immediately on language switch
     if (onLangToggleStart) {
       onLangToggleStart();
@@ -603,7 +616,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
       const nextLang = lang === "ar" ? "en" : "ar";
       const nextPath = pathname.replace(/^\/(ar|en)/, `/${nextLang}`);
       router.push(nextPath);
-    }, 150);
+    }, 180);
   };
 
   const handleMenuClick = (e: React.MouseEvent, sectionId: string, categoryId?: string) => {

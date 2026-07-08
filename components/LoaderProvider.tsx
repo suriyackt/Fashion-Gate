@@ -26,6 +26,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   const [loading, setLoading] = useState(true);
   const [minTimeActive, setMinTimeActive] = useState(true);
   const [pendingClose, setPendingClose] = useState(false);
+  const [pageMounted, setPageMounted] = useState(true);
 
   // Lock the preloader on initial mount to let the ease sweep finish fully (2.6 seconds)
   useEffect(() => {
@@ -35,13 +36,13 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
     return () => clearTimeout(timer);
   }, []);
 
-  // Watch for lock release and close requests
+  // Watch for lock release, page mount, and close requests
   useEffect(() => {
-    if (!minTimeActive && pendingClose) {
+    if (!minTimeActive && pendingClose && pageMounted) {
       setLoading(false);
       setPendingClose(false);
     }
-  }, [minTimeActive, pendingClose]);
+  }, [minTimeActive, pendingClose, pageMounted]);
 
   // Safe setLoading handler that enforces a minimum animation runtime
   const safeSetLoading = (val: boolean, bypassMinTime = false) => {
@@ -49,6 +50,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
       setLoading(true);
       setMinTimeActive(!bypassMinTime);
       setPendingClose(false);
+      setPageMounted(false); // Reset page mount status when starting route navigation
       
       if (!bypassMinTime) {
         // Enforce a 2.4s lock for standard transition loaders to run fully
@@ -57,6 +59,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
         }, 2400);
       }
     } else {
+      setPageMounted(true); // Destination page has mounted and triggered the load exit
       setMinTimeActive((currentMin) => {
         if (currentMin) {
           setPendingClose(true);
