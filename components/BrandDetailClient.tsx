@@ -21,37 +21,37 @@ const theme = createTheme({
 
 const brandVectorLogos: Record<string, React.ReactNode> = {
   chanel: (
-    <svg width="240" height="50" viewBox="0 0 120 30" fill="currentColor">
+    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="22" fontWeight="bold" letterSpacing="0.35em" textAnchor="middle">CHANEL</text>
     </svg>
   ),
   prada: (
-    <svg width="240" height="50" viewBox="0 0 120 30" fill="currentColor">
+    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Engravers MT', 'Copperplate', 'Times New Roman', serif" fontSize="16" fontWeight="900" letterSpacing="0.18em" textAnchor="middle">PRADA</text>
     </svg>
   ),
   gucci: (
-    <svg width="240" height="50" viewBox="0 0 120 30" fill="currentColor">
+    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="22" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">GUCCI</text>
     </svg>
   ),
   dior: (
-    <svg width="180" height="50" viewBox="0 0 100 30" fill="currentColor">
+    <svg width="260" height="70" viewBox="0 0 100 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', 'Bodoni MT', serif" fontSize="22" fontWeight="700" letterSpacing="0.2em" textAnchor="middle">Dior</text>
     </svg>
   ),
   ysl: (
-    <svg width="280" height="50" viewBox="0 0 160 30" fill="currentColor">
+    <svg width="390" height="70" viewBox="0 0 160 30" fill="currentColor">
       <text x="50%" y="21" fontFamily="'Cinzel', 'Times New Roman', serif" fontSize="12" fontWeight="600" letterSpacing="0.3em" textAnchor="middle">YVES SAINT LAURENT</text>
     </svg>
   ),
   hermes: (
-    <svg width="240" height="50" viewBox="0 0 120 30" fill="currentColor">
+    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
       <text x="50%" y="21" fontFamily="'Rockwell', 'Courier New', serif" fontSize="15" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">HERMÈS</text>
     </svg>
   ),
   adidas: (
-    <svg width="80" height="50" viewBox="0 0 60 40" fill="currentColor">
+    <svg width="120" height="75" viewBox="0 0 60 40" fill="currentColor">
       <path d="M 15 32 L 20 32 L 35 8 L 30 8 Z" />
       <path d="M 25 32 L 30 32 L 45 8 L 40 8 Z" />
       <path d="M 35 32 L 40 32 L 55 8 L 50 8 Z" />
@@ -107,9 +107,14 @@ export default function BrandDetailClient({
     }
   }[lang];
 
-  // Scroll to top on mount
+  // Scroll to top on mount (deferred to let Lenis update cleanly)
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleLangToggle = (newLang: "en" | "ar") => {

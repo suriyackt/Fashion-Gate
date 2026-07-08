@@ -140,7 +140,7 @@ export default function BoulevardSelectionSection({
                       }
                     }}
                   >
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", mb: 1 }}>
+                    {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", mb: 1 }}>
                       <Typography sx={{ 
                         fontFamily: '"Cairo", sans-serif', 
                         fontSize: 12, 
@@ -150,7 +150,7 @@ export default function BoulevardSelectionSection({
                       }}>
                         {seqNumber}
                       </Typography>
-                    </Box>
+                    </Box> */}
 
                     <Box
                       sx={{

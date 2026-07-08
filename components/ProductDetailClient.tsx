@@ -33,7 +33,12 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
+      const timer = setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [product.id]);
 

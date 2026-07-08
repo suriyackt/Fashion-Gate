@@ -78,7 +78,17 @@ export const shopNavigation = [
   { label: "Brand", anchor: "#brand" }
 ];
 
-function BrandMark({ settings, light = false, lang }: { settings?: SiteSettings; light?: boolean; lang: "ar" | "en" }) {
+function BrandMark({ 
+  settings, 
+  light = false, 
+  lang,
+  searchActive = false
+}: { 
+  settings?: SiteSettings; 
+  light?: boolean; 
+  lang: "ar" | "en";
+  searchActive?: boolean;
+}) {
   const textColor = light ? "#111111" : "#ffffff";
   const subColor = light ? "rgba(0,0,0,.54)" : "rgba(255,255,255,.68)";
   const title = settings?.title || "Fashion Gate";
@@ -106,26 +116,35 @@ function BrandMark({ settings, light = false, lang }: { settings?: SiteSettings;
             filter: light ? "brightness(0)" : "none"
           }} 
         />
-        <Stack spacing={0.1} alignItems="flex-start" sx={{ display: { xs: "none", sm: "flex" } }}>
+        <Stack 
+          spacing={0.1} 
+          alignItems="flex-start" 
+          sx={{ 
+            display: searchActive ? "none" : "flex"
+          }}
+        >
           <Typography 
             sx={{ 
               fontFamily: "var(--heading-font)", 
               fontWeight: 600, 
-              fontSize: { xs: 14, md: 17 }, 
+              fontSize: { xs: 13, sm: 14, md: 17 }, 
               lineHeight: 1, 
               textTransform: "uppercase", 
               color: textColor,
-              letterSpacing: "0.08em"
+              letterSpacing: "0.08em",
+              whiteSpace: "nowrap"
             }}
           >
             {lang === "ar" ? "بوابة الأزياء" : "Fashion Gate"}
           </Typography>
           <Typography 
             sx={{ 
-              fontSize: 8, 
+              fontSize: { xs: 7, md: 8 }, 
               letterSpacing: "0.1em", 
               textTransform: "uppercase", 
-              color: subColor 
+              color: subColor,
+              whiteSpace: "nowrap",
+              display: { xs: "none", sm: "block" }
             }}
           >
             {lang === "ar" ? "على البوليفارد. للعالم." : "On Boulevard. For the world."}
@@ -200,6 +219,290 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
+import { products } from "@/lib/productData";
+
+interface SearchOptionProps {
+  lang: "ar" | "en";
+  isMobile?: boolean;
+  searchActive: boolean;
+  setSearchActive: (active: boolean) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery }: SearchOptionProps) {
+  // Filter products based on search query
+  const matchingProducts = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return products.filter(p => {
+      const query = searchQuery.toLowerCase();
+      const titleMatch = p.title.toLowerCase().includes(query) || p.titleAr?.includes(searchQuery);
+      const brandMatch = p.brandId.toLowerCase().includes(query);
+      const catMatch = p.category.toLowerCase().includes(query) || p.categoryAr?.includes(searchQuery);
+      return titleMatch || brandMatch || catMatch;
+    }).slice(0, 5);
+  }, [searchQuery]);
+
+  const navSuggestions = [
+    { label: "Women", labelAr: "نسائي", anchor: "#arrival" },
+    { label: "Men", labelAr: "رجالي", anchor: "#arrival" },
+    { label: "Beauty", labelAr: "عطور وتجميل", anchor: "#beauty" },
+    { label: "Home & Deco", labelAr: "ديكور ومنزل", anchor: "#home-deco" },
+    { label: "Blogs", labelAr: "مجلة البوابة", path: "/blogs" },
+    { label: "Contact", labelAr: "اتصل بنا", path: "/contact" }
+  ];
+
+  const brandSuggestions = [
+    { id: "chanel", label: "Chanel" },
+    { id: "prada", label: "Prada" },
+    { id: "gucci", label: "Gucci" },
+    { id: "dior", label: "Dior" },
+    { id: "ysl", label: "Saint Laurent" },
+    { id: "hermes", label: "Hermès" },
+    { id: "adidas", label: "Adidas Y-3" }
+  ];
+
+  const handleLinkClick = () => {
+    setSearchActive(false);
+    setSearchQuery("");
+  };
+
+  return (
+    <Box sx={{ position: "relative" }}>
+      {/* Click Away / Close Backdrop when active */}
+      {searchActive && (
+        <Box 
+          onClick={handleLinkClick}
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            bgcolor: "rgba(0,0,0,0.45)",
+            backdropFilter: "blur(2px)"
+          }}
+        />
+      )}
+
+      {/* Input container */}
+      <Stack direction="row" alignItems="center" sx={{ position: "relative", zIndex: 1000 }}>
+        {/* Expanded search field */}
+        <Box
+          component="input"
+          type="text"
+          placeholder={lang === "ar" ? "ابحث في البوليفارد..." : "Search Boulevard..."}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setSearchActive(true)}
+          sx={{
+            bgcolor: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            color: "#ffffff",
+            outline: "none",
+            px: 1.5,
+            py: 0.8,
+            fontSize: 12,
+            fontFamily: '"Cairo", sans-serif',
+            width: searchActive 
+              ? { xs: "120px", sm: "160px", md: "240px" } 
+              : { xs: "0px", sm: "0px", md: "160px" },
+            opacity: searchActive ? 1 : { xs: 0, sm: 0, md: 1 },
+            visibility: searchActive ? "visible" : { xs: "hidden", sm: "hidden", md: "visible" },
+            transition: "all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            borderRadius: 0,
+            "&::placeholder": { color: "rgba(255,255,255,0.4)" }
+          }}
+        />
+        <IconButton 
+          onClick={() => {
+            if (searchActive && !searchQuery) {
+              setSearchActive(false);
+            } else {
+              setSearchActive(true);
+            }
+          }}
+          sx={{ 
+            color: "#ffffff", 
+            p: 0.8,
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 0,
+            ml: 0.5,
+            bgcolor: searchActive ? "rgba(255,255,255,0.1)" : "transparent"
+          }}
+        >
+          {searchActive && isMobile ? (
+            <CloseIcon sx={{ fontSize: 18 }} />
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          )}
+        </IconButton>
+      </Stack>
+
+      {/* Popover overlay dropdown */}
+      {searchActive && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "120%",
+            right: lang === "ar" ? "auto" : 0,
+            left: lang === "ar" ? 0 : "auto",
+            width: { xs: "90vw", sm: "400px", md: "520px" },
+            maxHeight: "75vh",
+            overflowY: "auto",
+            bgcolor: "#ffffff", // Pure light mode background
+            boxShadow: "0 20px 45px rgba(0,0,0,0.16)",
+            border: "1px solid rgba(0,0,0,0.08)",
+            p: 3,
+            zIndex: 1000,
+            color: "#111111", // Dark text
+            borderRadius: 0,
+            textAlign: lang === "ar" ? "right" : "left",
+            // Center mobile overlay
+            transform: { xs: lang === "ar" ? "translateX(10px)" : "translateX(-10px)", sm: "none" }
+          }}
+        >
+          {!searchQuery.trim() ? (
+            <Box 
+              sx={{ 
+                display: "grid", 
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, 
+                gap: 3 
+              }}
+            >
+              {/* Navigation Suggestions Column */}
+              <Box>
+                <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
+                  {lang === "ar" ? "تصفح الأقسام" : "Suggested Navs"}
+                </Typography>
+                <Stack spacing={1} alignItems={lang === "ar" ? "flex-start" : "flex-start"}>
+                  {navSuggestions.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.path ? `/${lang}${item.path}` : `/${lang}${item.anchor}`}
+                      onClick={handleLinkClick}
+                      style={{
+                        textDecoration: "none",
+                        color: "#111111",
+                        fontSize: "13.5px",
+                        fontWeight: 600,
+                        fontFamily: '"Cairo", sans-serif',
+                        padding: "4px 0",
+                        display: "block",
+                        transition: "color 0.2s"
+                      }}
+                      className="search-popover-link"
+                    >
+                      {lang === "ar" ? item.labelAr : item.label}
+                    </Link>
+                  ))}
+                </Stack>
+              </Box>
+
+              {/* Brands Column */}
+              <Box>
+                <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
+                  {lang === "ar" ? "دور الفخامة" : "Suggested Brands"}
+                </Typography>
+                <Stack spacing={1} alignItems={lang === "ar" ? "flex-start" : "flex-start"}>
+                  {brandSuggestions.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/${lang}/brand/${item.id}`}
+                      onClick={handleLinkClick}
+                      style={{
+                        textDecoration: "none",
+                        color: "#111111",
+                        fontSize: "13.5px",
+                        fontWeight: 600,
+                        fontFamily: '"Cairo", sans-serif',
+                        padding: "4px 0",
+                        display: "block",
+                        transition: "color 0.2s"
+                      }}
+                      className="search-popover-link"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </Stack>
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
+                {lang === "ar" ? "النتائج المطابقة" : "Matching Pieces"}
+              </Typography>
+              {matchingProducts.length === 0 ? (
+                <Typography sx={{ color: "rgba(0,0,0,0.5)", fontSize: 13, py: 2, fontFamily: '"Cairo", sans-serif' }}>
+                  {lang === "ar" ? "لم نجد أي قطع تطابق بحثك..." : "No matching pieces found..."}
+                </Typography>
+              ) : (
+                <Stack spacing={2}>
+                  {matchingProducts.map((p) => {
+                    const title = lang === "ar" ? p.titleAr : p.title;
+                    const cat = lang === "ar" ? p.categoryAr : p.category;
+                    return (
+                      <Link
+                        key={p.id}
+                        href={`/${lang}/product/${p.id}`}
+                        onClick={handleLinkClick}
+                        style={{ textDecoration: "none", display: "block" }}
+                      >
+                        <Stack 
+                          direction="row" 
+                          spacing={2} 
+                          alignItems="center"
+                          sx={{ 
+                            p: 1, 
+                            "&:hover": { bgcolor: "rgba(0,0,0,0.03)" },
+                            transition: "background 0.2s"
+                          }}
+                        >
+                          <Box 
+                            component="img" 
+                            src={p.imageUrl || "/brand/logo.png"} 
+                            alt={title}
+                            sx={{ 
+                              width: 50, 
+                              height: 50, 
+                              objectFit: "cover", 
+                              bgcolor: "#f7f7f7" 
+                            }}
+                          />
+                          <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                            <Typography sx={{ fontSize: 13, fontWeight: 700, color: "#111111", lineHeight: 1.2 }}>
+                              {title}
+                            </Typography>
+                            <Typography sx={{ fontSize: 10, color: "primary.main", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.1em", mt: 0.5 }}>
+                              {p.brandId.toUpperCase()} — {cat}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Link>
+                    );
+                  })}
+                </Stack>
+              )}
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {/* Styled hover link style override inside the light-mode popover */}
+      <style>{`
+        .search-popover-link:hover {
+          color: #CB6116 !important;
+        }
+      `}</style>
+    </Box>
+  );
+}
+
 export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderProps) {
   const params = useParams();
   const pathname = usePathname();
@@ -207,6 +510,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
   const [open, setOpen] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { setLoading } = useLoader();
 
   useEffect(() => {
@@ -286,7 +591,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           
           {/* Centered Brand Name & Logo */}
           <Box sx={{ flex: { xs: 1, lg: "none" }, position: { lg: "absolute" }, left: { lg: "50%" }, transform: { lg: "translateX(-50%)" } }}>
-            <BrandMark settings={settings} lang={lang} />
+            <BrandMark settings={settings} lang={lang} searchActive={searchActive} />
           </Box>
 
           {/* Right navigation */}
@@ -315,6 +620,15 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               {t("Contact")}
             </Button>
             
+            {/* Search Option */}
+            <SearchOption 
+              lang={lang} 
+              searchActive={searchActive} 
+              setSearchActive={setSearchActive} 
+              searchQuery={searchQuery} 
+              setSearchQuery={setSearchQuery} 
+            />
+
             {/* Language Selector */}
             <Button 
               onClick={handleLangToggle}
@@ -342,6 +656,16 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
           {/* Mobile Header elements */}
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: "flex", lg: "none" }, ml: "auto" }}>
+            {/* Mobile Search Option */}
+            <SearchOption 
+              lang={lang} 
+              isMobile={true}
+              searchActive={searchActive} 
+              setSearchActive={setSearchActive} 
+              searchQuery={searchQuery} 
+              setSearchQuery={setSearchQuery} 
+            />
+
             <Button 
               onClick={handleLangToggle}
               size="small"

@@ -23,11 +23,11 @@ export function useLoader() {
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
-  // Snappy loading duration for the initial cinematic site entry (2.8 seconds)
+  // Snappy loading duration for the initial cinematic site entry (3.2 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2800);
+    }, 3200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -147,7 +147,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
                 <MotionBox 
                   initial={{ left: "-100%" }}
                   animate={{ left: "0%" }}
-                  transition={{ duration: 2.2, ease: "easeInOut" }}
+                  transition={{ duration: 2.6, ease: "easeInOut" }}
                   sx={{ 
                     position: "absolute",
                     top: 0,
