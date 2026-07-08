@@ -3,6 +3,7 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 const MotionBox = motion.create(Box);
 
@@ -151,61 +152,66 @@ export default function BrandMarquee() {
           }}
         >
           {brandLogos.map((item, index) => (
-            <MotionBox
+            <Link
               key={item.key}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-              sx={{
-                bgcolor: "#ffffff",
-                minHeight: { xs: 110, md: 150 },
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "#111111",
-                cursor: "pointer",
-                transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                position: "relative",
-                overflow: "hidden",
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  bottom: 0,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: "0%",
-                  height: "2px",
-                  bgcolor: "primary.main",
-                  transition: "width 0.4s ease"
-                },
-                "&:hover": {
-                  bgcolor: "#FAF8F5",
-                  transform: "translateY(-2px)",
-                  zIndex: 2,
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.02)",
-                  "&::after": {
-                    width: "40%"
-                  }
-                }
-              }}
+              href={`/${lang}/brand/${item.key === "chanel-cc" ? "chanel" : item.key}`}
+              style={{ textDecoration: "none", display: "block" }}
             >
-              <Box 
-                sx={{ 
-                  opacity: 0.68, 
-                  transition: "opacity 0.4s ease, transform 0.4s ease",
+              <MotionBox
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                sx={{
+                  bgcolor: "#ffffff",
+                  minHeight: { xs: 110, md: 150 },
                   display: "flex",
-                  alignItems: "center",
                   justifyContent: "center",
-                  "&:hover": { 
-                    opacity: 1,
-                    transform: "scale(1.03)"
+                  alignItems: "center",
+                  color: "#111111",
+                  cursor: "pointer",
+                  transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    bottom: 0,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "0%",
+                    height: "2px",
+                    bgcolor: "primary.main",
+                    transition: "width 0.4s ease"
+                  },
+                  "&:hover": {
+                    bgcolor: "#FAF8F5",
+                    transform: "translateY(-2px)",
+                    zIndex: 2,
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.02)",
+                    "&::after": {
+                      width: "40%"
+                    }
                   }
                 }}
               >
-                {item.logo}
-              </Box>
-            </MotionBox>
+                <Box 
+                  sx={{ 
+                    opacity: 0.68, 
+                    transition: "opacity 0.4s ease, transform 0.4s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    "&:hover": { 
+                      opacity: 1,
+                      transform: "scale(1.03)"
+                    }
+                  }}
+                >
+                  {item.logo}
+                </Box>
+              </MotionBox>
+            </Link>
           ))}
         </Box>
       </Container>

@@ -42,8 +42,8 @@ export const shopCategories = [
     label: "Women",
     eyebrow: "Designer Wardrobe",
     headline: "Edited silhouettes for her.",
-    description: "Refined dresses, silk separates, trench coats, and tailored pieces arranged for an easier boutique-style shopping path.",
-    productIds: ["fgb-white-lace-midi-dress", "fgb-silk-oversized-shirt", "the-silk-trench-coat", "structured-wool-blazer"]
+    description: "Refined dresses, silk separates, coats, and tailored pieces arranged for an easier boutique-style shopping path.",
+    productIds: ["chanel-tweed-jacket", "prada-oversized-wool-coat", "gucci-floral-silk-scarf", "dior-bar-jacket"]
   },
   {
     id: "men",
@@ -51,23 +51,23 @@ export const shopCategories = [
     eyebrow: "Menswear Edit",
     headline: "Sharp everyday luxury.",
     description: "Polos, tailoring, sportswear, and structured outerwear grouped so men can move directly from category to product.",
-    productIds: ["boss-hugo-boss-polo", "adidas-originals-sportswear", "fgb-modern-tailored-blazer", "signature-tweed-jacket"]
+    productIds: ["ysl-tuxedo-suit", "adidas-y3-sneakers", "adidas-originals-track-jacket", "prada-nylon-backpack"]
   },
   {
     id: "beauty",
     label: "Beauty",
     eyebrow: "Beauty & Accessories",
     headline: "Scent, skin, and finishing accents.",
-    description: "Perfume, jasmine oil, footwear, and leather accessories brought together as a premium beauty and accessory destination.",
-    productIds: ["si-passione-giorgio-armani-perfume", "cedar-and-amber-extract", "damascene-jasmine-oil", "the-architectural-tote", "fgb-urban-active-footwear"]
+    description: "Perfume, bags, watches, footwear, and leather accessories brought together as a premium beauty and accessory destination.",
+    productIds: ["chanel-no5-perfume", "dior-sauvage-elixir", "hermes-birkin-30", "chanel-classic-flap-bag", "prada-galleria-tote", "gucci-marmont-shoulder-bag", "gucci-horsebit-loafers", "ysl-sac-de-jour", "hermes-h-hour-watch"]
   },
   {
     id: "home-deco",
     label: "Home & Deco",
     eyebrow: "Gourmet & Gifting",
     headline: "Objects of taste for home and gifting.",
-    description: "Fine foods and giftable pieces staged as a lifestyle department until the home and decor catalogue is expanded.",
-    productIds: ["damascene-rose-nougat", "saffron-blossom-honey", "artisanal-truffle-oil"]
+    description: "Fine porcelain and lifestyle decor pieces sourced from the world's most prestigious luxury houses.",
+    productIds: ["hermes-porcelain-plate"]
   }
 ];
 
