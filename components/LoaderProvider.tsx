@@ -15,7 +15,6 @@ const LoaderContext = createContext<LoaderContextType | undefined>(undefined);
 export function useLoader() {
   const context = useContext(LoaderContext);
   if (!context) {
-    // Return a safe fallback if context is not loaded yet (e.g. static generation)
     return { setLoading: () => {} };
   }
   return context;
@@ -23,18 +22,67 @@ export function useLoader() {
 
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
+  const [isInitialPlayDone, setIsInitialPlayDone] = useState(false);
 
   // Snappy loading duration for the initial cinematic site entry (2.8 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
+      setIsInitialPlayDone(true);
     }, 2800);
     return () => clearTimeout(timer);
   }, []);
 
+  // Intercept global link clicks to trigger route change loading (runs transition loader)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleGlobalClick = (e: MouseEvent) => {
+      let target = e.target as HTMLElement | null;
+      while (target && target !== document.body) {
+        const anchor = target.tagName === "A" ? (target as HTMLAnchorElement) : target.closest("a");
+        if (anchor) {
+          const href = anchor.getAttribute("href");
+          if (
+            href && 
+            !href.startsWith("#") && 
+            !href.startsWith("tel:") && 
+            !href.startsWith("mailto:") && 
+            !href.includes("wa.me")
+          ) {
+            try {
+              const url = new URL(href, window.location.origin);
+              // Only trigger loader if navigating to a different pathname
+              if (url.pathname !== window.location.pathname) {
+                setLoading(true);
+              }
+            } catch (err) {
+              setLoading(true);
+            }
+            break;
+          }
+        }
+        target = target.parentElement;
+      }
+    };
+
+    window.addEventListener("click", handleGlobalClick, { capture: true });
+    return () => window.removeEventListener("click", handleGlobalClick, { capture: true });
+  }, []);
+
   return (
     <LoaderContext.Provider value={{ setLoading }}>
-      {children}
+      {/* Hide page contents completely during initial preloader play, then fade in */}
+      <Box sx={{ width: "100%", height: "100%", visibility: isInitialPlayDone ? "visible" : "hidden" }}>
+        <motion.div
+          animate={{ opacity: isInitialPlayDone ? 1 : 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          style={{ width: "100%", height: "100%" }}
+        >
+          {children}
+        </motion.div>
+      </Box>
+
       <AnimatePresence>
         {loading && (
           <MotionBox
