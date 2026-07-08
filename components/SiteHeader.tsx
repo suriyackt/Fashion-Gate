@@ -99,7 +99,7 @@ function BrandMark({ settings, light = false, lang }: { settings?: SiteSettings;
           src="/brand/logo.png" 
           alt={title} 
           sx={{ 
-            height: { xs: 34, md: 44 }, 
+            height: { xs: 26, md: 32 }, 
             width: "auto",
             objectFit: "contain",
             filter: light ? "brightness(0)" : "none"
@@ -140,16 +140,16 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
 
   const announcements = useMemo(() => [
     {
+      en: "Free Worldwide Shipping & Returns on Selected Designer Collections",
+      ar: "شحن مجاني وإرجاع سهل لكافة أنحاء العالم على مجموعات مختارة"
+    },
+    {
       en: "Syria's First Luxury Department Store — On Boulevard. For the world.",
       ar: "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
     },
     {
-      en: "Complimentary Worldwide Shipping on Selected Designer Collections",
-      ar: "شحن مجاني لكافة أنحاء العالم على مجموعات مصممين مختارة"
-    },
-    {
-      en: "Experience Personal Shopping & Private Viewings at Our Damascus Atelier",
-      ar: "استمتع بتجربة تسوق شخصي ومعاينات خاصة في أتيلييه دمشق"
+      en: "Complimentary Personal Shopping & Private Atelier Bookings",
+      ar: "تسوق شخصي وحجز أتيلييه مجاني في صالون دمشق الخاص"
     }
   ], []);
 
@@ -471,9 +471,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           sx: {
             width: "100%",
             maxWidth: { xs: "100%", sm: 480 },
-            bgcolor: "#050505",
-            backgroundImage: 'radial-gradient(circle at 10% 20%, rgba(203, 97, 22, 0.06) 0%, rgba(5, 5, 5, 0) 90%)',
-            boxShadow: "0 0 100px rgba(0,0,0,0.8)",
+            bgcolor: "#FAF8F5",
+            boxShadow: "none",
+            borderLeft: lang === "ar" ? "none" : "1px solid rgba(0,0,0,0.06)",
+            borderRight: lang === "ar" ? "1px solid rgba(0,0,0,0.06)" : "none",
             p: { xs: 3, sm: 5 },
             display: "flex",
             flexDirection: "column"
@@ -483,8 +484,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
         <Stack spacing={5} sx={{ height: "100%", justifyContent: "space-between" }}>
           {/* Top Bar inside Overlay */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <BrandMark settings={settings} lang={lang} />
-            <IconButton onClick={() => setOpen(false)} sx={{ color: "#fff", border: "1px solid rgba(255,255,255,0.1)", p: 1, borderRadius: "50%" }}>
+            <BrandMark settings={settings} lang={lang} light={true} />
+            <IconButton onClick={() => setOpen(false)} sx={{ color: "#111111", border: "1px solid rgba(0,0,0,0.08)", p: 1, borderRadius: "50%", "&:hover": { bgcolor: "rgba(0,0,0,0.04)" } }}>
               <CloseIcon sx={{ fontSize: 20 }} />
             </IconButton>
           </Stack>
@@ -499,7 +500,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   key={label} 
                   spacing={0.5} 
                   sx={{ 
-                    borderBottom: "1px solid rgba(255,255,255,0.05)", 
+                    borderBottom: "1px solid rgba(0,0,0,0.06)", 
                     pb: 1.5,
                     alignItems: lang === "ar" ? "flex-end" : "flex-start" 
                   }}
@@ -511,8 +512,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                     startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
                     sx={{ 
                       p: 0,
-                      color: "rgba(255,255,255,0.9)", 
-                      fontSize: { xs: 24, sm: 32 }, 
+                      color: "rgba(0,0,0,0.85)", 
+                      fontSize: { xs: 22, sm: 28 }, 
                       fontWeight: 500,
                       fontFamily: "var(--heading-font)",
                       textTransform: "none",
@@ -528,7 +529,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                     {t(label)}
                   </Button>
                   {desc && (
-                    <Typography sx={{ color: "rgba(255,255,255,0.42)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
+                    <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
                       {desc}
                     </Typography>
                   )}
@@ -540,7 +541,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             <Stack 
               spacing={0.5} 
               sx={{ 
-                borderBottom: "1px solid rgba(255,255,255,0.05)", 
+                borderBottom: "1px solid rgba(0,0,0,0.06)", 
                 pb: 1.5,
                 alignItems: lang === "ar" ? "flex-end" : "flex-start" 
               }}
@@ -553,8 +554,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
                 sx={{ 
                   p: 0,
-                  color: "rgba(255,255,255,0.9)", 
-                  fontSize: { xs: 24, sm: 32 }, 
+                  color: "rgba(0,0,0,0.85)", 
+                  fontSize: { xs: 22, sm: 28 }, 
                   fontWeight: 500,
                   fontFamily: "var(--heading-font)",
                   textTransform: "none",
@@ -569,7 +570,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               >
                 {t("Blogs")}
               </Button>
-              <Typography sx={{ color: "rgba(255,255,255,0.42)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
+              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
                 {descT("Blogs")}
               </Typography>
             </Stack>
@@ -578,7 +579,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             <Stack 
               spacing={0.5} 
               sx={{ 
-                borderBottom: "1px solid rgba(255,255,255,0.05)", 
+                borderBottom: "1px solid rgba(0,0,0,0.06)", 
                 pb: 1.5,
                 alignItems: lang === "ar" ? "flex-end" : "flex-start" 
               }}
@@ -591,8 +592,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
                 sx={{ 
                   p: 0,
-                  color: "rgba(255,255,255,0.9)", 
-                  fontSize: { xs: 24, sm: 32 }, 
+                  color: "rgba(0,0,0,0.85)", 
+                  fontSize: { xs: 22, sm: 28 }, 
                   fontWeight: 500,
                   fontFamily: "var(--heading-font)",
                   textTransform: "none",
@@ -607,14 +608,14 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               >
                 {t("Contact")}
               </Button>
-              <Typography sx={{ color: "rgba(255,255,255,0.42)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
+              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
                 {descT("Contact")}
               </Typography>
             </Stack>
           </Stack>
           
           {/* Bottom Overlay Info */}
-          <Typography sx={{ color: "rgba(255,255,255,.36)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", textAlign: "center", fontFamily: '"Cairo", sans-serif' }}>
+          <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", textAlign: "center", fontFamily: '"Cairo", sans-serif' }}>
             {t("On Boulevard. For the world.")}
           </Typography>
         </Stack>
