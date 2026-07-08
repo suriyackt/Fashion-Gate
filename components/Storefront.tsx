@@ -23,6 +23,7 @@ import LookbookSection from "./storefront/LookbookSection";
 import BoulevardSelectionSection from "./storefront/BoulevardSelectionSection";
 import EditorialSection from "./storefront/EditorialSection";
 import AtelierShowcaseSection from "./storefront/AtelierShowcaseSection";
+import BrandMarquee from "./storefront/BrandMarquee";
 
 
 const MotionBox = motion.create(Box);
@@ -607,24 +608,6 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function SectionRenderer({ 
   section, 
   t, 
@@ -643,8 +626,6 @@ function SectionRenderer({
   if (section.type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;
   return null;
 }
-
-
 
 export default function Storefront({ settings, sections }: { settings: SiteSettings; sections: Section[] }) {
   const params = useParams();
@@ -826,6 +807,7 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
           ))}
           <CategoryProductSections t={t} lang={lang} />
           <AtelierShowcaseSection t={t} lang={lang} />
+          <BrandMarquee />
           <SiteFooter />
         </Box>
       </Box>
