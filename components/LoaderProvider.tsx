@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const MotionBox = motion.create(Box);
 
 interface LoaderContextType {
-  setLoading: (loading: boolean) => void;
+  setLoading: (loading: boolean, bypassMinTime?: boolean) => void;
 }
 
 const LoaderContext = createContext<LoaderContextType | undefined>(undefined);
@@ -15,7 +15,7 @@ const LoaderContext = createContext<LoaderContextType | undefined>(undefined);
 export function useLoader() {
   const context = useContext(LoaderContext);
   if (!context) {
-    return { setLoading: () => {} };
+    return { setLoading: (loading: boolean, bypassMinTime?: boolean) => {} };
   }
   return context;
 }
@@ -42,16 +42,18 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   }, [minTimeActive, pendingClose]);
 
   // Safe setLoading handler that enforces a minimum animation runtime
-  const safeSetLoading = (val: boolean) => {
+  const safeSetLoading = (val: boolean, bypassMinTime = false) => {
     if (val) {
       setLoading(true);
-      setMinTimeActive(true);
+      setMinTimeActive(!bypassMinTime);
       setPendingClose(false);
       
-      // Enforce a 2.4s lock for any transition loaders to run fully
-      setTimeout(() => {
-        setMinTimeActive(false);
-      }, 2400);
+      if (!bypassMinTime) {
+        // Enforce a 2.4s lock for standard transition loaders to run fully
+        setTimeout(() => {
+          setMinTimeActive(false);
+        }, 2400);
+      }
     } else {
       setMinTimeActive((currentMin) => {
         if (currentMin) {
@@ -85,14 +87,16 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               const url = new URL(href, window.location.origin);
               // Only trigger loader if navigating to a different pathname
               if (url.pathname !== window.location.pathname) {
+                const isLogin = url.pathname.includes("/login");
                 // Defer loading state trigger to let Next.js register the link click instantly
                 setTimeout(() => {
-                  safeSetLoading(true);
+                  safeSetLoading(true, isLogin);
                 }, 0);
               }
             } catch (err) {
+              const isLogin = href.includes("/login");
               setTimeout(() => {
-                safeSetLoading(true);
+                safeSetLoading(true, isLogin);
               }, 0);
             }
             break;

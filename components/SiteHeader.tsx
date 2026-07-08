@@ -4,7 +4,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
-import { Box, Button, Container, Drawer, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { Box, Button, Container, Drawer, IconButton, Stack, Typography, useTheme, Tooltip } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -232,6 +233,8 @@ interface SearchOptionProps {
 }
 
 function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery, products }: SearchOptionProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   // Filter products based on search query
   const matchingProducts = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -288,7 +291,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
       )}
 
       {/* Input container */}
-      <Stack direction="row" alignItems="center" sx={{ position: "relative", zIndex: 1000 }}>
+      <Stack direction="row" alignItems="center" sx={{ position: { xs: "static", sm: "relative" }, zIndex: 1000 }}>
         {/* Expanded search field */}
         <Box
           component="input"
@@ -318,8 +321,9 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
         />
         <IconButton 
           onClick={() => {
-            if (searchActive && !searchQuery) {
+            if (searchActive) {
               setSearchActive(false);
+              setSearchQuery("");
             } else {
               setSearchActive(true);
             }
@@ -333,7 +337,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
             bgcolor: searchActive ? "rgba(255,255,255,0.1)" : "transparent"
           }}
         >
-          {searchActive && isMobile ? (
+          {searchActive ? (
             <CloseIcon sx={{ fontSize: 18 }} />
           ) : (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -349,22 +353,23 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
         <Box
           sx={{
             position: "absolute",
-            top: "120%",
-            right: lang === "ar" ? "auto" : 0,
-            left: lang === "ar" ? 0 : "auto",
-            width: { xs: "90vw", sm: "400px", md: "520px" },
+            top: "100%", // Align exactly with the bottom of the header stack
+            right: { xs: 0, sm: lang === "ar" ? "auto" : 0 },
+            left: { xs: 0, sm: lang === "ar" ? 0 : "auto" },
+            width: { xs: "100vw", sm: "400px", md: "520px" },
             maxHeight: "75vh",
             overflowY: "auto",
             bgcolor: "#ffffff", // Pure light mode background
             boxShadow: "0 20px 45px rgba(0,0,0,0.16)",
-            border: "1px solid rgba(0,0,0,0.08)",
+            borderBottom: "1px solid rgba(0,0,0,0.08)",
+            borderLeft: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
+            borderRight: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
             p: 3,
             zIndex: 1000,
             color: "#111111", // Dark text
             borderRadius: 0,
             textAlign: lang === "ar" ? "right" : "left",
-            // Center mobile overlay
-            transform: { xs: lang === "ar" ? "translateX(10px)" : "translateX(-10px)", sm: "none" }
+            transform: "none"
           }}
         >
           {!searchQuery.trim() ? (
@@ -382,12 +387,45 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
                 </Typography>
                 <Stack spacing={1} alignItems={lang === "ar" ? "flex-start" : "flex-start"}>
                   {navSuggestions.map((item) => (
-                    <Link
+                    <Box
                       key={item.label}
-                      href={item.path ? `/${lang}${item.path}` : `/${lang}${item.anchor}`}
-                      onClick={handleLinkClick}
+                      component="span"
+                      onClick={(e) => {
+                        setSearchActive(false);
+                        setSearchQuery("");
+                        
+                        if (item.path) {
+                          router.push(`/${lang}${item.path}`);
+                        } else {
+                          const categoryId = item.anchor === "#arrival" 
+                            ? (item.label === "Women" ? "women" : "men")
+                            : (item.anchor === "#beauty" ? "beauty" : (item.anchor === "#home-deco" ? "home-deco" : ""));
+                            
+                          const sectionId = categoryId ? "curated-departments" : (item.anchor?.replace("#", "") || "arrival");
+
+                          if (typeof window !== "undefined") {
+                            if (pathname !== `/${lang}`) {
+                              if (categoryId) {
+                                sessionStorage.setItem("pendingCategory", categoryId);
+                              } else {
+                                sessionStorage.setItem("pendingSection", sectionId);
+                              }
+                              router.push(`/${lang}`);
+                            } else {
+                              if (categoryId) {
+                                window.dispatchEvent(new CustomEvent("select-category", { detail: { category: categoryId } }));
+                              } else {
+                                const el = document.getElementById(sectionId);
+                                if (el) {
+                                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }}
                       style={{
-                        textDecoration: "none",
+                        cursor: "pointer",
                         color: "#111111",
                         fontSize: "13.5px",
                         fontWeight: 600,
@@ -399,7 +437,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
                       className="search-popover-link"
                     >
                       {lang === "ar" ? item.labelAr : item.label}
-                    </Link>
+                    </Box>
                   ))}
                 </Stack>
               </Box>
@@ -527,6 +565,21 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
     setLoading(false);
   }, [pathname, setLoading]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (open || searchActive) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        document.body.style.overflow = "";
+      }
+    };
+  }, [open, searchActive]);
+
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;
   };
@@ -546,6 +599,30 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
       const nextPath = pathname.replace(/^\/(ar|en)/, `/${nextLang}`);
       router.push(nextPath);
     }, 150);
+  };
+
+  const handleMenuClick = (e: React.MouseEvent, sectionId: string, categoryId?: string) => {
+    e.preventDefault();
+    if (typeof window === "undefined") return;
+
+    if (pathname !== `/${lang}`) {
+      if (categoryId) {
+        sessionStorage.setItem("pendingCategory", categoryId);
+      } else {
+        sessionStorage.setItem("pendingSection", sectionId);
+      }
+      router.push(`/${lang}`);
+    } else {
+      if (categoryId) {
+        window.dispatchEvent(new CustomEvent("select-category", { detail: { category: categoryId } }));
+      } else {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }
+    setOpen(false);
   };
 
   const isHome = pathname === `/${lang}` || pathname === `/${lang}/` || pathname === "/" || pathname === `/ar` || pathname === `/en`;
@@ -590,13 +667,13 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               transition: "opacity 0.25s ease, visibility 0.25s ease"
             }}
           >
-            <Button href={getHref("#women")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "women")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Women")}
             </Button>
-            <Button href={getHref("#men")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "men")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Men")}
             </Button>
-            <Button href={getHref("#beauty")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "beauty")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Beauty")}
             </Button>
           </Stack>
@@ -631,10 +708,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 display: "flex"
               }}
             >
-              <Button href={getHref("#home-deco")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              <Button onClick={(e) => handleMenuClick(e, "curated-departments", "home-deco")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
                 {t("Home & Deco")}
               </Button>
-              <Button href={getHref("#brand")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              <Button onClick={(e) => handleMenuClick(e, "brand")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
                 {t("Brand")}
               </Button>
               <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
@@ -643,9 +720,19 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               <Button component={Link} href={`/${lang}/contact`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
                 {t("Contact")}
               </Button>
-              <Button component={Link} href={`/${lang}/login`} className="luxury-link" sx={{ color: "#CB6116", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-                {lang === "ar" ? "دخول" : "Sign In"}
-              </Button>
+              <Tooltip title={lang === "ar" ? "تسجيل الدخول / تسجيل جديد" : "Sign In / Register"}>
+                <IconButton 
+                  component={Link} 
+                  href={`/${lang}/login`} 
+                  sx={{ 
+                    color: "#CB6116", 
+                    p: 0.5,
+                    "&:hover": { color: "#ffffff" }
+                  }}
+                >
+                  <PersonOutlineIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Tooltip>
             </Stack>
             
             {/* Search Option */}
@@ -718,6 +805,19 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             </Button>
 
             <IconButton 
+              component={Link}
+              href={`/${lang}/login`}
+              sx={{ 
+                color: "#CB6116", 
+                p: 0.8,
+                border: "1px solid rgba(255,255,255,0.08)",
+                display: searchActive ? "none" : "inline-flex"
+              }}
+            >
+              <PersonOutlineIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+
+            <IconButton 
               onClick={() => setOpen(true)} 
               sx={{ 
                 color: "#ffffff", 
@@ -775,8 +875,18 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   }}
                 >
                   <Button 
-                    href={getHref(item.anchor || "#")} 
-                    onClick={() => setOpen(false)} 
+                    onClick={(e) => {
+                      const categoryId = item.label === "Women" 
+                        ? "women" 
+                        : (item.label === "Men" 
+                          ? "men" 
+                          : (item.label === "Beauty" 
+                            ? "beauty" 
+                            : (item.label === "Home & Deco" ? "home-deco" : "")));
+                            
+                      const sectionId = categoryId ? "curated-departments" : (item.anchor?.replace("#", "") || "arrival");
+                      handleMenuClick(e, sectionId, categoryId);
+                    }}
                     endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
                     startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
                     sx={{ 

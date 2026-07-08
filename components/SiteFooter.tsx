@@ -6,7 +6,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { Box, Button, Container, IconButton, InputBase, Stack, Typography } from "@mui/material";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 
 const footerTranslations = {
   en: {
@@ -53,8 +53,47 @@ const footerTranslations = {
 
 export default function SiteFooter() {
   const params = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
   const t = footerTranslations[lang];
+
+  const handleFooterClick = (e: React.MouseEvent, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const hash = href.replace("#", "");
+      
+      const categoryMap: Record<string, string> = {
+        women: "women",
+        men: "men",
+        beauty: "beauty",
+        "home-deco": "home-deco"
+      };
+      
+      const categoryId = categoryMap[hash];
+      const sectionId = categoryId ? "curated-departments" : hash;
+
+      if (typeof window !== "undefined") {
+        if (pathname !== `/${lang}`) {
+          if (categoryId) {
+            sessionStorage.setItem("pendingCategory", categoryId);
+          } else {
+            sessionStorage.setItem("pendingSection", sectionId);
+          }
+          router.push(`/${lang}`);
+        } else {
+          if (categoryId) {
+            window.dispatchEvent(new CustomEvent("select-category", { detail: { category: categoryId } }));
+          } else {
+            const el = document.getElementById(sectionId);
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }
+        }
+      }
+    }
+  };
 
   return (
     <Box
@@ -81,7 +120,27 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifyContent: lang === "ar" ? "flex-start" : "flex-start" }}>
+            <Box
+              component={Link}
+              href={`/${lang}`}
+              onClick={(e) => {
+                // Scroll smoothly to top if we are already on home page
+                if (window.location.pathname === `/${lang}`) {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 1.5,
+                alignItems: "center",
+                textDecoration: "none",
+                width: "fit-content",
+                cursor: "pointer",
+                "&:hover": { opacity: 0.85 }
+              }}
+            >
               <Box
                 sx={{
                   width: 48,
@@ -102,7 +161,7 @@ export default function SiteFooter() {
                   Boulevard Damascus
                 </Typography>
               </Stack>
-            </Stack>
+            </Box>
 
             <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14.5, lineHeight: 1.8, maxWidth: 360 }}>
               {t.description}
@@ -122,7 +181,8 @@ export default function SiteFooter() {
               }}
             >
               {t.links.map((link, index) => {
-                const destination = link.href.startsWith("#") 
+                const isHash = link.href.startsWith("#");
+                const destination = isHash 
                   ? `/${lang}${link.href}` 
                   : link.href === "" 
                     ? `/${lang}` 
@@ -133,6 +193,11 @@ export default function SiteFooter() {
                     key={index}
                     component={Link}
                     href={destination}
+                    onClick={(e) => {
+                      if (isHash) {
+                        handleFooterClick(e, link.href);
+                      }
+                    }}
                     sx={{
                       color: "rgba(0,0,0,0.6)",
                       fontSize: 13.5,
@@ -192,7 +257,7 @@ export default function SiteFooter() {
           sx={{ pt: 4 }}
         >
           <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12.5 }}>
-            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت" : "Fashion Gate"}. {t.copyright}
+            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت مول" : "Fashion Gate Mall"}. {t.copyright}
           </Typography>
 
           {/* Social Links */}

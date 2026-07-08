@@ -22,24 +22,48 @@ export default function CategoryProductSections({
     .map((id) => products.find((product) => product.id === id))
     .filter(Boolean);
 
-  // Sync hash links with active tab and scroll to categories section
+  // Sync programmatic events with active tab and scroll to categories section
   useEffect(() => {
-    const handleHashChange = () => {
-      if (typeof window !== "undefined") {
-        const hash = window.location.hash.replace("#", "");
-        if (["women", "men", "beauty", "home-deco"].includes(hash)) {
-          setActiveTab(hash);
-          const el = document.getElementById("curated-departments");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+    const handleCategorySelect = (e: Event) => {
+      const customEvent = e as CustomEvent<{ category: string }>;
+      const cat = customEvent.detail?.category;
+      if (["women", "men", "beauty", "home-deco"].includes(cat)) {
+        setActiveTab(cat);
+        const el = document.getElementById("curated-departments");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     };
 
-    handleHashChange(); // Run on mount
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    // Check sessionStorage on mount (for redirects from other pages)
+    if (typeof window !== "undefined") {
+      const pendingCat = sessionStorage.getItem("pendingCategory");
+      if (pendingCat) {
+        sessionStorage.removeItem("pendingCategory");
+        setActiveTab(pendingCat);
+        setTimeout(() => {
+          const el = document.getElementById("curated-departments");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
+      }
+      
+      const pendingSection = sessionStorage.getItem("pendingSection");
+      if (pendingSection) {
+        sessionStorage.removeItem("pendingSection");
+        setTimeout(() => {
+          const el = document.getElementById(pendingSection);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
+      }
+    }
+
+    window.addEventListener("select-category", handleCategorySelect);
+    return () => window.removeEventListener("select-category", handleCategorySelect);
   }, []);
 
   return (
