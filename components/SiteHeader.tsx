@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Box, Button, Container, Drawer, IconButton, Stack, Typography, useTheme, Tooltip } from "@mui/material";
+import { Box, Button, Container, Drawer, IconButton, Stack, Typography, useTheme, Tooltip, Avatar } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -562,7 +562,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   }, []);
 
   useEffect(() => {
-    setLoading(false);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 180);
+    return () => clearTimeout(timer);
   }, [pathname, setLoading]);
 
   useEffect(() => {
@@ -720,19 +723,6 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               <Button component={Link} href={`/${lang}/contact`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
                 {t("Contact")}
               </Button>
-              <Tooltip title={lang === "ar" ? "تسجيل الدخول / تسجيل جديد" : "Sign In / Register"}>
-                <IconButton 
-                  component={Link} 
-                  href={`/${lang}/login`} 
-                  sx={{ 
-                    color: "#CB6116", 
-                    p: 0.5,
-                    "&:hover": { color: "#ffffff" }
-                  }}
-                >
-                  <PersonOutlineIcon sx={{ fontSize: 20 }} />
-                </IconButton>
-              </Tooltip>
             </Stack>
             
             {/* Search Option */}
@@ -768,6 +758,36 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             >
               {lang === "ar" ? "EN" : "AR"}
             </Button>
+
+            {/* Profile Avatar Button on complete right side */}
+            <Tooltip title={lang === "ar" ? "تسجيل الدخول / تسجيل جديد" : "Sign In / Register"}>
+              <IconButton 
+                component={Link} 
+                href={`/${lang}/login`} 
+                sx={{ 
+                  p: 0.5,
+                  ml: 1.5,
+                  transition: "transform 0.2s",
+                  "&:hover": { transform: "scale(1.08)" }
+                }}
+              >
+                <Avatar 
+                  src="/assets/avatar.png"
+                  sx={{ 
+                    width: 28, 
+                    height: 28, 
+                    border: "1.5px solid #CB6116",
+                    bgcolor: "#111111",
+                    color: "#CB6116",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    fontFamily: '"Cairo", sans-serif'
+                  }}
+                >
+                  U
+                </Avatar>
+              </IconButton>
+            </Tooltip>
           </Stack>
 
           {/* Mobile Header elements */}
@@ -808,13 +828,27 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               component={Link}
               href={`/${lang}/login`}
               sx={{ 
-                color: "#CB6116", 
-                p: 0.8,
-                border: "1px solid rgba(255,255,255,0.08)",
-                display: searchActive ? "none" : "inline-flex"
+                p: 0.5,
+                display: searchActive ? "none" : "inline-flex",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.08)" }
               }}
             >
-              <PersonOutlineIcon sx={{ fontSize: 20 }} />
+              <Avatar 
+                src="/assets/avatar.png"
+                sx={{ 
+                  width: 28, 
+                  height: 28, 
+                  border: "1.5px solid #CB6116",
+                  bgcolor: "#111111",
+                  color: "#CB6116",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: '"Cairo", sans-serif'
+                }}
+              >
+                U
+              </Avatar>
             </IconButton>
 
             <IconButton 
