@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useEffect, useState } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import { products } from "@/lib/productData";
 import type { Section } from "@/lib/types";
@@ -22,6 +22,8 @@ export default function LookbookSection({
   const trackRef = useRef<HTMLDivElement>(null);
   const [constraints, setConstraints] = useState({ left: 0, right: 0 });
   const isDraggingRef = useRef(false);
+  const isHoveredRef = useRef(false);
+  const x = useMotionValue(0);
 
   useEffect(() => {
     const updateConstraints = () => {
@@ -45,6 +47,27 @@ export default function LookbookSection({
       window.removeEventListener("resize", updateConstraints);
     };
   }, []);
+
+  // Butter-smooth marquee style autoplay
+  useEffect(() => {
+    let animationFrameId: number;
+    
+    const tick = () => {
+      if (!isDraggingRef.current && !isHoveredRef.current && constraints.left < 0) {
+        const currentX = x.get();
+        const nextX = currentX - 0.7; // Autoplay velocity
+        if (nextX < constraints.left) {
+          x.set(0); // Wrap to beginning
+        } else {
+          x.set(nextX);
+        }
+      }
+      animationFrameId = requestAnimationFrame(tick);
+    };
+
+    animationFrameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [constraints.left, x]);
 
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 10, md: 16 }, bgcolor: "#080808", overflow: "hidden", color: "#fff" }}>
@@ -131,6 +154,7 @@ export default function LookbookSection({
           <MotionBox 
             ref={trackRef}
             drag="x"
+            style={{ x }}
             dragConstraints={constraints}
             dragElastic={0.15}
             dragTransition={{ power: 0.2, timeConstant: 300 }}
@@ -141,6 +165,18 @@ export default function LookbookSection({
               setTimeout(() => {
                 isDraggingRef.current = false;
               }, 50);
+            }}
+            onMouseEnter={() => {
+              isHoveredRef.current = true;
+            }}
+            onMouseLeave={() => {
+              isHoveredRef.current = false;
+            }}
+            onTouchStart={() => {
+              isHoveredRef.current = true;
+            }}
+            onTouchEnd={() => {
+              isHoveredRef.current = false;
             }}
             whileTap={{ cursor: "grabbing" }}
             sx={{ 

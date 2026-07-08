@@ -133,10 +133,10 @@ const stringMap: Record<string, string> = {
     "استكشف معرضاً فريداً من القطع المتميزة، حيث تلتقي الهندسة المعمارية بالفخامة الحسية من دمشق إلى العالم.",
     
   // Brand Section
-  "Brand system": "نظام العلامة التجارية",
-  "Built from the Fashion Gate identity deck.": "مستوحى من دليل الهوية الخاص ببوابة الأزياء.",
-  "The first theme pass uses the extracted PDF palette: burnt orange #CB6116, black, white, charcoal, and warm neutral greys. Typography uses Libre Bodoni as a close web-font match to the brand deck's high-contrast Roman serif wordmark, paired with Inter for clean interface text.":
-    "تستخدم لوحة الألوان المستخرجة من دليل الهوية: البرتقالي المحروق #CB6116 والأسود والأبيض والفحمي والرمادي المحايد الدافئ. تستخدم الطباعة خط Apple Garamond كخط رئيسي للعناوين وخط Cairo للنصوص الواجهة.",
+  "Heritage & Craftsmanship": "التراث والمهارة الحرفية",
+  "The Pinnacle of Syrian Luxury Shopping": "قمة تسوق الفخامة السورية",
+  "Fashion Gate brings together the world's most renowned haute couture houses, bespoke local ateliers, and curations of fine design. Housed in the prestigious Boulevard district, we offer an immersive luxury journey that connects the heritage of Silk Road craftsmanship with contemporary global style.":
+    "تجمع بوابة الأزياء (فاشن جيت) بين أشهر دور الأزياء العالمية، وأرقى الأتيليهات المحلية المصممة خصيصاً، ومجموعات منتقاة من التصميم الفاخر. في قلب حي البوليفارد المرموق، نقدم رحلة فاخرة غامرة تربط بين تراث طريق الحرير الحرفي والأسلوب العالمي المعاصر.",
 };
 
 export function resolveImage(source?: SanityImage, fallback?: string) {

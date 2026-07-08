@@ -74,7 +74,7 @@ export default function HeroSection({
           <Typography 
             sx={{ 
               fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', 
-              fontSize: { xs: "1.2rem", sm: "1.8rem", md: "2.4rem" }, 
+              fontSize: { xs: "1.1rem", sm: "1.7rem", md: "2.3rem" }, 
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
@@ -83,10 +83,23 @@ export default function HeroSection({
               mr: lang === "ar" ? 0 : { xs: 1, md: 3 },
               ml: lang === "ar" ? { xs: 1, md: 3 } : 0,
               mt: -0.5,
-              whiteSpace: "nowrap"
+              lineHeight: 1.1,
+              textAlign: lang === "ar" ? "left" : "right"
             }}
           >
-            {lang === "ar" ? "أول متجر أقسام دولي فاخر في سوريا" : "Syria's first international luxury department store"}
+            {lang === "ar" ? (
+              <>
+                أول متجر أقسام
+                <br />
+                دولي فاخر في سوريا
+              </>
+            ) : (
+              <>
+                Syria's first international
+                <br />
+                luxury department store
+              </>
+            )}
           </Typography>
         </Stack>
       </Box>

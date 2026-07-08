@@ -206,6 +206,47 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
   const [open, setOpen] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+
+  // Turn off loading when pathname changes
+  useEffect(() => {
+    setPageLoading(false);
+  }, [pathname]);
+
+  // Intercept global link clicks to show loader instantly
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleGlobalClick = (e: MouseEvent) => {
+      let target = e.target as HTMLElement | null;
+      while (target && target !== document.body) {
+        const anchor = target.tagName === "A" ? (target as HTMLAnchorElement) : target.closest("a");
+        if (anchor) {
+          const href = anchor.getAttribute("href");
+          if (
+            href && 
+            !href.startsWith("#") && 
+            !href.startsWith("tel:") && 
+            !href.startsWith("mailto:") && 
+            !href.includes("wa.me")
+          ) {
+            try {
+              const url = new URL(href, window.location.origin);
+              if (url.pathname !== window.location.pathname) {
+                setPageLoading(true);
+              }
+            } catch (err) {
+              // fallback
+              setPageLoading(true);
+            }
+            break;
+          }
+        }
+        target = target.parentElement;
+      }
+    };
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
 
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;
@@ -235,6 +276,58 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   return (
     <>
+      {/* Global Preloader Overlay inside SiteHeader */}
+      <AnimatePresence>
+        {pageLoading && (
+          <MotionBox
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            sx={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 99999,
+              bgcolor: "#050505",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <Stack spacing={3.5} alignItems="center">
+              <motion.img
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                src="/brand/logo.png"
+                alt="Fashion Gate"
+                style={{ width: "80px", maxWidth: "100px", height: "auto", objectFit: "contain" }}
+              />
+              
+              <MotionBox
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                sx={{ textAlign: "center" }}
+              >
+                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: "1.4rem", fontWeight: 500, letterSpacing: "0.25em", color: "#ffffff", textTransform: "uppercase" }}>
+                  FASHION GATE
+                </Typography>
+                <Typography sx={{ fontFamily: '"Cairo", sans-serif', fontSize: 10, fontWeight: 600, letterSpacing: "0.4em", color: "#CB6116", textTransform: "uppercase", mt: 0.5 }}>
+                  {lang === "ar" ? "البوليفارد" : "BOULEVARD"}
+                </Typography>
+              </MotionBox>
+              
+              <Box sx={{ width: 120, height: 1.5, bgcolor: "rgba(255,255,255,0.15)", mt: 3, position: "relative", overflow: "hidden" }}>
+                <MotionBox 
+                  initial={{ left: "-100%" }}
+                  animate={{ left: "0%" }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  sx={{ position: "absolute", top: 0, bottom: 0, width: "100%", bgcolor: "#CB6116" }}
+                />
+              </Box>
+            </Stack>
+          </MotionBox>
+        )}
+      </AnimatePresence>
       <Box 
         component="header"
         sx={{ 

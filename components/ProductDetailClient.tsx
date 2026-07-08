@@ -7,74 +7,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ShareIcon from "@mui/icons-material/Share";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 
 const MotionBox = motion.create(Box);
 
-function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
-  const [index, setIndex] = useState(0);
 
-  const announcements = useMemo(() => [
-    {
-      en: "Syria's First Luxury Department Store — On Boulevard. For the world.",
-      ar: "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
-    },
-    {
-      en: "Complimentary Worldwide Shipping on Selected Designer Collections",
-      ar: "شحن مجاني لكافة أنحاء العالم على مجموعات مصممين مختارة"
-    },
-    {
-      en: "Experience Personal Shopping & Private Viewings at Our Damascus Atelier",
-      ar: "استمتع بتجربة تسوق شخصي ومعاينات خاصة في أتيلييه دمشق"
-    }
-  ], []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % announcements.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [announcements.length]);
-
-  return (
-    <Box 
-      sx={{ 
-        bgcolor: "#050505", 
-        color: "primary.main", 
-        py: { xs: 1.4, md: 1.8 }, 
-        px: { xs: 3, md: 4 }, 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        position: "relative",
-        minHeight: { xs: 46, md: 54 },
-        overflow: "hidden"
-      }}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{
-            fontFamily: '"Cairo", sans-serif',
-            fontSize: "13px",
-            fontWeight: 600,
-            letterSpacing: "0.08em",
-            textAlign: "center",
-            lineHeight: 1.4
-          }}
-        >
-          {announcements[index][lang]}
-        </motion.div>
-      </AnimatePresence>
-    </Box>
-  );
-}
 
 interface ProductDetailClientProps {
   product: Product;
@@ -285,70 +224,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           }}
         >
 
-        {/* Header bar matching the main website theme */}
-        <Box 
-          component="header"
-          sx={{
-            position: "sticky",
-            top: 0,
-            zIndex: 100,
-            borderBottom: "1px solid rgba(0,0,0,0.06)"
-          }}
-        >
-          <AnnouncementBar lang={lang} />
-          <Box
-            sx={{
-              backgroundImage: "url(/assets/headerbg.png)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              height: { xs: 60, md: 72 },
-              display: "flex",
-              alignItems: "center",
-              px: { xs: 2.5, md: 5 }
-            }}
-          >
-            <Container maxWidth="xl" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              {/* Logo Monogram */}
-              <Link href={`/${lang}`} style={{ display: "flex", alignItems: "center" }}>
-              <Box 
-                component="img" 
-                src="/brand/logo.png" 
-                alt="Fashion Gate" 
-                sx={{ height: { xs: 32, md: 40 }, width: "auto" }} 
-              />
-            </Link>
-            
-            {/* Language Toggle (Always identical orange styling, English characters only) */}
-            <Button 
-              onClick={() => {
-                setIsLangTransitioning(true);
-                setTimeout(() => {
-                  router.push(`/${lang === "en" ? "ar" : "en"}/product/${product.id}`);
-                }, 250);
-              }}
-              sx={{ 
-                color: "primary.main", 
-                textTransform: "uppercase", 
-                fontSize: 11, 
-                fontWeight: 800, 
-                letterSpacing: "0.15em",
-                px: 1.5,
-                py: 0.5,
-                border: "1px solid",
-                borderColor: "primary.main",
-                borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif',
-                "&:hover": {
-                  bgcolor: "rgba(203, 97, 22, 0.08)",
-                  borderColor: "primary.main"
-                }
-              }}
-            >
-              {lang === "ar" ? "EN" : "AR"}
-            </Button>
-          </Container>
-        </Box>
-      </Box>
+          <SiteHeader onLangToggleStart={() => setIsLangTransitioning(true)} />
  
         {/* Main product columns */}
         <Container maxWidth="xl" sx={{ mt: { xs: 4, md: 6 } }}>
