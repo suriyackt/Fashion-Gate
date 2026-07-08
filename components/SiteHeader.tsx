@@ -219,7 +219,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-import { products } from "@/lib/productData";
+import type { Product } from "@/lib/productData";
 
 interface SearchOptionProps {
   lang: "ar" | "en";
@@ -228,9 +228,10 @@ interface SearchOptionProps {
   setSearchActive: (active: boolean) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  products: Product[];
 }
 
-function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery }: SearchOptionProps) {
+function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery, products }: SearchOptionProps) {
   // Filter products based on search query
   const matchingProducts = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -241,7 +242,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
       const catMatch = p.category.toLowerCase().includes(query) || p.categoryAr?.includes(searchQuery);
       return titleMatch || brandMatch || catMatch;
     }).slice(0, 5);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
 
   const navSuggestions = [
     { label: "Women", labelAr: "نسائي", anchor: "#arrival" },
@@ -301,15 +302,15 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
             border: "1px solid rgba(255,255,255,0.15)",
             color: "#ffffff",
             outline: "none",
-            px: 1.5,
             py: 0.8,
             fontSize: 12,
             fontFamily: '"Cairo", sans-serif',
             width: searchActive 
-              ? { xs: "120px", sm: "160px", md: "240px" } 
-              : { xs: "0px", sm: "0px", md: "160px" },
-            opacity: searchActive ? 1 : { xs: 0, sm: 0, md: 1 },
-            visibility: searchActive ? "visible" : { xs: "hidden", sm: "hidden", md: "visible" },
+              ? { xs: "130px", sm: "180px", md: "260px" } 
+              : "0px",
+            px: searchActive ? 1.5 : 0,
+            opacity: searchActive ? 1 : 0,
+            visibility: searchActive ? "visible" : "hidden",
             transition: "all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             borderRadius: 0,
             "&::placeholder": { color: "rgba(255,255,255,0.4)" }
@@ -512,7 +513,15 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const [open, setOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [headerProducts, setHeaderProducts] = useState<Product[]>([]);
   const { setLoading } = useLoader();
+
+  useEffect(() => {
+    // Dynamic import to isolate static data from Next.js build trace analysis
+    import("@/lib/productData").then((mod) => {
+      setHeaderProducts(mod.products);
+    }).catch(err => console.error("Failed to load search data dynamically", err));
+  }, []);
 
   useEffect(() => {
     setLoading(false);
@@ -575,7 +584,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               flex: 1, 
               display: { xs: "none", lg: "flex" },
               pr: lang === "ar" ? 0 : 8,
-              pl: lang === "ar" ? 8 : 0
+              pl: lang === "ar" ? 8 : 0,
+              opacity: searchActive ? 0 : 1,
+              visibility: searchActive ? "hidden" : "visible",
+              transition: "opacity 0.25s ease, visibility 0.25s ease"
             }}
           >
             <Button href={getHref("#women")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
@@ -607,18 +619,34 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               pr: lang === "ar" ? 8 : 0
             }}
           >
-            <Button href={getHref("#home-deco")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Home & Deco")}
-            </Button>
-            <Button href={getHref("#brand")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Brand")}
-            </Button>
-            <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Blogs")}
-            </Button>
-            <Button component={Link} href={`/${lang}/contact`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Contact")}
-            </Button>
+            {/* Nav links stack - fades out when search is active to free up space */}
+            <Stack
+              direction="row"
+              gap={lang === "ar" ? 4.5 : 3.5}
+              alignItems="center"
+              sx={{
+                opacity: searchActive ? 0 : 1,
+                visibility: searchActive ? "hidden" : "visible",
+                transition: "opacity 0.25s ease, visibility 0.25s ease",
+                display: "flex"
+              }}
+            >
+              <Button href={getHref("#home-deco")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+                {t("Home & Deco")}
+              </Button>
+              <Button href={getHref("#brand")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+                {t("Brand")}
+              </Button>
+              <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+                {t("Blogs")}
+              </Button>
+              <Button component={Link} href={`/${lang}/contact`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+                {t("Contact")}
+              </Button>
+              <Button component={Link} href={`/${lang}/login`} className="luxury-link" sx={{ color: "#CB6116", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+                {lang === "ar" ? "دخول" : "Sign In"}
+              </Button>
+            </Stack>
             
             {/* Search Option */}
             <SearchOption 
@@ -627,6 +655,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               setSearchActive={setSearchActive} 
               searchQuery={searchQuery} 
               setSearchQuery={setSearchQuery} 
+              products={headerProducts}
             />
 
             {/* Language Selector */}
@@ -664,6 +693,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               setSearchActive={setSearchActive} 
               searchQuery={searchQuery} 
               setSearchQuery={setSearchQuery} 
+              products={headerProducts}
             />
 
             <Button 
@@ -849,6 +879,44 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               </Button>
               <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
                 {descT("Contact")}
+              </Typography>
+            </Stack>
+
+            {/* Account Sign In Link */}
+            <Stack 
+              spacing={0.5} 
+              sx={{ 
+                borderBottom: "1px solid rgba(0,0,0,0.06)", 
+                pb: 1.5,
+                alignItems: lang === "ar" ? "flex-end" : "flex-start" 
+              }}
+            >
+              <Button 
+                component={Link}
+                href={`/${lang}/login`} 
+                onClick={() => setOpen(false)} 
+                endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
+                startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
+                sx={{ 
+                  p: 0,
+                  color: "#CB6116", 
+                  fontSize: { xs: 22, sm: 28 }, 
+                  fontWeight: 500,
+                  fontFamily: "var(--heading-font)",
+                  textTransform: "none",
+                  letterSpacing: "0.02em",
+                  textAlign: lang === "ar" ? "right" : "left",
+                  "&:hover": {
+                    color: "primary.dark",
+                    transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
+                  },
+                  transition: "transform 0.3s ease, color 0.3s ease"
+                }}
+              >
+                {lang === "ar" ? "تسجيل الدخول" : "Sign In / Register"}
+              </Button>
+              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
+                {lang === "ar" ? "إدارة حسابك الشخصي وطلباتك" : "Access your boutique account and orders"}
               </Typography>
             </Stack>
           </Stack>

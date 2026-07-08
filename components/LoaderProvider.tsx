@@ -22,14 +22,47 @@ export function useLoader() {
 
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
+  const [minTimeActive, setMinTimeActive] = useState(true);
+  const [pendingClose, setPendingClose] = useState(false);
 
-  // Snappy loading duration for the initial cinematic site entry (3.2 seconds)
+  // Lock the preloader on initial mount to let the ease sweep finish fully (2.6 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3200);
+      setMinTimeActive(false);
+    }, 2600);
     return () => clearTimeout(timer);
   }, []);
+
+  // Watch for lock release and close requests
+  useEffect(() => {
+    if (!minTimeActive && pendingClose) {
+      setLoading(false);
+      setPendingClose(false);
+    }
+  }, [minTimeActive, pendingClose]);
+
+  // Safe setLoading handler that enforces a minimum animation runtime
+  const safeSetLoading = (val: boolean) => {
+    if (val) {
+      setLoading(true);
+      setMinTimeActive(true);
+      setPendingClose(false);
+      
+      // Enforce a 2.4s lock for any transition loaders to run fully
+      setTimeout(() => {
+        setMinTimeActive(false);
+      }, 2400);
+    } else {
+      setMinTimeActive((currentMin) => {
+        if (currentMin) {
+          setPendingClose(true);
+        } else {
+          setLoading(false);
+        }
+        return currentMin;
+      });
+    }
+  };
 
   // Intercept global link clicks to trigger route change loading (runs transition loader)
   useEffect(() => {
@@ -54,12 +87,12 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               if (url.pathname !== window.location.pathname) {
                 // Defer loading state trigger to let Next.js register the link click instantly
                 setTimeout(() => {
-                  setLoading(true);
+                  safeSetLoading(true);
                 }, 0);
               }
             } catch (err) {
               setTimeout(() => {
-                setLoading(true);
+                safeSetLoading(true);
               }, 0);
             }
             break;
@@ -74,7 +107,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   }, []);
 
   return (
-    <LoaderContext.Provider value={{ setLoading }}>
+    <LoaderContext.Provider value={{ setLoading: safeSetLoading }}>
       {/* Render children natively with zero fade opacity transitions to prevent white flash screen locks */}
       {children}
 
