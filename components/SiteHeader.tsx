@@ -291,7 +291,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
       )}
 
       {/* Input container */}
-      <Stack direction="row" alignItems="center" sx={{ position: { xs: "static", sm: "relative" }, zIndex: 1000 }}>
+      <Stack direction="row" alignItems="center" sx={{ position: { xs: "static", sm: "relative" }, zIndex: 1000, overflow: "hidden" }}>
         {/* Expanded search field */}
         <Box
           component="input"
@@ -302,7 +302,8 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
           onFocus={() => setSearchActive(true)}
           sx={{
             bgcolor: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.15)",
+            border: "1px solid",
+            borderColor: searchActive ? "rgba(255,255,255,0.15)" : "transparent",
             color: "#ffffff",
             outline: "none",
             py: 0.8,
@@ -313,8 +314,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
               : "0px",
             px: searchActive ? 1.5 : 0,
             opacity: searchActive ? 1 : 0,
-            visibility: searchActive ? "visible" : "hidden",
-            transition: "all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            transition: "width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease, border-color 0.3s ease, padding 0.3s ease",
             borderRadius: 0,
             "&::placeholder": { color: "rgba(255,255,255,0.4)" }
           }}
@@ -548,6 +548,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const router = useRouter();
 
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
+  const isHome = pathname === `/${lang}` || pathname === `/${lang}/` || pathname === "/" || pathname === `/ar` || pathname === `/en`;
   const [open, setOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -562,11 +563,12 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   }, []);
 
   useEffect(() => {
+    const delay = isHome ? 2600 : 180;
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 180);
+    }, delay);
     return () => clearTimeout(timer);
-  }, [pathname, setLoading]);
+  }, [pathname, setLoading, isHome]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -627,8 +629,6 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
     }
     setOpen(false);
   };
-
-  const isHome = pathname === `/${lang}` || pathname === `/${lang}/` || pathname === "/" || pathname === `/ar` || pathname === `/en`;
 
   const getHref = (anchor: string) => {
     return isHome ? anchor : `/${lang}${anchor}`;
@@ -759,33 +759,20 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               {lang === "ar" ? "EN" : "AR"}
             </Button>
 
-            {/* Profile Avatar Button on complete right side */}
+            {/* Profile Button on complete right side */}
             <Tooltip title={lang === "ar" ? "تسجيل الدخول / تسجيل جديد" : "Sign In / Register"}>
               <IconButton 
                 component={Link} 
                 href={`/${lang}/login`} 
                 sx={{ 
+                  color: "#CB6116", 
                   p: 0.5,
                   ml: 1.5,
-                  transition: "transform 0.2s",
-                  "&:hover": { transform: "scale(1.08)" }
+                  transition: "transform 0.2s, color 0.2s",
+                  "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
                 }}
               >
-                <Avatar 
-                  src="/assets/avatar.png"
-                  sx={{ 
-                    width: 28, 
-                    height: 28, 
-                    border: "1.5px solid #CB6116",
-                    bgcolor: "#111111",
-                    color: "#CB6116",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    fontFamily: '"Cairo", sans-serif'
-                  }}
-                >
-                  U
-                </Avatar>
+                <PersonOutlineIcon sx={{ fontSize: 20 }} />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -828,27 +815,14 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               component={Link}
               href={`/${lang}/login`}
               sx={{ 
+                color: "#CB6116",
                 p: 0.5,
                 display: searchActive ? "none" : "inline-flex",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "scale(1.08)" }
+                transition: "transform 0.2s, color 0.2s",
+                "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
               }}
             >
-              <Avatar 
-                src="/assets/avatar.png"
-                sx={{ 
-                  width: 28, 
-                  height: 28, 
-                  border: "1.5px solid #CB6116",
-                  bgcolor: "#111111",
-                  color: "#CB6116",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  fontFamily: '"Cairo", sans-serif'
-                }}
-              >
-                U
-              </Avatar>
+              <PersonOutlineIcon sx={{ fontSize: 20 }} />
             </IconButton>
 
             <IconButton 

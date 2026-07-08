@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const MotionBox = motion.create(Box);
 
@@ -21,6 +22,7 @@ export function useLoader() {
 }
 
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [minTimeActive, setMinTimeActive] = useState(true);
   const [pendingClose, setPendingClose] = useState(false);
@@ -87,17 +89,23 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               const url = new URL(href, window.location.origin);
               // Only trigger loader if navigating to a different pathname
               if (url.pathname !== window.location.pathname) {
+                e.preventDefault(); // Stay on current page while loader turns on
                 const isLogin = url.pathname.includes("/login");
-                // Defer loading state trigger to let Next.js register the link click instantly
+                safeSetLoading(true, isLogin);
+
                 setTimeout(() => {
-                  safeSetLoading(true, isLogin);
-                }, 0);
+                  router.push(href);
+                }, 180);
               }
             } catch (err) {
               const isLogin = href.includes("/login");
-              setTimeout(() => {
+              if (href !== window.location.pathname) {
+                e.preventDefault();
                 safeSetLoading(true, isLogin);
-              }, 0);
+                setTimeout(() => {
+                  router.push(href);
+                }, 180);
+              }
             }
             break;
           }
@@ -108,7 +116,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
 
     window.addEventListener("click", handleGlobalClick, { capture: true });
     return () => window.removeEventListener("click", handleGlobalClick, { capture: true });
-  }, []);
+  }, [router]);
 
   return (
     <LoaderContext.Provider value={{ setLoading: safeSetLoading }}>
