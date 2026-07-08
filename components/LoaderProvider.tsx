@@ -22,13 +22,11 @@ export function useLoader() {
 
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [isInitialPlayDone, setIsInitialPlayDone] = useState(false);
 
   // Snappy loading duration for the initial cinematic site entry (2.8 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-      setIsInitialPlayDone(true);
     }, 2800);
     return () => clearTimeout(timer);
   }, []);
@@ -54,10 +52,15 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               const url = new URL(href, window.location.origin);
               // Only trigger loader if navigating to a different pathname
               if (url.pathname !== window.location.pathname) {
-                setLoading(true);
+                // Defer loading state trigger to let Next.js register the link click instantly
+                setTimeout(() => {
+                  setLoading(true);
+                }, 0);
               }
             } catch (err) {
-              setLoading(true);
+              setTimeout(() => {
+                setLoading(true);
+              }, 0);
             }
             break;
           }
@@ -72,16 +75,8 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
 
   return (
     <LoaderContext.Provider value={{ setLoading }}>
-      {/* Hide page contents completely during initial preloader play, then fade in */}
-      <Box sx={{ width: "100%", height: "100%", visibility: isInitialPlayDone ? "visible" : "hidden" }}>
-        <motion.div
-          animate={{ opacity: isInitialPlayDone ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          style={{ width: "100%", height: "100%" }}
-        >
-          {children}
-        </motion.div>
-      </Box>
+      {/* Render children natively with zero fade opacity transitions to prevent white flash screen locks */}
+      {children}
 
       <AnimatePresence>
         {loading && (

@@ -223,6 +223,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const handleLangToggle = () => {
     if (typeof window === "undefined") return;
+    setLoading(true); // Trigger the preloader immediately on language switch
     if (onLangToggleStart) {
       onLangToggleStart();
     }
@@ -230,7 +231,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
       const nextLang = lang === "ar" ? "en" : "ar";
       const nextPath = pathname.replace(/^\/(ar|en)/, `/${nextLang}`);
       router.push(nextPath);
-    }, 250);
+    }, 150);
   };
 
   const isHome = pathname === `/${lang}` || pathname === `/${lang}/` || pathname === "/" || pathname === `/ar` || pathname === `/en`;
