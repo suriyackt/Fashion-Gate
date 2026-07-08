@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useLoader } from "@/components/LoaderProvider";
 
 const MotionBox = motion.create(Box);
 
@@ -206,6 +207,11 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
   const [open, setOpen] = useState(false);
+  const { setLoading } = useLoader();
+
+  useEffect(() => {
+    setLoading(false);
+  }, [pathname, setLoading]);
 
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;

@@ -1,17 +1,14 @@
 "use client";
 
 import { Box, Container, Typography } from "@mui/material";
-import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-
-const MotionBox = motion.create(Box);
 
 const brandsList = [
   { 
     id: "chanel", 
     logo: (
-      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+      <svg width="190" height="38" viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="22" fontWeight="bold" letterSpacing="0.32em" textAnchor="middle">CHANEL</text>
       </svg>
     )
@@ -19,7 +16,7 @@ const brandsList = [
   { 
     id: "prada", 
     logo: (
-      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+      <svg width="190" height="38" viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Engravers MT', 'Copperplate', 'Times New Roman', serif" fontSize="16" fontWeight="900" letterSpacing="0.16em" textAnchor="middle">PRADA</text>
       </svg>
     )
@@ -27,7 +24,7 @@ const brandsList = [
   { 
     id: "gucci", 
     logo: (
-      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+      <svg width="190" height="38" viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="22" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GUCCI</text>
       </svg>
     )
@@ -35,7 +32,7 @@ const brandsList = [
   { 
     id: "dior", 
     logo: (
-      <svg width="170" height="42" viewBox="0 0 100 30" fill="currentColor">
+      <svg width="160" height="38" viewBox="0 0 100 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', 'Bodoni MT', serif" fontSize="22" fontWeight="700" letterSpacing="0.18em" textAnchor="middle">Dior</text>
       </svg>
     )
@@ -43,7 +40,7 @@ const brandsList = [
   { 
     id: "ysl", 
     logo: (
-      <svg width="240" height="42" viewBox="0 0 160 30" fill="currentColor">
+      <svg width="230" height="38" viewBox="0 0 160 30" fill="currentColor">
         <text x="50%" y="21" fontFamily="'Cinzel', 'Times New Roman', serif" fontSize="11" fontWeight="600" letterSpacing="0.24em" textAnchor="middle">YVES SAINT LAURENT</text>
       </svg>
     )
@@ -51,7 +48,7 @@ const brandsList = [
   { 
     id: "hermes", 
     logo: (
-      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+      <svg width="190" height="38" viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="21" fontFamily="'Rockwell', 'Courier New', serif" fontSize="14" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">HERMÈS</text>
       </svg>
     )
@@ -59,7 +56,7 @@ const brandsList = [
   { 
     id: "adidas", 
     logo: (
-      <svg width="90" height="42" viewBox="0 0 60 40" fill="currentColor">
+      <svg width="85" height="38" viewBox="0 0 60 40" fill="currentColor">
         <path d="M 15 32 L 20 32 L 35 8 L 30 8 Z" />
         <path d="M 25 32 L 30 32 L 45 8 L 40 8 Z" />
         <path d="M 35 32 L 40 32 L 55 8 L 50 8 Z" />
@@ -67,6 +64,9 @@ const brandsList = [
     )
   }
 ];
+
+// Double/Triple the array to make the infinite loop seamless
+const scrollingItems = [...brandsList, ...brandsList, ...brandsList];
 
 export default function BrandMarquee() {
   const params = useParams();
@@ -90,16 +90,17 @@ export default function BrandMarquee() {
       component="section" 
       sx={{ 
         bgcolor: "#ffffff", 
-        py: { xs: 8, md: 11 },
+        py: { xs: 8, md: 10 },
         borderTop: "1px solid rgba(0,0,0,0.05)",
         borderBottom: "1px solid rgba(0,0,0,0.05)",
         width: "100%",
-        textAlign: "center"
+        textAlign: "center",
+        overflow: "hidden"
       }}
     >
       <Container maxWidth="xl">
         {/* Section Header */}
-        <Box sx={{ maxWidth: 640, mx: "auto", mb: { xs: 6, md: 8 } }}>
+        <Box sx={{ maxWidth: 640, mx: "auto", mb: { xs: 5, md: 7 } }}>
           <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.22em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
             {t.eyebrow}
           </Typography>
@@ -110,44 +111,80 @@ export default function BrandMarquee() {
             {t.desc}
           </Typography>
         </Box>
+      </Container>
 
-        {/* Elegant Grid of SVG Brand Logos */}
+      {/* CSS-based Hardware Accelerated Scrolling Marquee Container */}
+      <Box 
+        sx={{ 
+          width: "100%",
+          overflow: "hidden",
+          position: "relative",
+          py: 1,
+          bgcolor: "#ffffff",
+          "&::before, &::after": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: { xs: 40, md: 100 },
+            zIndex: 2,
+            pointerEvents: "none"
+          },
+          "&::before": {
+            left: 0,
+            background: "linear-gradient(to right, #ffffff, transparent)"
+          },
+          "&::after": {
+            right: 0,
+            background: "linear-gradient(to left, #ffffff, transparent)"
+          }
+        }}
+      >
+        {/* The scrolling track */}
         <Box 
           sx={{ 
-            display: "grid", 
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(7, 1fr)" }, 
-            gap: { xs: 5, md: 3 },
+            display: "flex",
+            width: "max-content",
             alignItems: "center",
-            justifyContent: "center"
+            gap: { xs: 8, md: 12 },
+            animation: "scrollMarquee 24s linear infinite",
+            "&:hover": {
+              animationPlayState: "paused" // Pauses scroll on hover
+            },
+            "@keyframes scrollMarquee": {
+              "0%": { transform: "translateX(0)" },
+              "100%": { transform: "translateX(-33.333%)" } // Seamless jump point
+            }
           }}
         >
-          {brandsList.map((item) => (
+          {scrollingItems.map((item, index) => (
             <Link
-              key={item.id}
+              key={`${item.id}-${index}`}
               href={`/${lang}/brand/${item.id}`}
-              style={{ textDecoration: "none", display: "block" }}
+              style={{ textDecoration: "none", display: "inline-block" }}
             >
-              <MotionBox
-                initial={{ opacity: 0.35, scale: 1 }}
-                whileInView={{ opacity: 0.55 }}
-                viewport={{ once: true }}
-                whileHover={{ opacity: 1, scale: 1.04, color: "#000000" }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
+              <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "#555555", // Default medium-grey
+                  color: "#666666",
+                  opacity: 0.5,
                   cursor: "pointer",
-                  py: 2
+                  transition: "all 0.35s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  "&:hover": {
+                    color: "#000000", // Darkens the logo
+                    opacity: 1,       // Fully lights up
+                    transform: "scale(1.03)"
+                  }
                 }}
               >
                 {item.logo}
-              </MotionBox>
+              </Box>
             </Link>
           ))}
         </Box>
-      </Container>
+      </Box>
     </Box>
   );
 }
