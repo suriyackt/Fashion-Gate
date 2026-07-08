@@ -11,47 +11,47 @@ const brandsList = [
   { 
     id: "chanel", 
     logo: (
-      <svg width="140" height="30" viewBox="0 0 120 30" fill="currentColor">
-        <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">CHANEL</text>
+      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="22" fontWeight="bold" letterSpacing="0.32em" textAnchor="middle">CHANEL</text>
       </svg>
     )
   },
   { 
     id: "prada", 
     logo: (
-      <svg width="140" height="30" viewBox="0 0 120 30" fill="currentColor">
-        <text x="50%" y="22" fontFamily="'Engravers MT', 'Copperplate', 'Times New Roman', serif" fontSize="15" fontWeight="900" letterSpacing="0.15em" textAnchor="middle">PRADA</text>
+      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Engravers MT', 'Copperplate', 'Times New Roman', serif" fontSize="16" fontWeight="900" letterSpacing="0.16em" textAnchor="middle">PRADA</text>
       </svg>
     )
   },
   { 
     id: "gucci", 
     logo: (
-      <svg width="140" height="30" viewBox="0 0 120 30" fill="currentColor">
-        <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="21" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GUCCI</text>
+      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="22" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GUCCI</text>
       </svg>
     )
   },
   { 
     id: "dior", 
     logo: (
-      <svg width="120" height="30" viewBox="0 0 100 30" fill="currentColor">
-        <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', 'Bodoni MT', serif" fontSize="21" fontWeight="700" letterSpacing="0.18em" textAnchor="middle">Dior</text>
+      <svg width="170" height="42" viewBox="0 0 100 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', 'Bodoni MT', serif" fontSize="22" fontWeight="700" letterSpacing="0.18em" textAnchor="middle">Dior</text>
       </svg>
     )
   },
   { 
     id: "ysl", 
     logo: (
-      <svg width="160" height="30" viewBox="0 0 160 30" fill="currentColor">
-        <text x="50%" y="21" fontFamily="'Cinzel', 'Times New Roman', serif" fontSize="11" fontWeight="600" letterSpacing="0.25em" textAnchor="middle">YVES SAINT LAURENT</text>
+      <svg width="240" height="42" viewBox="0 0 160 30" fill="currentColor">
+        <text x="50%" y="21" fontFamily="'Cinzel', 'Times New Roman', serif" fontSize="11" fontWeight="600" letterSpacing="0.24em" textAnchor="middle">YVES SAINT LAURENT</text>
       </svg>
     )
   },
   { 
     id: "hermes", 
     logo: (
-      <svg width="140" height="30" viewBox="0 0 120 30" fill="currentColor">
+      <svg width="200" height="42" viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="21" fontFamily="'Rockwell', 'Courier New', serif" fontSize="14" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">HERMÈS</text>
       </svg>
     )
@@ -59,7 +59,7 @@ const brandsList = [
   { 
     id: "adidas", 
     logo: (
-      <svg width="60" height="30" viewBox="0 0 60 40" fill="currentColor">
+      <svg width="90" height="42" viewBox="0 0 60 40" fill="currentColor">
         <path d="M 15 32 L 20 32 L 35 8 L 30 8 Z" />
         <path d="M 25 32 L 30 32 L 45 8 L 40 8 Z" />
         <path d="M 35 32 L 40 32 L 55 8 L 50 8 Z" />
@@ -90,7 +90,7 @@ export default function BrandMarquee() {
       component="section" 
       sx={{ 
         bgcolor: "#ffffff", 
-        py: { xs: 8, md: 10 },
+        py: { xs: 8, md: 11 },
         borderTop: "1px solid rgba(0,0,0,0.05)",
         borderBottom: "1px solid rgba(0,0,0,0.05)",
         width: "100%",
@@ -99,7 +99,7 @@ export default function BrandMarquee() {
     >
       <Container maxWidth="xl">
         {/* Section Header */}
-        <Box sx={{ maxWidth: 640, mx: "auto", mb: { xs: 5, md: 7 } }}>
+        <Box sx={{ maxWidth: 640, mx: "auto", mb: { xs: 6, md: 8 } }}>
           <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.22em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
             {t.eyebrow}
           </Typography>
@@ -115,8 +115,8 @@ export default function BrandMarquee() {
         <Box 
           sx={{ 
             display: "grid", 
-            gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(3, 1fr)", md: "repeat(7, 1fr)" }, 
-            gap: { xs: 4, md: 2 },
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(7, 1fr)" }, 
+            gap: { xs: 5, md: 3 },
             alignItems: "center",
             justifyContent: "center"
           }}
@@ -128,33 +128,18 @@ export default function BrandMarquee() {
               style={{ textDecoration: "none", display: "block" }}
             >
               <MotionBox
-                initial={{ opacity: 0.45 }}
+                initial={{ opacity: 0.35, scale: 1 }}
                 whileInView={{ opacity: 0.55 }}
                 viewport={{ once: true }}
-                whileHover={{ opacity: 1, scale: 1.05 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                whileHover={{ opacity: 1, scale: 1.04, color: "#000000" }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  color: "#111111",
+                  color: "#555555", // Default medium-grey
                   cursor: "pointer",
-                  py: 2.5,
-                  position: "relative",
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    bottom: 0,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "0%",
-                    height: "1.5px",
-                    bgcolor: "primary.main",
-                    transition: "width 0.3s ease"
-                  },
-                  "&:hover::after": {
-                    width: "35%"
-                  }
+                  py: 2
                 }}
               >
                 {item.logo}
