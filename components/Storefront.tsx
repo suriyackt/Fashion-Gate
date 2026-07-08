@@ -796,18 +796,19 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
         }}
       >
         <Box>
-          <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} isLangTransitioning={isLangTransitioning} />
+          <SiteHeader settings={settings} onLangToggleStart={() => setIsLangTransitioning(true)} />
           {sections.map((section, index) => (
-            <SectionRenderer 
-              key={section._id || `${section.type}-${index}`} 
-              section={section} 
-              t={t} 
-              lang={lang} 
-            />
+            <Box key={section._id || `${section.type}-${index}`}>
+              <SectionRenderer 
+                section={section} 
+                t={t} 
+                lang={lang} 
+              />
+              {section.type === "manifesto" && <BrandMarquee />}
+            </Box>
           ))}
           <CategoryProductSections t={t} lang={lang} />
           <AtelierShowcaseSection t={t} lang={lang} />
-          <BrandMarquee />
           <SiteFooter />
         </Box>
       </Box>

@@ -20,8 +20,8 @@ export default function HeroSection({
       id={section.anchor} 
       component="section" 
       sx={{ 
-        height: { xs: "calc(100svh - 60px)", md: "calc(100svh - 72px)" },
-        minHeight: { xs: "calc(100svh - 60px)", md: "calc(100svh - 72px)" },
+        height: { xs: "calc(100svh - 100px)", md: "calc(100svh - 112px)" },
+        minHeight: { xs: "calc(100svh - 100px)", md: "calc(100svh - 112px)" },
         position: "relative", 
         overflow: "hidden", 
         color: "#fff",
