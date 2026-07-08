@@ -1,19 +1,16 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import { Box, Button, Container, Stack, Typography, CircularProgress } from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { Brand } from "@/lib/brandData";
-import { getProductsByBrandId, Product } from "@/lib/productData";
+import { getProductsByBrandId } from "@/lib/productData";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-
-const MotionBox = motion.create(Box);
 
 const brandVectorLogos: Record<string, React.ReactNode> = {
   chanel: (
@@ -64,14 +61,13 @@ export default function BrandDetailClient({
 }) {
   const router = useRouter();
   const [lang, setLang] = useState<"en" | "ar">(initialLang);
-  const [isPending, startTransition] = useTransition();
-  const [isNavigating, setIsNavigating] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
 
   const brandProducts = getProductsByBrandId(brand.id);
 
-  // Available categories for tabs (only show tabs if brand has products in that category)
-  const categoriesInBrand = ["all", ...Array.from(new Set(brandProducts.map(p => p.category.toLowerCase())))];
+  // Available categories in the brand's catalog
+  const rawCategories = Array.from(new Set(brandProducts.map(p => p.category.toLowerCase())));
+  const categoriesInBrand = ["all", ...rawCategories];
 
   const filteredProducts = activeTab === "all" 
     ? brandProducts 
@@ -88,11 +84,10 @@ export default function BrandDetailClient({
       beauty: "Beauty",
       "home & deco": "Home & Deco",
       noProducts: "No products found in this category.",
-      authorizedPartner: "Authorized Fashion Gate Partner",
-      loading: "Opening details..."
+      authorizedPartner: "Authorized Partner"
     },
     ar: {
-      showcase: "صالون العلامة التجارية المعتمد",
+      showcase: "صالون العلامة المعتمد",
       exploreCollection: "استكشف المجموعة",
       back: "رجوع",
       all: "جميع الأقسام",
@@ -101,12 +96,11 @@ export default function BrandDetailClient({
       beauty: "الجمال",
       "home & deco": "المنزل والديكور",
       noProducts: "لا توجد منتجات في هذا القسم حالياً.",
-      authorizedPartner: "شريك بوابة الأزياء المعتمد",
-      loading: "جاري فتح التفاصيل..."
+      authorizedPartner: "شريك معتمد"
     }
   }[lang];
 
-  // Force scroll to top on mount
+  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -114,16 +108,6 @@ export default function BrandDetailClient({
   const handleLangToggle = (newLang: "en" | "ar") => {
     setLang(newLang);
     router.replace(`/${newLang}/brand/${brand.id}`);
-  };
-
-  const handleProductClick = (productId: string) => {
-    setIsNavigating(true);
-    router.push(`/${lang}/product/${productId}`);
-  };
-
-  const handleBackClick = () => {
-    setIsNavigating(true);
-    router.push(`/${lang}`);
   };
 
   return (
@@ -138,54 +122,22 @@ export default function BrandDetailClient({
         fontFamily: lang === "ar" ? '"Cairo", sans-serif' : '"Inter", sans-serif'
       }}
     >
-      {/* Global Navigation Loading Screen Overlay */}
-      <AnimatePresence>
-        {(isPending || isNavigating) && (
-          <Box
-            component={motion.div}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            sx={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              bgcolor: "rgba(10, 10, 10, 0.95)",
-              color: "#ffffff",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 9999,
-              gap: 3
-            }}
-          >
-            <CircularProgress color="inherit" size={48} thickness={2} />
-            <Typography sx={{ letterSpacing: "0.15em", textTransform: "uppercase", fontSize: 13, fontWeight: 500, fontFamily: 'var(--heading-font)' }}>
-              {t.loading}
-            </Typography>
-          </Box>
-        )}
-      </AnimatePresence>
-
-      {/* Shared Reusable Header */}
+      {/* Reusable Header (handles global transition loaders automatically) */}
       <SiteHeader 
         settings={{ title: "Fashion Gate" }} 
-        onLangToggleStart={() => startTransition(() => handleLangToggle(lang === "en" ? "ar" : "en"))} 
+        onLangToggleStart={() => handleLangToggle(lang === "en" ? "ar" : "en")} 
       />
 
-      {/* Brand Hero Panel */}
+      {/* Brand Hero Panel (Strictly Orange, Black, White, and Grey palette) */}
       <Box
         sx={{
           position: "relative",
-          bgcolor: "#111111",
+          bgcolor: "#000000",
           color: "#ffffff",
-          py: { xs: 12, md: 18 },
+          py: { xs: 10, md: 15 },
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundImage: `linear-gradient(rgba(17,17,17,0.85), rgba(17,17,17,0.92)), url(${brand.backdropUrl})`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.95)), url(${brand.backdropUrl})`,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           textAlign: "center"
         }}
@@ -193,12 +145,13 @@ export default function BrandDetailClient({
         <Container maxWidth="md">
           {/* Back Navigation Button */}
           <Button
-            onClick={handleBackClick}
+            component={Link}
+            href={`/${lang}`}
             startIcon={lang === "en" && <ArrowBackIcon />}
             endIcon={lang === "ar" && <ArrowBackIcon sx={{ transform: "scaleX(-1)" }} />}
             sx={{
               position: "absolute",
-              top: { xs: 20, md: 40 },
+              top: { xs: 20, md: 35 },
               [lang === "ar" ? "right" : "left"]: { xs: 20, md: 40 },
               color: "#ffffff",
               border: "1px solid rgba(255,255,255,0.15)",
@@ -218,41 +171,34 @@ export default function BrandDetailClient({
             {t.back}
           </Button>
 
-          <Stack spacing={4} alignItems="center">
-            {/* Elegant SVG Logo representation */}
-            <Box 
-              sx={{ 
-                color: "#ffffff", 
-                opacity: 0.95,
-                transform: "scale(1.1)",
-                mb: 1
-              }}
-            >
+          <Stack spacing={3.5} alignItems="center">
+            {/* Centered official SVG logo representation */}
+            <Box sx={{ color: "#ffffff", transform: "scale(1.05)", mb: 1 }}>
               {brandVectorLogos[brand.id] || (
-                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 36, fontWeight: 700, letterSpacing: "0.1em" }}>
+                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 32, fontWeight: 700, letterSpacing: "0.1em" }}>
                   {lang === "ar" ? brand.nameAr : brand.name}
                 </Typography>
               )}
             </Box>
 
-            {/* Sub-Header Headline */}
+            {/* Localized Brand Headline */}
             <Typography 
               sx={{ 
                 fontFamily: "var(--heading-font)", 
-                fontSize: { xs: 24, md: 36 }, 
+                fontSize: { xs: 22, md: 32 }, 
                 fontWeight: 400, 
                 maxWidth: 720, 
                 lineHeight: 1.25,
-                color: "primary.main"
+                color: "primary.main" // brand orange
               }}
             >
               {lang === "ar" ? brand.headlineAr : brand.headline}
             </Typography>
 
-            {/* Editorial Biography Text */}
+            {/* Localized Narrative Biography */}
             <Typography 
               sx={{ 
-                fontSize: 14.5, 
+                fontSize: 14, 
                 lineHeight: 1.8, 
                 color: "rgba(255,255,255,0.72)", 
                 maxWidth: 680,
@@ -262,6 +208,7 @@ export default function BrandDetailClient({
               {lang === "ar" ? brand.descriptionAr : brand.description}
             </Typography>
 
+            {/* Verification Badge */}
             <Box 
               sx={{ 
                 fontSize: 10, 
@@ -280,133 +227,168 @@ export default function BrandDetailClient({
         </Container>
       </Box>
 
-      {/* Catalog Grid Section */}
-      <Box sx={{ py: { xs: 10, md: 14 }, flexGrow: 1 }}>
+      {/* Split Left-Side Tab Catalog Grid Section */}
+      <Box sx={{ py: { xs: 8, md: 12 }, flexGrow: 1 }}>
         <Container maxWidth="xl">
-          <Stack spacing={{ xs: 6, md: 8 }}>
-            
-            {/* Category Filter Tabs */}
+          <Box 
+            sx={{ 
+              display: "flex", 
+              flexDirection: { xs: "column", md: lang === "ar" ? "row-reverse" : "row" }, 
+              gap: { xs: 6, md: 8 },
+              alignItems: "flex-start" 
+            }}
+          >
+            {/* Left-Side Vertical Navigation Tab List */}
             {categoriesInBrand.length > 2 && (
-              <Stack 
-                direction="row" 
-                spacing={{ xs: 1, sm: 2.5 }} 
-                justifyContent="center" 
-                flexWrap="wrap" 
-                useFlexGap
-                sx={{ borderBottom: "1px solid rgba(0,0,0,0.06)", pb: 2 }}
+              <Box 
+                sx={{ 
+                  width: { xs: "100%", md: 240 }, 
+                  flexShrink: 0,
+                  textAlign: lang === "ar" ? "right" : "left"
+                }}
               >
-                {categoriesInBrand.map((catKey) => {
-                  const isSelected = activeTab === catKey;
-                  const labelT = t[catKey as keyof typeof t] || catKey;
-                  return (
-                    <Button
-                      key={catKey}
-                      onClick={() => setActiveTab(catKey)}
-                      sx={{
-                        color: isSelected ? "primary.main" : "rgba(0,0,0,0.48)",
-                        fontSize: { xs: 14, sm: 16 },
-                        fontWeight: isSelected ? 700 : 500,
-                        fontFamily: "var(--heading-font)",
-                        px: 2.5,
-                        py: 0.8,
-                        borderRadius: 0,
-                        borderBottom: isSelected ? "2px solid" : "none",
-                        borderColor: "primary.main",
-                        textTransform: "capitalize",
-                        "&:hover": {
-                          color: "primary.main",
-                          bgcolor: "transparent"
-                        }
-                      }}
-                    >
-                      {labelT}
-                    </Button>
-                  );
-                })}
-              </Stack>
+                <Stack 
+                  direction={{ xs: "row", md: "column" }} 
+                  spacing={{ xs: 1, md: 1.5 }} 
+                  flexWrap="wrap" 
+                  useFlexGap
+                  sx={{ 
+                    borderBottom: { xs: "1px solid rgba(0,0,0,0.06)", md: "none" },
+                    [lang === "ar" ? "borderLeft" : "borderRight"]: { xs: "none", md: "1px solid rgba(0,0,0,0.06)" },
+                    pb: { xs: 2, md: 0 },
+                    pr: { xs: 0, md: lang === "ar" ? 0 : 3.5 },
+                    pl: { xs: 0, md: lang === "ar" ? 3.5 : 0 }
+                  }}
+                >
+                  {categoriesInBrand.map((catKey) => {
+                    const isSelected = activeTab === catKey;
+                    const labelT = t[catKey as keyof typeof t] || catKey;
+                    return (
+                      <Button
+                        key={catKey}
+                        onClick={() => setActiveTab(catKey)}
+                        sx={{
+                          color: isSelected ? "primary.main" : "rgba(0,0,0,0.48)",
+                          fontSize: { xs: 14, sm: 16 },
+                          fontWeight: isSelected ? 700 : 500,
+                          fontFamily: "var(--heading-font)",
+                          justifyContent: { xs: "center", md: lang === "ar" ? "flex-end" : "flex-start" },
+                          textAlign: { xs: "center", md: lang === "ar" ? "right" : "left" },
+                          px: 2,
+                          py: 1,
+                          borderRadius: 0,
+                          borderBottom: { xs: isSelected ? "2px solid" : "none", md: "none" },
+                          borderLeft: { xs: "none", md: (lang === "ar" && isSelected) ? "2px solid" : "none" },
+                          borderRight: { xs: "none", md: (lang === "en" && isSelected) ? "2px solid" : "none" },
+                          borderColor: "primary.main",
+                          textTransform: "capitalize",
+                          width: "100%",
+                          "&:hover": {
+                            color: "primary.main",
+                            bgcolor: "transparent"
+                          }
+                        }}
+                      >
+                        {labelT}
+                      </Button>
+                    );
+                  })}
+                </Stack>
+              </Box>
             )}
 
-            {/* Brand Catalog List */}
-            {filteredProducts.length === 0 ? (
-              <Box sx={{ textAlign: "center", py: 8 }}>
-                <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 15, fontFamily: '"Cairo", sans-serif' }}>
-                  {t.noProducts}
-                </Typography>
-              </Box>
-            ) : (
-              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, gap: { xs: 3, md: 4 } }}>
-                {filteredProducts.map((product) => (
-                  <Box key={product.id} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                    <Box
-                      onClick={() => handleProductClick(product.id)}
-                      sx={{
-                        bgcolor: "#ffffff",
-                        border: "1px solid rgba(0,0,0,0.05)",
-                        cursor: "pointer",
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                        "&:hover": {
-                          transform: "translateY(-6px)",
-                          boxShadow: "0 15px 40px rgba(0,0,0,0.03)",
-                          borderColor: "rgba(0,0,0,0.12)"
-                        }
-                      }}
-                    >
-                      {/* Product Card Image Container */}
-                      <Box sx={{ overflow: "hidden", position: "relative", pt: "100%", bgcolor: "#FAF8F5" }}>
+            {/* Right-Side Product Catalog Grid */}
+            <Box sx={{ flexGrow: 1, width: "100%" }}>
+              {filteredProducts.length === 0 ? (
+                <Box sx={{ textAlign: "center", py: 8 }}>
+                  <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 15, fontFamily: '"Cairo", sans-serif' }}>
+                    {t.noProducts}
+                  </Typography>
+                </Box>
+              ) : (
+                <Box 
+                  sx={{ 
+                    display: "grid", 
+                    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, 
+                    gap: { xs: 3, md: 4 } 
+                  }}
+                >
+                  {filteredProducts.map((product) => (
+                    <Box key={product.id} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                      <Link
+                        href={`/${lang}/product/${product.id}`}
+                        style={{ textDecoration: "none", display: "flex", flexDirection: "column", height: "100%" }}
+                      >
                         <Box
-                          component="img"
-                          src={product.imageUrl}
-                          alt={lang === "ar" ? product.titleAr : product.title}
                           sx={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
+                            bgcolor: "#ffffff",
+                            border: "1px solid rgba(0,0,0,0.05)",
+                            cursor: "pointer",
                             height: "100%",
-                            objectFit: "cover",
-                            transition: "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)",
+                            display: "flex",
+                            flexDirection: "column",
+                            transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
                             "&:hover": {
-                              transform: "scale(1.05)"
+                              transform: "translateY(-6px)",
+                              boxShadow: "0 15px 40px rgba(0,0,0,0.02)",
+                              borderColor: "rgba(0,0,0,0.1)"
                             }
                           }}
-                        />
-                      </Box>
+                        >
+                          {/* Product Card Image Container */}
+                          <Box sx={{ overflow: "hidden", position: "relative", pt: "100%", bgcolor: "#FAF8F5" }}>
+                            <Box
+                              component="img"
+                              src={product.imageUrl}
+                              alt={lang === "ar" ? product.titleAr : product.title}
+                              sx={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                transition: "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)",
+                                "&:hover": {
+                                  transform: "scale(1.04)"
+                                }
+                              }}
+                            />
+                          </Box>
 
-                      {/* Product Info Block */}
-                      <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, flexGrow: 1, justifyContent: "space-between" }}>
-                        <Stack spacing={1}>
-                          <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", fontFamily: '"Cairo", sans-serif' }}>
-                            {lang === "ar" ? product.categoryAr : product.category}
-                          </Typography>
-                          <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 20, md: 22 }, fontWeight: 500, color: "#111111", lineHeight: 1.25 }}>
-                            {lang === "ar" ? product.titleAr : product.title}
-                          </Typography>
-                          <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 13, lineHeight: 1.5, fontFamily: '"Cairo", sans-serif' }}>
-                            {lang === "ar" ? product.sloganAr : product.slogan}
-                          </Typography>
-                        </Stack>
+                          {/* Product Info Block */}
+                          <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, flexGrow: 1, justifyContent: "space-between" }}>
+                            <Stack spacing={1}>
+                              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", fontFamily: '"Cairo", sans-serif' }}>
+                                {lang === "ar" ? product.categoryAr : product.category}
+                              </Typography>
+                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 20, md: 22 }, fontWeight: 500, color: "#111111", lineHeight: 1.25 }}>
+                                {lang === "ar" ? product.titleAr : product.title}
+                              </Typography>
+                              <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 13, lineHeight: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+                                {lang === "ar" ? product.sloganAr : product.slogan}
+                              </Typography>
+                            </Stack>
 
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.05)" }}>
-                          <Typography sx={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#111111", fontFamily: '"Cairo", sans-serif' }}>
-                            {t.exploreCollection}
-                          </Typography>
-                          <NorthEastIcon sx={{ fontSize: 14, color: "primary.main" }} />
-                        </Stack>
-                      </Stack>
+                            <Stack direction="row" alignItems="center" spacing={1} sx={{ pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                              <Typography sx={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#111111", fontFamily: '"Cairo", sans-serif' }}>
+                                {t.exploreCollection}
+                              </Typography>
+                              <NorthEastIcon sx={{ fontSize: 13, color: "primary.main" }} />
+                            </Stack>
+                          </Stack>
+                        </Box>
+                      </Link>
                     </Box>
-                  </Box>
-                ))}
-              </Box>
-            )}
-
-          </Stack>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Container>
       </Box>
 
-      {/* Shared Reusable Footer */}
+      {/* Shared Footer */}
       <SiteFooter />
     </Box>
   );
