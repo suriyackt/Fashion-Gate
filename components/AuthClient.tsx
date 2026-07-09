@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { 
   Box, 
   Container, 
@@ -13,6 +13,7 @@ import {
   ThemeProvider,
   InputAdornment
 } from "@mui/material";
+import { useLoader } from "@/components/LoaderProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Visibility from "@mui/icons-material/Visibility";
@@ -30,6 +31,11 @@ export default function AuthClient({ initialLang }: AuthClientProps) {
   const [lang, setLang] = useState(initialLang);
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [showPassword, setShowPassword] = useState(false);
+  const { setLoading } = useLoader();
+
+  useEffect(() => {
+    setLoading(false);
+  }, [setLoading]);
   
   // Form states
   const [name, setName] = useState("");

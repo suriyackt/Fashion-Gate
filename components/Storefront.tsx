@@ -694,9 +694,9 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
                 lang={lang} 
               />
               {section.type === "manifesto" && <BrandMarquee />}
+              {section.type === "boulevard-selection" && <CategoryProductSections t={t} lang={lang} />}
             </Box>
           ))}
-          <CategoryProductSections t={t} lang={lang} />
           <AtelierShowcaseSection t={t} lang={lang} />
           <SiteFooter />
         </Box>

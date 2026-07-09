@@ -584,7 +584,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (open || searchActive) {
+      if (open) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "";
@@ -595,7 +595,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
         document.body.style.overflow = "";
       }
     };
-  }, [open, searchActive]);
+  }, [open]);
 
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;

@@ -402,10 +402,9 @@ export default function BrandDetailClient({
         </Container>
       </Box>
 
-    </Box>
-    </ThemeProvider>
-    {/* Shared Footer is placed OUTSIDE the brand theme provider to keep styles original */}
-    <SiteFooter />
+          <SiteFooter />
+        </Box>
+      </ThemeProvider>
     </>
   );
 }
