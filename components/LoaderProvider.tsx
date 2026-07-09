@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const MotionBox = motion.create(Box);
 
@@ -23,9 +23,10 @@ export function useLoader() {
 
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [minTimeActive, setMinTimeActive] = useState(true);
-  const [pendingClose, setPendingClose] = useState(false);
+  const [pendingClose, setPendingClose] = useState(true);
   const [pageMounted, setPageMounted] = useState(true);
 
   // Lock the preloader on initial mount to let the ease sweep finish fully (2.6 seconds)
@@ -35,6 +36,11 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
     }, 2600);
     return () => clearTimeout(timer);
   }, []);
+
+  // Set pageMounted = true when pathname changes (meaning navigation completed)
+  useEffect(() => {
+    setPageMounted(true);
+  }, [pathname]);
 
   // Watch for lock release, page mount, and close requests
   useEffect(() => {
@@ -49,14 +55,14 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
     if (val) {
       setLoading(true);
       setMinTimeActive(!bypassMinTime);
-      setPendingClose(false);
+      setPendingClose(true);
       setPageMounted(false); // Reset page mount status when starting route navigation
       
       if (!bypassMinTime) {
-        // Enforce a 2.4s lock for standard transition loaders to run fully
+        // Enforce a 2.6s lock for standard transition loaders to run fully (matching progress line)
         setTimeout(() => {
           setMinTimeActive(false);
-        }, 2400);
+        }, 2600);
       }
     } else {
       setPageMounted(true); // Destination page has mounted and triggered the load exit
@@ -70,6 +76,20 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
       });
     }
   };
+
+  // Listen for browser back/forward buttons (popstate)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handlePopState = () => {
+      if (window.location.pathname !== pathname) {
+        safeSetLoading(true);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [pathname]);
 
   // Intercept global link clicks to trigger route change loading (runs transition loader)
   useEffect(() => {

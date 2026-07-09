@@ -112,9 +112,8 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
     .slice(0, 3);
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Box 
+    <ThemeProvider theme={theme}>
+      <Box 
         dir={lang === "ar" ? "rtl" : "ltr"} 
         sx={{ 
           bgcolor: "#ffffff", // Clean White background
@@ -428,11 +427,9 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
             </Box>
           )}
         </Container>
+          <SiteFooter />
         </Box>
       </Box>
     </ThemeProvider>
-    {/* Shared Footer is placed OUTSIDE the product theme provider to keep styles original */}
-    <SiteFooter />
-    </>
   );
 }

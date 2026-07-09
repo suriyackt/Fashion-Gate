@@ -568,21 +568,6 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   }, []);
 
   useEffect(() => {
-    let isLangSwitch = false;
-    if (typeof window !== "undefined") {
-      isLangSwitch = sessionStorage.getItem("pendingLangSwitch") === "true";
-      if (isLangSwitch) {
-        sessionStorage.removeItem("pendingLangSwitch");
-      }
-    }
-    const delay = (isHome || isLangSwitch) ? 2600 : 180;
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [pathname, setLoading, isHome]);
-
-  useEffect(() => {
     if (typeof window !== "undefined") {
       if (open) {
         document.body.style.overflow = "hidden";
@@ -607,7 +592,6 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
 
   const handleLangToggle = () => {
     if (typeof window === "undefined") return;
-    sessionStorage.setItem("pendingLangSwitch", "true");
     setLoading(true); // Trigger the preloader immediately on language switch
     if (onLangToggleStart) {
       onLangToggleStart();
