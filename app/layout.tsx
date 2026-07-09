@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { CssBaseline } from "@mui/material";
 import SmoothScroll from "@/components/SmoothScroll";
+import LoaderProvider from "@/components/LoaderProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body suppressHydrationWarning>
         <AppRouterCacheProvider>
           <CssBaseline />
-          <SmoothScroll />
-          {children}
+          <LoaderProvider>
+            <SmoothScroll />
+            {children}
+          </LoaderProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

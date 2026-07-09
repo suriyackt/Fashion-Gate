@@ -11,59 +11,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 import { blogPosts, featuredBlogPost } from "@/lib/blogData";
 
 const MotionBox = motion.create(Box);
 
-function JournalHeader() {
-  const params = useParams();
-  const lang = params?.lang === "en" ? "en" : "ar";
 
-  return (
-    <Box
-      component="header"
-      sx={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        bgcolor: "#FAF8F5", // Sand cream matching page background
-        borderBottom: "1px solid rgba(0,0,0,0.06)"
-      }}
-    >
-      <Stack direction="row" alignItems="center" sx={{ minHeight: { xs: 64, md: 74 }, px: { xs: 2, md: 4 } }}>
-        <Button component={Link} href={`/${lang}`} sx={{ color: "#111111", px: 0, minWidth: 0, textTransform: "none" }}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ height: { xs: 32, md: 38 }, width: "auto", filter: "invert(1)" }} />
-            <Stack spacing={0.1} sx={{ display: { xs: "none", sm: "flex" } }}>
-              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, fontWeight: 600, color: "#111111", lineHeight: 1, letterSpacing: "0.08em" }}>
-                Fashion Gate
-              </Typography>
-              <Typography sx={{ fontSize: 8, color: "rgba(0,0,0,0.48)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                On Boulevard. For the world.
-              </Typography>
-            </Stack>
-          </Stack>
-        </Button>
-
-        <Stack direction="row" spacing={{ xs: 2.5, md: 4 }} alignItems="center" sx={{ ml: "auto" }}>
-          <Button component={Link} href={`/${lang}`} sx={{ color: "rgba(0,0,0,0.64)", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { color: "primary.main" } }}>
-            Home
-          </Button>
-          <Button component={Link} href={`/${lang}/blogs`} sx={{ color: "primary.main", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
-            Blogs
-          </Button>
-          <Button href="#journal" endIcon={<NorthEastIcon sx={{ fontSize: 13 }} />} sx={{ display: { xs: "none", sm: "inline-flex" }, color: "#111111", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 0, px: 2.2, py: 0.6, fontSize: 11, letterSpacing: "0.14em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { bgcolor: "rgba(0,0,0,0.03)" } }}>
-            Read
-          </Button>
-        </Stack>
-      </Stack>
-    </Box>
-  );
-}
 
 export default function BlogExperience() {
   const [activeFormat, setActiveFormat] = useState("All");
   const [mounted, setMounted] = useState(false);
+  const [isLangTransitioning, setIsLangTransitioning] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -85,14 +43,20 @@ export default function BlogExperience() {
   const formats = ["All", "Blog post", "Case study", "Thought leadership"];
 
   // Filter posts based on format filter
-  const filteredPosts = activeFormat === "All" 
-    ? blogPosts.slice(1) 
+  const filteredPosts = activeFormat === "All"
+    ? blogPosts.slice(1)
     : blogPosts.slice(1).filter(post => post.format === activeFormat);
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ bgcolor: "#FAF8F5", color: "#111111", minHeight: "100vh" }}>
-        <JournalHeader />
+        <SiteHeader onLangToggleStart={() => setIsLangTransitioning(true)} />
+        <Box 
+          sx={{ 
+            opacity: isLangTransitioning ? 0 : 1, 
+            transition: "opacity 0.25s ease-in-out" 
+          }}
+        >
 
         {/* Clean Typographic Cover Hero */}
         <Box component="section" sx={{ pt: { xs: 8, md: 12 }, pb: { xs: 6, md: 8 } }}>
@@ -345,6 +309,7 @@ export default function BlogExperience() {
           </Container>
         </Box>
 
+        </Box>
         <SiteFooter />
       </Box>
     </ThemeProvider>

@@ -1,14 +1,17 @@
 "use client";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import NorthEastIcon from "@mui/icons-material/NorthEast";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import { Box, Button, Container, InputBase, Stack, ThemeProvider, Typography, createTheme, Card } from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Box, Button, Container, InputBase, Stack, ThemeProvider, Typography, createTheme, Card, MenuItem, Select, FormControl } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 
 const MotionBox = motion.create(Box);
 
@@ -18,46 +21,20 @@ interface ContactClientProps {
 
 export default function ContactClient({ initialLang }: ContactClientProps) {
   const router = useRouter();
-  const lang = initialLang;
+  const params = useParams();
+  const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
+  const [phone, setPhone] = useState("");
+  const [department, setDepartment] = useState("General Inquiry");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
     setIsLangTransitioning(false);
-  }, [initialLang]);
-
-  // Intercept nav clicks to play loaders
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const handleGlobalClick = (e: MouseEvent) => {
-      let target = e.target as HTMLElement | null;
-      while (target && target !== document.body) {
-        if (target.tagName === "A") {
-          const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href.endsWith("/blogs"))) {
-            setPageLoading(true);
-            break;
-          }
-        }
-        target = target.parentElement;
-      }
-    };
-    window.addEventListener("click", handleGlobalClick);
-    return () => window.removeEventListener("click", handleGlobalClick);
-  }, []);
-
-  const handleLangToggle = () => {
-    setIsLangTransitioning(true);
-    setTimeout(() => {
-      router.push(`/${lang === "en" ? "ar" : "en"}/contact`);
-    }, 250);
-  };
+  }, [lang]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,46 +57,72 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
 
   const translations = {
     en: {
-      title: "Contact Concierge",
-      subtitle: "Connect with the Damascus Atelier",
-      desc: "Our private concierge coordinates viewings, custom sizing requests, and international acquisitions.",
-      name: "Your Name",
-      email: "Email Address",
-      subject: "Subject",
-      message: "Message Details",
-      send: "Send Inquiry",
-      successTitle: "Inquiry Received",
-      successDesc: "Your details have been registered. A private advisor will contact you within 24 hours.",
-      addressTitle: "The Damascus Atelier",
-      addressBody: "Fashion Gate Avenue, Boulevard District, Damascus, Syria",
-      hoursTitle: "Private Salon Hours",
-      hoursBody: "Monday – Saturday: 11:00 AM – 9:00 PM",
-      phone: "Concierge Phone",
-      emailTitle: "Digital Inquiries",
-      home: "Home",
-      blogs: "Blogs",
-      contact: "Contact"
+      conciergeTitle: "Private Concierge Desk",
+      damascusShowroom: "Damascus Showroom & Atelier",
+      bookingPrompt: "For private acquisitions, personalized sizing adjustments, or to schedule a dedicated viewing at our Damascus Atelier, please contact our concierge team.",
+      addressLabel: "Atelier Address",
+      addressValue: "Boulevard District, Damascus, Syria",
+      hoursLabel: "Private Salon Hours",
+      hoursValue: "Monday – Saturday: 11:00 AM – 9:00 PM",
+      digitalLabel: "Digital Inquiries",
+      digitalValue: "concierge@fashiongate.sy",
+      chatConcierge: "Chat with Concierge",
+      
+      inquiryTitle: "Submit an Inquiry",
+      inquirySubtitle: "Our team will respond within 24 hours.",
+      fullName: "Full Name",
+      emailAddr: "Email Address",
+      phoneNum: "Phone / WhatsApp",
+      deptLabel: "Preferred Department",
+      deptOptions: ["Women's Haute Couture", "Men's Bespoke Tailoring", "Luxury Accessories & Beauty", "Home & Deco", "General Inquiry"],
+      msgLabel: "Request Details",
+      sendBtn: "Send Request",
+      
+      successHeader: "Request Registered",
+      successDesc: "Your details have been saved securely. A private advisor will contact you shortly to coordinate your request.",
+      sendAnother: "Send Another Request",
+      
+      charterTitle: "The Concierge Charter",
+      charter1Title: "Private Viewings",
+      charter1Desc: "Access closed-door presentations of new collections at our private Damascus salon.",
+      charter2Title: "Bespoke Tailoring",
+      charter2Desc: "Connect with master craftsmen for custom measurements, fitting reviews, and alterations.",
+      charter3Title: "White-Glove Delivery",
+      charter3Desc: "Secure, direct shipping and tracking to domestic and international destinations."
     },
     ar: {
-      title: "اتصل بالمستشار الخاص",
-      subtitle: "تواصل مع أتيلييه دمشق",
-      desc: "ينسق مستشارنا الخاص المعاينات الفردية، وطلبات المقاسات الخاصة، والاقتناء الدولي.",
-      name: "الاسم الكريم",
-      email: "البريد الإلكتروني",
-      subject: "الموضوع",
-      message: "تفاصيل الرسالة",
-      send: "إرسال الطلب",
-      successTitle: "تم استلام طلبك",
-      successDesc: "تم تسجيل تفاصيلك بنجاح. سيتصل بك مستشارنا الخاص في غضون ٢٤ ساعة.",
-      addressTitle: "أتيلييه دمشق",
-      addressBody: "شارع بوابة الأزياء، حي البوليفارد، دمشق، سوريا",
-      hoursTitle: "أوقات الصالون الخاص",
-      hoursBody: "الاثنين – السبت: ١١:٠٠ صباحاً – ٩:٠٠ مساءً",
-      phone: "هاتف المستشار",
-      emailTitle: "الاستفسارات الرقمية",
-      home: "الرئيسية",
-      blogs: "المدونة",
-      contact: "اتصل بنا"
+      conciergeTitle: "مكتب الكونسيرج الخاص",
+      damascusShowroom: "أتيليه ومعرض دمشق",
+      bookingPrompt: "للاقتناء الخاص، أو تعديل المقاسات الشخصية، أو لتحديد موعد معاينة خاصة في أتيليه دمشق، يرجى التواصل مع فريق الكونسيرج لدينا.",
+      addressLabel: "عنوان الأتيليه",
+      addressValue: "حي البوليفارد، دمشق، سوريا",
+      hoursLabel: "أوقات الصالون الخاص",
+      hoursValue: "الاثنين – السبت: ١١:٠٠ صباحاً – ٩:٠٠ مساءً",
+      digitalLabel: "الاستفسارات الرقمية",
+      digitalValue: "concierge@fashiongate.sy",
+      chatConcierge: "تحدث مع الكونسيرج",
+      
+      inquiryTitle: "تقديم طلب استفسار",
+      inquirySubtitle: "سيرد فريقنا على استفساركم خلال ٢٤ ساعة.",
+      fullName: "الاسم الكامل",
+      emailAddr: "البريد الإلكتروني",
+      phoneNum: "الهاتف / الواتساب",
+      deptLabel: "القسم المفضل",
+      deptOptions: ["أزياء النساء الراقية", "خياطة الرجال الخاصة", "الإكسسوارات الفاخرة والجمال", "المنزل والديكور", "استفسار عام"],
+      msgLabel: "تفاصيل الطلب",
+      sendBtn: "إرسال الطلب",
+      
+      successHeader: "تم تسجيل الطلب",
+      successDesc: "تم حفظ تفاصيل طلبك بأمان. سيتصل بك مستشارنا الخاص قريباً لتنسيق طلبك.",
+      sendAnother: "إرسال طلب آخر",
+      
+      charterTitle: "ميثاق الكونسيرج الخاص",
+      charter1Title: "المعاينات الخاصة",
+      charter1Desc: "احصل على عروض مغلقة للمجموعات الجديدة في صالون دمشق الخاص بنا.",
+      charter2Title: "الخياطة الراقية",
+      charter2Desc: "تواصل مع كبار الحرفيين للمقاسات المخصصة ومراجعة التفصيل والتعديل.",
+      charter3Title: "التوصيل المتميز",
+      charter3Desc: "شحن وتتبع آمن ومباشر إلى الوجهات المحلية والدولية المختارة."
     }
   };
 
@@ -130,250 +133,139 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
       <Box 
         dir={lang === "ar" ? "rtl" : "ltr"}
         sx={{ 
-          bgcolor: "#FAF8F5", // Sand cream matching page background
+          bgcolor: "#FAF8F5", 
           color: "#111111", 
           minHeight: "100vh",
           position: "relative"
         }}
       >
-        {/* Unified Cinematic Dark Preloader */}
-        <AnimatePresence>
-          {pageLoading && (
-            <MotionBox
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              sx={{
-                position: "fixed",
-                inset: 0,
-                zIndex: 99999,
-                bgcolor: "#050505",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <Stack spacing={3.5} alignItems="center">
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  src="/brand/logo.png"
-                  alt="Fashion Gate"
-                  style={{ width: "80px", maxWidth: "100px", height: "auto", objectFit: "contain" }}
-                />
-                
-                <MotionBox
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: "1.4rem", fontWeight: 500, letterSpacing: "0.25em", color: "#ffffff", textTransform: "uppercase" }}>
-                    FASHION GATE
-                  </Typography>
-                  <Typography sx={{ fontFamily: '"Cairo", sans-serif', fontSize: 10, fontWeight: 600, letterSpacing: "0.4em", color: "#CB6116", textTransform: "uppercase", mt: 0.5 }}>
-                    BOULEVARD
-                  </Typography>
-                </MotionBox>
-                
-                <Box sx={{ width: 120, height: 1.5, bgcolor: "rgba(255,255,255,0.15)", mt: 3, position: "relative", overflow: "hidden" }}>
-                  <MotionBox 
-                    initial={{ left: "-100%" }}
-                    animate={{ left: "0%" }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    sx={{ position: "absolute", top: 0, bottom: 0, width: "100%", bgcolor: "#CB6116" }}
-                  />
-                </Box>
-              </Stack>
-            </MotionBox>
-          )}
-        </AnimatePresence>
-
         {/* Outer background color stays opaque, inner box transitions to hide flashes */}
         <Box sx={{ opacity: isLangTransitioning ? 0 : 1, transition: "opacity 0.25s ease-in-out" }}>
           
-          {/* Header Bar */}
-          <Box 
-            component="header"
-            sx={{
-              position: "sticky",
-              top: 0,
-              zIndex: 100,
-              bgcolor: "#FAF8F5",
-              borderBottom: "1px solid rgba(0,0,0,0.06)"
-            }}
-          >
-            <Stack direction="row" alignItems="center" sx={{ minHeight: { xs: 64, md: 74 }, px: { xs: 2.5, md: 4 } }}>
-              <Button component={Link} href={`/${lang}`} sx={{ color: "#111111", px: 0, minWidth: 0, textTransform: "none" }}>
-                <Stack direction="row" gap={lang === "ar" ? 3.5 : 2} alignItems="center">
-                  <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ height: { xs: 32, md: 38 }, width: "auto", filter: "invert(1)" }} />
-                  <Stack spacing={0.1} sx={{ display: { xs: "none", sm: "flex" }, textAlign: "left" }}>
-                    <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, fontWeight: 600, color: "#111111", lineHeight: 1, letterSpacing: "0.08em" }}>
-                      Fashion Gate
-                    </Typography>
-                    <Typography sx={{ fontSize: 8, color: "rgba(0,0,0,0.48)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                      On Boulevard. For the world.
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Button>
-
-              <Stack direction="row" gap={{ xs: 2.5, md: 4 }} alignItems="center" sx={{ ml: "auto" }}>
-                <Button component={Link} href={`/${lang}`} sx={{ color: "rgba(0,0,0,0.64)", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { color: "primary.main" } }}>
-                  {t.home}
-                </Button>
-                <Button component={Link} href={`/${lang}/blogs`} sx={{ color: "rgba(0,0,0,0.64)", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif', "&:hover": { color: "primary.main" } }}>
-                  {t.blogs}
-                </Button>
-                <Button component={Link} href={`/${lang}/contact`} sx={{ color: "primary.main", px: 0, minWidth: 0, fontSize: 11, letterSpacing: "0.16em", fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
-                  {t.contact}
-                </Button>
-                
-                {/* Language Switch */}
-                <Button 
-                  onClick={handleLangToggle}
-                  sx={{ 
-                    color: "primary.main", 
-                    textTransform: "uppercase", 
-                    fontSize: 10, 
-                    fontWeight: 800, 
-                    letterSpacing: "0.15em",
-                    px: 1.2,
-                    py: 0.4,
-                    border: "1px solid",
-                    borderColor: "primary.main",
-                    borderRadius: 0,
-                    fontFamily: '"Cairo", sans-serif',
-                    "&:hover": { bgcolor: "rgba(203, 97, 22, 0.08)" }
-                  }}
-                >
-                  {lang === "ar" ? "EN" : "AR"}
-                </Button>
-              </Stack>
-            </Stack>
-          </Box>
+          {/* SiteHeader Reused */}
+          <SiteHeader onLangToggleStart={() => setIsLangTransitioning(true)} />
 
           {/* Contact Main Hero Section */}
           <Box 
             sx={{ 
               position: "relative",
-              minHeight: { xs: "auto", md: 680 },
-              display: "flex",
-              alignItems: "center",
               py: { xs: 8, md: 12 },
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                inset: 0,
-                backgroundImage: "url(/brand-pages/contact_bg.png)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                filter: "brightness(0.24)",
-                zIndex: 1
-              }
+              bgcolor: "#FAF8F5"
             }}
           >
-            <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10 }}>
-              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.1fr 0.9fr" }, gap: { xs: 6, md: 8, lg: 10 }, alignItems: "stretch" }}>
+            <Container maxWidth="xl">
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1.1fr 0.9fr" }, gap: { xs: 5, md: 6, lg: 8 }, alignItems: "stretch" }}>
                 
-                {/* Left Column: Contact Details (Glassmorphic details card) */}
-                <Box sx={{ display: "flex" }}>
-                  <Card 
-                    sx={{ 
-                      p: { xs: 4, md: 6 }, 
-                      bgcolor: "rgba(255,255,255,0.04)", 
-                      backdropFilter: "blur(20px)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 0,
-                      color: "#ffffff",
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between"
-                    }}
-                  >
-                    <Stack spacing={4.5}>
-                      <Box>
-                        <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 800, letterSpacing: "0.22em", mb: 1 }}>
-                          {t.title}
-                        </Typography>
-                        <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 500, lineHeight: 1.15 }}>
-                          {t.subtitle}
-                        </Typography>
-                        <Typography sx={{ color: "rgba(255,255,255,0.64)", fontSize: 13.5, lineHeight: 1.7, mt: 2 }}>
-                          {t.desc}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{ borderTop: "1px solid rgba(255,255,255,0.08)", pt: 4 }}>
-                        <Stack spacing={3}>
-                          {/* Address */}
-                          <Stack spacing={0.5}>
-                            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                              {t.addressTitle}
-                            </Typography>
-                            <Typography sx={{ fontSize: 14, color: "rgba(255,255,255,0.85)", lineHeight: 1.5 }}>
-                              {t.addressBody}
-                            </Typography>
-                          </Stack>
-
-                          {/* Hours */}
-                          <Stack spacing={0.5}>
-                            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                              {t.hoursTitle}
-                            </Typography>
-                            <Typography sx={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>
-                              {t.hoursBody}
-                            </Typography>
-                          </Stack>
-
-                          {/* Inquiries */}
-                          <Stack spacing={0.5}>
-                            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                              {t.emailTitle}
-                            </Typography>
-                            <Typography sx={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>
-                              concierge@fashiongate.sy
-                            </Typography>
-                          </Stack>
-                        </Stack>
-                      </Box>
-                    </Stack>
-
-                    {/* Showroom concierges & WhatsApp */}
-                    <Box sx={{ mt: 5, borderTop: "1px solid rgba(255,255,255,0.08)", pt: 4 }}>
-                      <Button
-                        href="#"
-                        startIcon={<WhatsAppIcon sx={{ mr: lang === "ar" ? 0 : 1, ml: lang === "ar" ? 1 : 0 }} />}
-                        sx={{
-                          bgcolor: "#CB6116",
-                          color: "#ffffff",
-                          px: 3,
-                          py: 1.2,
-                          borderRadius: 0,
-                          fontSize: 12,
-                          fontWeight: 700,
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase",
-                          fontFamily: '"Cairo", sans-serif',
-                          "&:hover": { bgcolor: "#9D430C" }
-                        }}
-                      >
-                        {t.phone}
-                      </Button>
+                {/* Left Column: Premium Showroom Details (No blur background, clean store layout) */}
+                <Box 
+                  sx={{ 
+                    position: "relative",
+                    p: { xs: 4, md: 6 }, 
+                    backgroundImage: "linear-gradient(180deg, rgba(5,5,5,0.45) 0%, rgba(5,5,5,0.85) 100%), url(/brand-pages/contact_bg.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    color: "#ffffff",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    minHeight: { xs: 450, md: 550, lg: 650 },
+                    border: "1px solid rgba(255,255,255,0.08)"
+                  }}
+                >
+                  <Stack spacing={4}>
+                    <Box>
+                      <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 800, letterSpacing: "0.22em", mb: 1.5 }}>
+                        {t.conciergeTitle}
+                      </Typography>
+                      <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 26, sm: 34, md: 44 }, fontWeight: 500, lineHeight: 1.15 }}>
+                        {t.damascusShowroom}
+                      </Typography>
+                      <Typography sx={{ color: "rgba(255,255,255,0.76)", fontSize: 14, lineHeight: 1.8, mt: 2.5, maxWidth: 540 }}>
+                        {t.bookingPrompt}
+                      </Typography>
                     </Box>
-                  </Card>
+
+                    <Stack spacing={3.5} sx={{ borderTop: "1px solid rgba(255,255,255,0.15)", pt: 4.5 }}>
+                      {/* Address */}
+                      <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                        <LocationOnIcon sx={{ color: "primary.main", mt: 0.3 }} />
+                        <Stack spacing={0.5}>
+                          <Typography sx={{ color: "rgba(255,255,255,0.48)", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                            {t.addressLabel}
+                          </Typography>
+                          <Typography sx={{ fontSize: 14.5, color: "rgba(255,255,255,0.9)", fontWeight: 500 }}>
+                            {t.addressValue}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+
+                      {/* Hours */}
+                      <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                        <AccessTimeIcon sx={{ color: "primary.main", mt: 0.3 }} />
+                        <Stack spacing={0.5}>
+                          <Typography sx={{ color: "rgba(255,255,255,0.48)", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                            {t.hoursLabel}
+                          </Typography>
+                          <Typography sx={{ fontSize: 14.5, color: "rgba(255,255,255,0.9)", fontWeight: 500 }}>
+                            {t.hoursValue}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+
+                      {/* Inquiries */}
+                      <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                        <EmailIcon sx={{ color: "primary.main", mt: 0.3 }} />
+                        <Stack spacing={0.5}>
+                          <Typography sx={{ color: "rgba(255,255,255,0.48)", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                            {t.digitalLabel}
+                          </Typography>
+                          <Typography sx={{ fontSize: 14.5, color: "rgba(255,255,255,0.9)", fontWeight: 500 }}>
+                            {t.digitalValue}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+
+                  {/* Showroom concierges & WhatsApp */}
+                  <Box sx={{ mt: 5, borderTop: "1px solid rgba(255,255,255,0.15)", pt: 4 }}>
+                    <Button
+                      href="https://wa.me/963930000000"
+                      target="_blank"
+                      startIcon={<WhatsAppIcon sx={{ mr: lang === "ar" ? 0 : 1, ml: lang === "ar" ? 1 : 0 }} />}
+                      sx={{
+                        bgcolor: "#CB6116",
+                        color: "#ffffff",
+                        px: 3.5,
+                        py: 1.4,
+                        borderRadius: 0,
+                        fontSize: 12,
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        fontFamily: '"Cairo", sans-serif',
+                        transition: "all 0.3s ease",
+                        "&:hover": { bgcolor: "#9D430C" }
+                      }}
+                    >
+                      {t.chatConcierge}
+                    </Button>
+                  </Box>
                 </Box>
 
-                {/* Right Column: Interaction Form */}
-                <Box>
+                {/* Right Column: Interaction Form Card (No blur, clean theme matching) */}
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Card 
                     sx={{ 
                       p: { xs: 4, md: 6 }, 
                       bgcolor: "#ffffff",
-                      border: "1px solid rgba(0,0,0,0.04)",
+                      border: "1px solid rgba(0,0,0,0.06)",
                       borderRadius: 0,
-                      boxShadow: "0 25px 50px rgba(0,0,0,0.15)"
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      height: "100%"
                     }}
                   >
                     <AnimatePresence mode="wait">
@@ -384,13 +276,22 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.3 }}
                           onSubmit={handleSubmit}
+                          style={{ width: "100%" }}
                         >
-                          <Stack spacing={3.5}>
+                          <Stack spacing={4}>
+                            <Box sx={{ borderBottom: "1px solid rgba(0,0,0,0.06)", pb: 2 }}>
+                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 500, color: "#111111" }}>
+                                {t.inquiryTitle}
+                              </Typography>
+                              <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 13, mt: 0.5 }}>
+                                {t.inquirySubtitle}
+                              </Typography>
+                            </Box>
                             
                             {/* Input Fields */}
                             <Stack spacing={1}>
-                              <Typography sx={{ fontSize: 11, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                                {t.name} *
+                              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                                {t.fullName} *
                               </Typography>
                               <Box sx={{ borderBottom: "1.5px solid rgba(0,0,0,0.12)", py: 0.5 }}>
                                 <InputBase
@@ -398,15 +299,15 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                                   fullWidth
                                   value={name}
                                   onChange={(e) => setName(e.target.value)}
-                                  placeholder="e.g. Damascus guest"
+                                  placeholder={lang === "ar" ? "مثال: أحمد دمشقي" : "e.g. John Doe"}
                                   sx={{ fontSize: 14, color: "#111111", fontFamily: '"Cairo", sans-serif' }}
                                 />
                               </Box>
                             </Stack>
 
                             <Stack spacing={1}>
-                              <Typography sx={{ fontSize: 11, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                                {t.email} *
+                              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                                {t.emailAddr} *
                               </Typography>
                               <Box sx={{ borderBottom: "1.5px solid rgba(0,0,0,0.12)", py: 0.5 }}>
                                 <InputBase
@@ -415,30 +316,56 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                                   fullWidth
                                   value={email}
                                   onChange={(e) => setEmail(e.target.value)}
-                                  placeholder="concierge@luxury.com"
+                                  placeholder="client@luxury.com"
                                   sx={{ fontSize: 14, color: "#111111", fontFamily: '"Cairo", sans-serif' }}
                                 />
                               </Box>
                             </Stack>
 
                             <Stack spacing={1}>
-                              <Typography sx={{ fontSize: 11, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                                {t.subject}
+                              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                                {t.phoneNum}
                               </Typography>
                               <Box sx={{ borderBottom: "1.5px solid rgba(0,0,0,0.12)", py: 0.5 }}>
                                 <InputBase
                                   fullWidth
-                                  value={subject}
-                                  onChange={(e) => setSubject(e.target.value)}
-                                  placeholder="Private Atelier acquisition"
+                                  value={phone}
+                                  onChange={(e) => setPhone(e.target.value)}
+                                  placeholder="+963 930 000 000"
                                   sx={{ fontSize: 14, color: "#111111", fontFamily: '"Cairo", sans-serif' }}
                                 />
                               </Box>
                             </Stack>
 
                             <Stack spacing={1}>
-                              <Typography sx={{ fontSize: 11, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                                {t.message} *
+                              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                                {t.deptLabel}
+                              </Typography>
+                              <FormControl fullWidth variant="standard" sx={{ py: 0.5 }}>
+                                <Select
+                                  value={department}
+                                  onChange={(e) => setDepartment(e.target.value as string)}
+                                  disableUnderline
+                                  sx={{
+                                    fontSize: 14,
+                                    color: "#111111",
+                                    fontFamily: '"Cairo", sans-serif',
+                                    borderBottom: "1.5px solid rgba(0,0,0,0.12)",
+                                    pb: 0.5
+                                  }}
+                                >
+                                  {t.deptOptions.map((opt) => (
+                                    <MenuItem key={opt} value={opt} sx={{ fontSize: 13.5 }}>
+                                      {opt}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Stack>
+
+                            <Stack spacing={1}>
+                              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#111111", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                                {t.msgLabel} *
                               </Typography>
                               <Box sx={{ border: "1px solid rgba(0,0,0,0.12)", p: 2, minHeight: 120 }}>
                                 <InputBase
@@ -448,7 +375,7 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                                   fullWidth
                                   value={message}
                                   onChange={(e) => setMessage(e.target.value)}
-                                  placeholder="State details of your request..."
+                                  placeholder={lang === "ar" ? "اكتب تفاصيل طلبك هنا..." : "State details of your request..."}
                                   sx={{ fontSize: 14, color: "#111111", fontFamily: '"Cairo", sans-serif' }}
                                 />
                               </Box>
@@ -471,10 +398,11 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                                 textTransform: "uppercase",
                                 fontFamily: '"Cairo", sans-serif',
                                 alignSelf: "flex-start",
-                                "&:hover": { bgcolor: "primary.main" }
+                                "&:hover": { bgcolor: "primary.main" },
+                                transition: "all 0.3s ease"
                               }}
                             >
-                              {t.send}
+                              {t.sendBtn}
                             </Button>
                           </Stack>
                         </motion.form>
@@ -485,9 +413,9 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                           animate={{ opacity: 1, scale: 1 }}
                           sx={{ textAlign: "center", py: 6 }}
                         >
-                          <Box component="img" src="/assets/baglight.png" alt="Inquiry Success" sx={{ width: 120, height: "auto", mb: 4 }} />
+                          <Box component="img" src="/assets/baglight.png" alt="Inquiry Success" sx={{ width: 100, height: "auto", mb: 4 }} />
                           <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 26, color: "primary.main", mb: 1.5 }}>
-                            {t.successTitle}
+                            {t.successHeader}
                           </Typography>
                           <Typography sx={{ fontSize: 14.5, color: "rgba(0,0,0,0.64)", lineHeight: 1.6, maxWidth: 440, mx: "auto", mb: 4 }}>
                             {t.successDesc}
@@ -497,7 +425,8 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                             onClick={() => {
                               setName("");
                               setEmail("");
-                              setSubject("");
+                              setPhone("");
+                              setDepartment("General Inquiry");
                               setMessage("");
                               setSubmitted(false);
                             }}
@@ -514,13 +443,62 @@ export default function ContactClient({ initialLang }: ContactClientProps) {
                               "&:hover": { bgcolor: "#222222" }
                             }}
                           >
-                            {lang === "ar" ? "إرسال رسالة أخرى" : "Send Another Message"}
+                            {t.sendAnother}
                           </Button>
                         </MotionBox>
                       )}
                     </AnimatePresence>
                   </Card>
                 </Box>
+
+              </Box>
+            </Container>
+          </Box>
+
+          {/* Concierge Charter Section */}
+          <Box 
+            component="section" 
+            sx={{ 
+              py: { xs: 8, md: 12 }, 
+              bgcolor: "#F5EFEB", 
+              borderTop: "1px solid rgba(0,0,0,0.05)" 
+            }}
+          >
+            <Container maxWidth="xl">
+              <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.22em", textTransform: "uppercase", textAlign: "center", mb: 6 }}>
+                {t.charterTitle}
+              </Typography>
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 4 }}>
+                
+                {/* Charter 1 */}
+                <Stack spacing={2} sx={{ p: 2, textAlign: lang === "ar" ? "right" : "left" }}>
+                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: 500, color: "#111111" }}>
+                    {t.charter1Title}
+                  </Typography>
+                  <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 13.5, lineHeight: 1.7 }}>
+                    {t.charter1Desc}
+                  </Typography>
+                </Stack>
+
+                {/* Charter 2 */}
+                <Stack spacing={2} sx={{ p: 2, textAlign: lang === "ar" ? "right" : "left", borderLeft: { md: "1px solid rgba(0,0,0,0.08)" }, borderRight: { md: lang === "ar" ? "1px solid rgba(0,0,0,0.08)" : "none" }, px: { md: 4 } }}>
+                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: 500, color: "#111111" }}>
+                    {t.charter2Title}
+                  </Typography>
+                  <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 13.5, lineHeight: 1.7 }}>
+                    {t.charter2Desc}
+                  </Typography>
+                </Stack>
+
+                {/* Charter 3 */}
+                <Stack spacing={2} sx={{ p: 2, textAlign: lang === "ar" ? "right" : "left", borderLeft: { md: lang === "en" ? "1px solid rgba(0,0,0,0.08)" : "none" }, borderRight: { md: lang === "ar" ? "1px solid rgba(0,0,0,0.08)" : "none" }, px: { md: 4 } }}>
+                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: 500, color: "#111111" }}>
+                    {t.charter3Title}
+                  </Typography>
+                  <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 13.5, lineHeight: 1.7 }}>
+                    {t.charter3Desc}
+                  </Typography>
+                </Stack>
 
               </Box>
             </Container>

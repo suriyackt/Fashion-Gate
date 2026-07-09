@@ -23,6 +23,7 @@ import LookbookSection from "./storefront/LookbookSection";
 import BoulevardSelectionSection from "./storefront/BoulevardSelectionSection";
 import EditorialSection from "./storefront/EditorialSection";
 import AtelierShowcaseSection from "./storefront/AtelierShowcaseSection";
+import BrandMarquee from "./storefront/BrandMarquee";
 
 
 const MotionBox = motion.create(Box);
@@ -41,8 +42,8 @@ export const shopCategories = [
     label: "Women",
     eyebrow: "Designer Wardrobe",
     headline: "Edited silhouettes for her.",
-    description: "Refined dresses, silk separates, trench coats, and tailored pieces arranged for an easier boutique-style shopping path.",
-    productIds: ["fgb-white-lace-midi-dress", "fgb-silk-oversized-shirt", "the-silk-trench-coat", "structured-wool-blazer"]
+    description: "Refined dresses, silk separates, coats, and tailored pieces arranged for an easier boutique-style shopping path.",
+    productIds: ["chanel-tweed-jacket", "prada-oversized-wool-coat", "gucci-floral-silk-scarf", "dior-bar-jacket"]
   },
   {
     id: "men",
@@ -50,23 +51,23 @@ export const shopCategories = [
     eyebrow: "Menswear Edit",
     headline: "Sharp everyday luxury.",
     description: "Polos, tailoring, sportswear, and structured outerwear grouped so men can move directly from category to product.",
-    productIds: ["boss-hugo-boss-polo", "adidas-originals-sportswear", "fgb-modern-tailored-blazer", "signature-tweed-jacket"]
+    productIds: ["ysl-tuxedo-suit", "adidas-y3-sneakers", "adidas-originals-track-jacket", "prada-nylon-backpack"]
   },
   {
     id: "beauty",
     label: "Beauty",
     eyebrow: "Beauty & Accessories",
     headline: "Scent, skin, and finishing accents.",
-    description: "Perfume, jasmine oil, footwear, and leather accessories brought together as a premium beauty and accessory destination.",
-    productIds: ["si-passione-giorgio-armani-perfume", "cedar-and-amber-extract", "damascene-jasmine-oil", "the-architectural-tote", "fgb-urban-active-footwear"]
+    description: "Perfume, bags, watches, footwear, and leather accessories brought together as a premium beauty and accessory destination.",
+    productIds: ["chanel-no5-perfume", "dior-sauvage-elixir", "hermes-birkin-30", "chanel-classic-flap-bag", "prada-galleria-tote", "gucci-marmont-shoulder-bag", "gucci-horsebit-loafers", "ysl-sac-de-jour", "hermes-h-hour-watch"]
   },
   {
     id: "home-deco",
     label: "Home & Deco",
     eyebrow: "Gourmet & Gifting",
     headline: "Objects of taste for home and gifting.",
-    description: "Fine foods and giftable pieces staged as a lifestyle department until the home and decor catalogue is expanded.",
-    productIds: ["damascene-rose-nougat", "saffron-blossom-honey", "artisanal-truffle-oil"]
+    description: "Fine porcelain and lifestyle decor pieces sourced from the world's most prestigious luxury houses.",
+    productIds: ["hermes-porcelain-plate"]
   }
 ];
 
@@ -133,10 +134,10 @@ const stringMap: Record<string, string> = {
     "استكشف معرضاً فريداً من القطع المتميزة، حيث تلتقي الهندسة المعمارية بالفخامة الحسية من دمشق إلى العالم.",
     
   // Brand Section
-  "Brand system": "نظام العلامة التجارية",
-  "Built from the Fashion Gate identity deck.": "مستوحى من دليل الهوية الخاص ببوابة الأزياء.",
-  "The first theme pass uses the extracted PDF palette: burnt orange #CB6116, black, white, charcoal, and warm neutral greys. Typography uses Libre Bodoni as a close web-font match to the brand deck's high-contrast Roman serif wordmark, paired with Inter for clean interface text.":
-    "تستخدم لوحة الألوان المستخرجة من دليل الهوية: البرتقالي المحروق #CB6116 والأسود والأبيض والفحمي والرمادي المحايد الدافئ. تستخدم الطباعة خط Apple Garamond كخط رئيسي للعناوين وخط Cairo للنصوص الواجهة.",
+  "Heritage & Craftsmanship": "التراث والمهارة الحرفية",
+  "The Pinnacle of Syrian Luxury Shopping": "قمة تسوق الفخامة السورية",
+  "Fashion Gate brings together the world's most renowned haute couture houses, bespoke local ateliers, and curations of fine design. Housed in the prestigious Boulevard district, we offer an immersive luxury journey that connects the heritage of Silk Road craftsmanship with contemporary global style.":
+    "تجمع بوابة الأزياء (فاشن جيت) بين أشهر دور الأزياء العالمية، وأرقى الأتيليهات المحلية المصممة خصيصاً، ومجموعات منتقاة من التصميم الفاخر. في قلب حي البوليفارد المرموق، نقدم رحلة فاخرة غامرة تربط بين تراث طريق الحرير الحرفي والأسلوب العالمي المعاصر.",
 };
 
 export function resolveImage(source?: SanityImage, fallback?: string) {
@@ -607,24 +608,6 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function SectionRenderer({ 
   section, 
   t, 
@@ -644,14 +627,11 @@ function SectionRenderer({
   return null;
 }
 
-
-
 export default function Storefront({ settings, sections }: { settings: SiteSettings; sections: Section[] }) {
   const params = useParams();
   const router = useRouter();
   const lang = (params?.lang === "en" ? "en" : "ar") as "ar" | "en";
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsLangTransitioning(false);
@@ -664,34 +644,6 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
     const nextLang = lang === "ar" ? "en" : "ar";
     router.push(`/${nextLang}`);
   };
-
-  // Snappy loading duration for cinematic entry
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Intercept product/blog link clicks to show loader instantly during compilation/fetching
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const handleGlobalClick = (e: MouseEvent) => {
-      let target = e.target as HTMLElement | null;
-      while (target && target !== document.body) {
-        if (target.tagName === "A") {
-          const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href.includes("/blogs"))) {
-            setLoading(true);
-            break;
-          }
-        }
-        target = target.parentElement;
-      }
-    };
-    window.addEventListener("click", handleGlobalClick);
-    return () => window.removeEventListener("click", handleGlobalClick);
-  }, []);
 
   // Translation function using the mapping list
   const t = (str?: string) => {
@@ -721,89 +673,7 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
 
   return (
     <ThemeProvider theme={theme}>
-      {/* Cinematic Elegant Loader Overlay */}
-      <AnimatePresence>
-        {loading && (
-          <MotionBox
-            initial={{ opacity: 1 }}
-            exit={{ 
-              y: "-100%", 
-              transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
-            }}
-            sx={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 99999, // Render above sticky navigation
-              bgcolor: "#050505",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <Stack spacing={3.5} alignItems="center">
-              {/* Glowing Monogram script logo */}
-              <motion.img
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-                src="/brand/logo.png"
-                alt="Fashion Gate"
-                style={{ width: "80px", maxWidth: "100px", height: "auto", objectFit: "contain" }}
-              />
-              
-              <MotionBox
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 1 }}
-                sx={{ textAlign: "center" }}
-              >
-                <Typography 
-                  sx={{ 
-                    fontFamily: "var(--heading-font)", 
-                    fontSize: { xs: "1.4rem", md: "1.8rem" }, 
-                    fontWeight: 500, 
-                    letterSpacing: "0.25em", 
-                    color: "#ffffff",
-                    textTransform: "uppercase"
-                  }}
-                >
-                  FASHION GATE
-                </Typography>
-                <Typography 
-                  sx={{ 
-                    fontFamily: '"Cairo", sans-serif', 
-                    fontSize: 10, 
-                    fontWeight: 600, 
-                    letterSpacing: "0.4em", 
-                    color: "#CB6116", // Brand orange
-                    textTransform: "uppercase",
-                    mt: 1
-                  }}
-                >
-                  BOULEVARD
-                </Typography>
-              </MotionBox>
-              
-              {/* Elegant Accent Orange Progress bar */}
-              <Box sx={{ width: 140, height: 1.5, bgcolor: "rgba(255,255,255,0.08)", mt: 4, position: "relative", overflow: "hidden" }}>
-                <MotionBox 
-                  initial={{ left: "-100%" }}
-                  animate={{ left: "0%" }}
-                  transition={{ duration: 2.2, ease: "easeInOut" }}
-                  sx={{ 
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    width: "100%",
-                    bgcolor: "#CB6116"
-                  }}
-                />
-              </Box>
-            </Stack>
-          </MotionBox>
-        )}
-      </AnimatePresence>
+
 
 
       <Box 
@@ -815,16 +685,18 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
         }}
       >
         <Box>
-          <FloatingMenu settings={settings} lang={lang} setLang={handleLangToggle} t={t} isLangTransitioning={isLangTransitioning} />
+          <SiteHeader settings={settings} onLangToggleStart={() => setIsLangTransitioning(true)} />
           {sections.map((section, index) => (
-            <SectionRenderer 
-              key={section._id || `${section.type}-${index}`} 
-              section={section} 
-              t={t} 
-              lang={lang} 
-            />
+            <Box key={section._id || `${section.type}-${index}`}>
+              <SectionRenderer 
+                section={section} 
+                t={t} 
+                lang={lang} 
+              />
+              {section.type === "manifesto" && <BrandMarquee />}
+              {section.type === "boulevard-selection" && <CategoryProductSections t={t} lang={lang} />}
+            </Box>
           ))}
-          <CategoryProductSections t={t} lang={lang} />
           <AtelierShowcaseSection t={t} lang={lang} />
           <SiteFooter />
         </Box>

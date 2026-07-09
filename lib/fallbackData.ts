@@ -89,8 +89,8 @@ export const fallbackSections = [
     _id: "brand",
     type: "editorial",
     anchor: "brand",
-    eyebrow: "Brand system",
-    headline: "Built from the Fashion Gate identity deck.",
-    description: "The first theme pass uses the extracted PDF palette: burnt orange #CB6116, black, white, charcoal, and warm neutral greys. Typography uses Libre Bodoni as a close web-font match to the brand deck's high-contrast Roman serif wordmark, paired with Inter for clean interface text."
+    eyebrow: "Heritage & Craftsmanship",
+    headline: "The Pinnacle of Syrian Luxury Shopping",
+    description: "Fashion Gate brings together the world's most renowned haute couture houses, bespoke local ateliers, and curations of fine design. Housed in the prestigious Boulevard district, we offer an immersive luxury journey that connects the heritage of Silk Road craftsmanship with contemporary global style."
   }
 ];

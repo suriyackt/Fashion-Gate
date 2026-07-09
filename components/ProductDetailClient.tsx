@@ -7,74 +7,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ShareIcon from "@mui/icons-material/Share";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 
 const MotionBox = motion.create(Box);
 
-function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
-  const [index, setIndex] = useState(0);
 
-  const announcements = useMemo(() => [
-    {
-      en: "Syria's First Luxury Department Store — On Boulevard. For the world.",
-      ar: "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
-    },
-    {
-      en: "Complimentary Worldwide Shipping on Selected Designer Collections",
-      ar: "شحن مجاني لكافة أنحاء العالم على مجموعات مصممين مختارة"
-    },
-    {
-      en: "Experience Personal Shopping & Private Viewings at Our Damascus Atelier",
-      ar: "استمتع بتجربة تسوق شخصي ومعاينات خاصة في أتيلييه دمشق"
-    }
-  ], []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % announcements.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [announcements.length]);
-
-  return (
-    <Box 
-      sx={{ 
-        bgcolor: "#050505", 
-        color: "primary.main", 
-        py: { xs: 1.4, md: 1.8 }, 
-        px: { xs: 3, md: 4 }, 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        position: "relative",
-        minHeight: { xs: 46, md: 54 },
-        overflow: "hidden"
-      }}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{
-            fontFamily: '"Cairo", sans-serif',
-            fontSize: "13px",
-            fontWeight: 600,
-            letterSpacing: "0.08em",
-            textAlign: "center",
-            lineHeight: 1.4
-          }}
-        >
-          {announcements[index][lang]}
-        </motion.div>
-      </AnimatePresence>
-    </Box>
-  );
-}
 
 interface ProductDetailClientProps {
   product: Product;
@@ -87,7 +26,6 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
   const lang = initialLang;
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
     setIsLangTransitioning(false);
@@ -95,7 +33,12 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
+      const timer = setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [product.id]);
 
@@ -109,25 +52,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
     }
   };
 
-  // Intercept back / related link clicks to show loader instantly during compilation/fetching
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const handleGlobalClick = (e: MouseEvent) => {
-      let target = e.target as HTMLElement | null;
-      while (target && target !== document.body) {
-        if (target.tagName === "A") {
-          const href = target.getAttribute("href");
-          if (href && (href.includes("/product/") || href.endsWith("/blogs"))) {
-            setPageLoading(true);
-            break;
-          }
-        }
-        target = target.parentElement;
-      }
-    };
-    window.addEventListener("click", handleGlobalClick);
-    return () => window.removeEventListener("click", handleGlobalClick);
-  }, []);
+
 
   // Unified theme mapping - strictly Orange, Black, White, and Grey (no blue!)
   const theme = useMemo(() => createTheme({
@@ -198,85 +123,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           position: "relative"
         }}
       >
-        {/* Unified Cinematic Dark Preloader (Matching Homepage Loader) */}
-        <AnimatePresence>
-          {pageLoading && (
-            <MotionBox
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              sx={{
-                position: "fixed",
-                inset: 0,
-                zIndex: 99999,
-                bgcolor: "#050505", // Matching Dark homepage background
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <Stack spacing={3.5} alignItems="center">
-                {/* Glowing Monogram script logo */}
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  src="/brand/logo.png"
-                  alt="Fashion Gate"
-                  style={{ width: "80px", maxWidth: "100px", height: "auto", objectFit: "contain" }}
-                />
-                
-                <MotionBox
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Typography 
-                    sx={{ 
-                      fontFamily: "var(--heading-font)", 
-                      fontSize: "1.4rem", 
-                      fontWeight: 500, 
-                      letterSpacing: "0.25em", 
-                      color: "#ffffff",
-                      textTransform: "uppercase"
-                    }}
-                  >
-                    FASHION GATE
-                  </Typography>
-                  <Typography 
-                    sx={{ 
-                      fontFamily: '"Cairo", sans-serif', 
-                      fontSize: 10, 
-                      fontWeight: 600, 
-                      letterSpacing: "0.4em", 
-                      color: "#CB6116", // Orange
-                      textTransform: "uppercase",
-                      mt: 0.5
-                    }}
-                  >
-                    BOULEVARD
-                  </Typography>
-                </MotionBox>
-                
-                {/* Orange progress line */}
-                <Box sx={{ width: 120, height: 1.5, bgcolor: "rgba(255,255,255,0.15)", mt: 3, position: "relative", overflow: "hidden" }}>
-                  <MotionBox 
-                    initial={{ left: "-100%" }}
-                    animate={{ left: "0%" }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    sx={{ 
-                      position: "absolute",
-                      top: 0,
-                      bottom: 0,
-                      width: "100%",
-                      bgcolor: "#CB6116"
-                    }}
-                  />
-                </Box>
-              </Stack>
-            </MotionBox>
-          )}
-        </AnimatePresence>
+
 
         <Box 
           sx={{ 
@@ -285,70 +132,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           }}
         >
 
-        {/* Header bar matching the main website theme */}
-        <Box 
-          component="header"
-          sx={{
-            position: "sticky",
-            top: 0,
-            zIndex: 100,
-            borderBottom: "1px solid rgba(0,0,0,0.06)"
-          }}
-        >
-          <AnnouncementBar lang={lang} />
-          <Box
-            sx={{
-              backgroundImage: "url(/assets/headerbg.png)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              height: { xs: 60, md: 72 },
-              display: "flex",
-              alignItems: "center",
-              px: { xs: 2.5, md: 5 }
-            }}
-          >
-            <Container maxWidth="xl" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              {/* Logo Monogram */}
-              <Link href={`/${lang}`} style={{ display: "flex", alignItems: "center" }}>
-              <Box 
-                component="img" 
-                src="/brand/logo.png" 
-                alt="Fashion Gate" 
-                sx={{ height: { xs: 32, md: 40 }, width: "auto" }} 
-              />
-            </Link>
-            
-            {/* Language Toggle (Always identical orange styling, English characters only) */}
-            <Button 
-              onClick={() => {
-                setIsLangTransitioning(true);
-                setTimeout(() => {
-                  router.push(`/${lang === "en" ? "ar" : "en"}/product/${product.id}`);
-                }, 250);
-              }}
-              sx={{ 
-                color: "primary.main", 
-                textTransform: "uppercase", 
-                fontSize: 11, 
-                fontWeight: 800, 
-                letterSpacing: "0.15em",
-                px: 1.5,
-                py: 0.5,
-                border: "1px solid",
-                borderColor: "primary.main",
-                borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif',
-                "&:hover": {
-                  bgcolor: "rgba(203, 97, 22, 0.08)",
-                  borderColor: "primary.main"
-                }
-              }}
-            >
-              {lang === "ar" ? "EN" : "AR"}
-            </Button>
-          </Container>
-        </Box>
-      </Box>
+          <SiteHeader onLangToggleStart={() => setIsLangTransitioning(true)} />
  
         {/* Main product columns */}
         <Container maxWidth="xl" sx={{ mt: { xs: 4, md: 6 } }}>
@@ -643,7 +427,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
             </Box>
           )}
         </Container>
-        <SiteFooter />
+          <SiteFooter />
         </Box>
       </Box>
     </ThemeProvider>
