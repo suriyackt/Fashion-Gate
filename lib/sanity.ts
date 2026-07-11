@@ -100,6 +100,15 @@ export async function getHomepageData() {
           image
         }
       }
+    },
+    "brands": *[_type == "brand"] | order(title asc) {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      headline { en, ar },
+      description { en, ar },
+      bgImage { asset->{ url } }
     }
   }`);
 }
@@ -115,6 +124,31 @@ export async function getAboutPageData() {
     commitmentText,
     heroImage { asset->{ url } }
   }`);
+}
+
+export async function getLoginPageData() {
+  try {
+    return await sanityClient.fetch(`*[_type == "loginPage"][0] {
+      loginTitle { en, ar },
+      signupTitle { en, ar },
+      welcomeBack { en, ar },
+      welcomeNew { en, ar },
+      emailLabel { en, ar },
+      passwordLabel { en, ar },
+      confirmPasswordLabel { en, ar },
+      nameLabel { en, ar },
+      loginBtn { en, ar },
+      signupBtn { en, ar },
+      haveAccount { en, ar },
+      noAccount { en, ar },
+      backHome { en, ar },
+      successMsg { en, ar },
+      bgImage { asset->{ url } }
+    }`);
+  } catch (err) {
+    console.error("Error fetching login page data:", err);
+    return null;
+  }
 }
 
 export async function getContactPageData() {
@@ -154,6 +188,40 @@ export async function getAnnouncements() {
   } catch (err) {
     console.error("Error fetching announcements:", err);
     return [];
+  }
+}
+
+export async function getSanityBrands() {
+  try {
+    return await sanityClient.fetch(`*[_type == "brand"] | order(title asc) {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      headline { en, ar },
+      description { en, ar },
+      bgImage { asset->{ url } }
+    }`);
+  } catch (err) {
+    console.error("Error fetching sanity brands:", err);
+    return [];
+  }
+}
+
+export async function getSanityBrand(slug: string) {
+  try {
+    return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug][0] {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      headline { en, ar },
+      description { en, ar },
+      bgImage { asset->{ url } }
+    }`, { slug });
+  } catch (err) {
+    console.error("Error fetching single sanity brand:", err);
+    return null;
   }
 }
 

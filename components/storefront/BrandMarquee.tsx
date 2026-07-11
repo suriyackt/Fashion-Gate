@@ -8,6 +8,54 @@ import { getLocalizedValue, imageUrl } from "@/lib/sanity";
 
 const brandsList = [
   { 
+    id: "chanel", 
+    logo: (
+      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="19" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">CHANEL</text>
+      </svg>
+    )
+  },
+  { 
+    id: "prada", 
+    logo: (
+      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Didot', Bodoni, serif" fontSize="19" fontWeight="bold" letterSpacing="0.2em" textAnchor="middle">PRADA</text>
+      </svg>
+    )
+  },
+  { 
+    id: "gucci", 
+    logo: (
+      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Times New Roman', Times, serif" fontSize="19" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GUCCI</text>
+      </svg>
+    )
+  },
+  { 
+    id: "dior", 
+    logo: (
+      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Century Gothic', sans-serif" fontSize="18" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">Dior</text>
+      </svg>
+    )
+  },
+  { 
+    id: "ysl", 
+    logo: (
+      <svg width="240" height="48" viewBox="0 0 140 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="15" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">SAINT LAURENT</text>
+      </svg>
+    )
+  },
+  { 
+    id: "hermes", 
+    logo: (
+      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Garamond', serif" fontSize="20" fontWeight="bold" letterSpacing="0.18em" textAnchor="middle">HERMÈS</text>
+      </svg>
+    )
+  },
+  { 
     id: "adidas", 
     logo: (
       <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
@@ -56,10 +104,18 @@ const brandsList = [
     )
   },
   { 
-    id: "sandro-moje", 
+    id: "sandro", 
     logo: (
       <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
-        <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="16" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">SANDRO MOJE</text>
+        <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="18" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">SANDRO</text>
+      </svg>
+    )
+  },
+  { 
+    id: "moje", 
+    logo: (
+      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+        <text x="50%" y="22" fontFamily="'Didot', 'Times New Roman', serif" fontSize="21" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">moje</text>
       </svg>
     )
   }

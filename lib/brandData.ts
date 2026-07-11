@@ -12,73 +12,83 @@ export interface Brand {
 export const brands: Brand[] = [
   {
     id: "adidas",
-    name: "adidas",
+    name: "Adidas",
     nameAr: "أديداس",
-    headline: "Global Icon of Athletic Heritage & Streetwear Style",
-    headlineAr: "أيقونة عالمية للتراث الرياضي وأسلوب ملابس الشارع",
-    description: "A global leader in sportswear and athletic culture, adidas fuses performance technology with iconic street style, inspiring athletes and fashion pioneers alike.",
-    descriptionAr: "رائدة عالمية في الموضة الرياضية والثقافة الحركية، تمزج أديداس بين تكنولوجيا الأداء وأسلوب الشارع الأيقوني، مما يلهم الرياضيين ورواد الموضة على حد سواء.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Where High-Performance Sportswear Meets Contemporary Street Culture",
+    headlineAr: "حيث تلتقي الملابس الرياضية عالية الأداء مع ثقافة الشارع المعاصرة",
+    description: "Representing the pinnacle of global athletic lifestyle innovation, Adidas is integrated into the portfolio to bridge the gap between high-performance sportswear and contemporary street culture. The inclusion of this iconic brand underscores a commitment to providing energetic, trend-forward, and sustainable options for modern, active lifestyles.",
+    descriptionAr: "تمثل أديداس ذروة ابتكار أسلوب الحياة الرياضي العالمي، وقد تم دمجها في محفظتنا لسد الفجوة بين الملابس الرياضية عالية الأداء وثقافة الشارع المعاصرة. ويؤكد إدراج هذه العلامة التجارية الأيقونية على الالتزام بتقديم خيارات حيوية ومواكبة للموضة ومستدامة لأساليب الحياة الحديثة والنشطة.",
+    backdropUrl: "/assets/adidas_bg.jpg"
   },
   {
     id: "calvin-klein",
     name: "CALVIN KLEIN",
     nameAr: "كالفين كلاين",
-    headline: "Minimalist American Luxury & Sensual Modernism",
-    headlineAr: "الفخامة الأمريكية البسيطة والحداثة الحسية",
-    description: "Founded in 1968, Calvin Klein is a global lifestyle brand that exemplifies bold, progressive ideals and a seductive, often minimal aesthetic through clean lines and classic comfort.",
-    descriptionAr: "تأسست كالفين كلاين في عام ١٩٦٨، وهي علامة تجارية عالمية لأسلوب الحياة تجسد المثل العليا الجريئة والتقدمية والجماليات الجذابة والبسيطة من خلال خطوط نظيفة وراحة كلاسيكية.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Modern American Minimalism & Sophisticated Clean Aesthetic",
+    headlineAr: "البساطة الأمريكية الحديثة والجماليات النظيفة والأنيقة",
+    description: "Bringing an essential element of modern American minimalism, CALVIN KLEIN anchors the fashion offering with its sophisticated, clean aesthetic. The brand is selected to deliver elevated daily essentials, premium denim, and iconic tailored pieces that appeal to the design-conscious individual seeking effortless luxury.",
+    descriptionAr: "تقدم كالفين كلاين عنصراً أساسياً من البساطة الأمريكية الحديثة، وترسخ عروض الموضة بجماليتها المتطورة والنظيفة. تم اختيار العلامة التجارية لتقديم أساسيات يومية راقية، ودنيم ممتاز، وقطع مفصلة أيقونية تجذب الأفراد المهتمين بالتصميم والباحثين عن الفخامة العفوية.",
+    backdropUrl: "/assets/ck_bg.jpg"
   },
   {
     id: "skechers",
     name: "SKECHERS",
     nameAr: "سكيتشرز",
-    headline: "Comfort-First Footwear Innovation & Active Lifestyle",
-    headlineAr: "ابتكار الأحذية المريحة وأسلوب الحياة النشط",
-    description: "As a global leader in the footwear industry, Skechers is renowned for designing innovative, comfort-driven shoes and athletic apparel for active people everywhere.",
-    descriptionAr: "بصفتها رائدة عالمية في صناعة الأحذية، تشتهر سكيتشرز بتصميم أحذية مبتكرة تركز على الراحة والملابس الرياضية للأشخاص النشطين في كل مكان.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Premium Daily Comfort Built on Internationally Acclaimed Technology",
+    headlineAr: "راحة يومية ممتازة مبنية على تقنيات معترف بها عالمياً",
+    description: "Chosen to fulfill the vital demand for premium daily comfort, SKECHERS complements the footwear selection with its internationally acclaimed comfort technologies. By balancing current lifestyle trends with innovative cushioning, the brand ensures a diverse, functional, and accessible footwear offering for all demographics.",
+    descriptionAr: "تم اختيار سكيتشرز لتلبية الطلب الحيوي على الراحة اليومية الممتازة، وهي تكمل تشكيلة الأحذية بتقنيات الراحة المعترف بها دولياً. ومن خلال تحقيق التوازن بين اتجاهات أسلوب الحياة الحالية والتوسيد المبتكر، تضمن العلامة التجارية تقديم أحذية متنوعة وعملية ومتاحة لجميع الفئات.",
+    backdropUrl: "/brand-pages/page_10.jpg"
   },
   {
     id: "maxmara",
     name: "MaxMara",
     nameAr: "ماكس مارا",
-    headline: "Italian Tailoring Heritage & Iconic Outerwear Elegance",
-    headlineAr: "تراث الخياطة الإيطالية وأناقة معاطف الخارجية الأيقونية",
-    description: "An emblem of Italian ready-to-wear excellence, Max Mara is world-famous for its luxury fabrics, structured silhouettes, and timeless neutral-toned wool coats.",
-    descriptionAr: "رمز للتميز الإيطالي في الملابس الجاهزة، تشتهر ماكس مارا عالميًا بأقمشتها الفاخرة، وقصاتها المنظمة، ومعاطفها الصوفية الخالدة ذات الألوان المحايدة.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Unparalleled Italian Craftsmanship & Timeless Sartorial Precision",
+    headlineAr: "حرفية إيطالية لا مثيل لها ودقة خياطة خالدة تناسب تطلعاتك",
+    description: "As a cornerstone of the luxury portfolio, MaxMara introduces unparalleled Italian craftsmanship and timeless sartorial precision. The inclusion of this legendary fashion house elevates the destination's high-end style credentials, offering sophisticated outerwear and sharp tailoring for the discerning professional.",
+    descriptionAr: "بصفتها حجر الزاوية في محفظة المنتجات الفاخرة، تقدم ماكس مارا حرفية إيطالية لا مثيل لها ودقة خياطة خالدة. إن إدراج دار الأزياء الأسطورية هذه يرفع من مكانة الوجهة في الأسلوب الراقي، حيث تقدم معاطف خارجية متطورة وتفاصيل خياطة حادة للمحترفين المتميزين.",
+    backdropUrl: "/brand-pages/page_04.jpg"
   },
   {
     id: "editorial",
     name: "EDITORIAL",
     nameAr: "إيديتوريال",
-    headline: "Curated Seasonal Edits & Avant-Garde Designer Selections",
-    headlineAr: "مجموعات موسمية منسقة وخيارات مصممين رياديين",
-    description: "A space for progressive design and high-fashion curation, Editorial brings together avant-garde fashion statements and bold, boundary-pushing seasonal apparel.",
-    descriptionAr: "مساحة للتصميم المتقدم وتنسيق الموضة الراقية، تجمع إيديتوريال بين لمسات الموضة الطليعية والملابس الموسمية الجريئة التي تتجاوز الحدود.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Distinctly Curated, Avant-Garde Perspectives for Unique Self-Expression",
+    headlineAr: "منظور طليعي ومنسق للتعبير الفريد عن الذات",
+    description: "Serving as the creative heart of the retail mix, EDITORIAL brings a distinctly curated, avant-garde perspective to the collective. This brand is featured to provide a fluid space for unique self-expression, blending seasonal statement pieces with refined basics that keep the retail environment dynamic.",
+    descriptionAr: "باعتبارها القلب الإبداعي للمزيج التجاري، تقدم إيديتوريال منظوراً طليعياً ومنسقاً بشكل متميز للمجموعة. تم إبراز هذه العلامة التجارية لتوفير مساحة مرنة للتعبير الفريد عن الذات، ومزج القطع الموسمية المميزة مع الأساسيات الراقية التي تحافظ على ديناميكية بيئة البيع بالتجزئة.",
+    backdropUrl: "/brand-pages/page_06.jpg"
   },
   {
     id: "paul-shark",
     name: "PAUL & SHARK",
     nameAr: "بول آند شارك",
-    headline: "Luxury Yachting & Italian Sportswear Elegance",
-    headlineAr: "فخامة اليخوت وأناقة الملابس الرياضية الإيطالية",
-    description: "Synonymous with Italian elegance and high-performance yachting-inspired clothing, crafted with technical innovation and premium materials.",
-    descriptionAr: "مرادفة للأناقة الإيطالية والملابس المستوحاة من اليخوت عالية الأداء، والمصنوعة من الابتكارات التقنية والمواد المتميزة.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    headline: "Sophisticated Maritime Heritage & Technical European Sportswear",
+    headlineAr: "تراث بحري متطور وملابس رياضية أوروبية ذات أداء تقني",
+    description: "Reflecting a dedication to premium technical performance and classic European style, PAUL & SHARK brings a sophisticated maritime heritage to the sportswear lineup. The brand enhances the collection with its weather-resistant fabrics and elegant smart-casual attire, catering to those who value both utility and luxury.",
+    descriptionAr: "يعكس بول آند شارك تفانياً في الأداء التقني المتميز والأسلوب الأوروبي الكلاسيكي، ويضفي تراثاً بحرياً متطوراً على تشكيلة الملابس الرياضية. تعزز العلامة التجارية المجموعة بأقمشتها المقاومة للعوامل الجوية وملابسها الأنيقة غير الرسمية، لتلبي احتياجات أولئك الذين يقدرون الفائدة والفخامة معاً.",
+    backdropUrl: "/brand-pages/page_08.jpg"
   },
   {
-    id: "sandro-moje",
-    name: "SANDRO moje",
-    nameAr: "ساندرو موهي",
-    headline: "Parisian Chic, Modern Tailoring & Effortless Luxury",
-    headlineAr: "الأناقة الباريسية، الخياطة الحديثة والفخامة التلقائية",
-    description: "A leading Parisian luxury brand, Sandro expresses an effortless Parisian elegance through sleek tailoring, refined textures, and romantic modern separates.",
-    descriptionAr: "علامة تجارية باريسية رائدة للفخامة، تعبر ساندرو عن أناقة باريسية سهلة من خلال خياطة أنيقة، وقوام ناعم، وقطع منفصلة رومانسية حديثة.",
-    backdropUrl: "/brand-pages/contact_bg.png"
+    id: "sandro",
+    name: "SANDRO",
+    nameAr: "ساندرو",
+    headline: "Effortless Parisian Refinement & Contemporary Elegance",
+    headlineAr: "الرقي الباريسي العفوي والأناقة المعاصرة ذات الطابع المتفرد",
+    description: "Embodying the definitive spirit of effortless Parisian refinement, SANDRO adds a layer of contemporary elegance with a sharp, non-conformist edge. The label introduces a perfect balance of fluid femininity and structured tailoring, presenting versatile wardrobe staples for a highly fashion-literate audience.",
+    descriptionAr: "تجسد ساندرو الروح المحددة للأناقة الباريسية العفوية، وتضيف طبقة من الأناقة المعاصرة ذات طابع متفرد. تقدم العلامة توازناً مثالياً بين الأنوثة الانسيابية والخياطة المنظمة، وتقدم قطع خزانة ملابس متعددة الاستخدامات لجمهور ذواق للموضة.",
+    backdropUrl: "/brand-pages/page_12.jpg"
+  },
+  {
+    id: "moje",
+    name: "moje",
+    nameAr: "موهي",
+    headline: "Understated Creativity, Unique Textures & Independent Design",
+    headlineAr: "إبداع متفرد، قوام نسيجي فريد، وتصاميم مستقلة تعكس شخصيتك",
+    description: "Completing the curation with an artistic, individualistic touch, moje represents the commitment to independent design and understated creativity. The brand introduces unique textures, fluid forms, and thoughtful color palettes that offer visitors a highly personalized and versatile alternative to mainstream fashion.",
+    descriptionAr: "استكمالاً للمجموعة بلمسة فنية وفردية، تمثل موهي الالتزام بالتصميم المستقل والإبداع البسيط. تقدم العلامة التجارية قواماً فريداً، وأشكالاً انسيابية، ولوحات ألوان مدروسة توفر للزوار بديلاً شخصياً للغاية ومتعدد الاستخدامات للموضة السائدة.",
+    backdropUrl: "/brand-pages/page_11.jpg"
   }
 ];
 

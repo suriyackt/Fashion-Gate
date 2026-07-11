@@ -22,33 +22,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { useLoader } from "@/components/LoaderProvider";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const MotionBox = motion.create(Box);
 
-// Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
-const EnglandFlag = () => (
-  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
-    <rect width="18" height="13" fill="#ffffff" />
-    <rect x="8.2" width="1.6" height="13" fill="#cf142b" />
-    <rect y="5.7" width="18" height="1.6" fill="#cf142b" />
-  </svg>
-);
 
-const SyriaFlag = () => (
-  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
-    <rect width="18" height="4.3" fill="#E00613" />
-    <rect y="4.3" width="18" height="4.3" fill="#ffffff" />
-    <rect y="8.6" width="18" height="4.4" fill="#000000" />
-    <path d="M6 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
-    <path d="M12 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
-  </svg>
-);
 
 interface AuthClientProps {
   initialLang: "ar" | "en";
+  sanityData?: any;
 }
 
-export default function AuthClient({ initialLang }: AuthClientProps) {
+export default function AuthClient({ initialLang, sanityData }: AuthClientProps) {
   const router = useRouter();
   const { setLoading } = useLoader();
   
@@ -81,50 +66,31 @@ export default function AuthClient({ initialLang }: AuthClientProps) {
     shape: { borderRadius: 0 }
   }), []);
 
-  const handleLangToggle = () => {
-    setLoading(true);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      const nextLang = lang === "ar" ? "en" : "ar";
-      setLang(nextLang);
-      router.replace(`/login/${nextLang}`);
-    }, 180);
+  // Helper to resolve localized string from Sanity, or fallback to defaults
+  const getLabel = (field: string, fallbackEn: string, fallbackAr: string) => {
+    if (sanityData && sanityData[field]) {
+      const val = sanityData[field][lang] || sanityData[field]["en"];
+      if (val) return val;
+    }
+    return lang === "en" ? fallbackEn : fallbackAr;
   };
 
   const t = {
-    en: {
-      loginTitle: "Sign In",
-      signupTitle: "Create Account",
-      welcomeBack: "Welcome back to the Boulevard",
-      welcomeNew: "Join Syria's first luxury department store",
-      email: "Email Address",
-      password: "Password",
-      confirmPassword: "Confirm Password",
-      name: "Full Name",
-      loginBtn: "Sign In",
-      signupBtn: "Create Account",
-      haveAccount: "Already have an account? Sign In",
-      noAccount: "New to Fashion Gate? Create Account",
-      backHome: "Back to Boulevard",
-      successMsg: "Authenticating..."
-    },
-    ar: {
-      loginTitle: "تسجيل الدخول",
-      signupTitle: "إنشاء حساب",
-      welcomeBack: "مرحباً بك مجدداً في البوليفارد",
-      welcomeNew: "انضم لأول متجر أزياء فاخر في سوريا",
-      email: "البريد الإلكتروني",
-      password: "كلمة المرور",
-      confirmPassword: "تأكيد كلمة المرور",
-      name: "الاسم الكامل",
-      loginBtn: "دخول",
-      signupBtn: "إنشاء الحساب",
-      haveAccount: "لديك حساب بالفعل؟ سجل دخولك",
-      noAccount: "جديد في بوابة الأزياء؟ أنشئ حساباً",
-      backHome: "العودة إلى البوليفارد",
-      successMsg: "جاري التحقق..."
-    }
-  }[lang];
+    loginTitle: getLabel("loginTitle", "Sign In", "تسجيل الدخول"),
+    signupTitle: getLabel("signupTitle", "Create Account", "إنشاء حساب"),
+    welcomeBack: getLabel("welcomeBack", "Welcome back to the Boulevard", "مرحباً بك مجدداً في البوليفارد"),
+    welcomeNew: getLabel("welcomeNew", "Join Syria's first luxury department store", "انضم لأول متجر أزياء فاخر في سوريا"),
+    email: getLabel("emailLabel", "Email Address", "البريد الإلكتروني"),
+    password: getLabel("passwordLabel", "Password", "كلمة المرور"),
+    confirmPassword: getLabel("confirmPasswordLabel", "Confirm Password", "تأكيد كلمة المرور"),
+    name: getLabel("nameLabel", "Full Name", "الاسم الكامل"),
+    loginBtn: getLabel("loginBtn", "Sign In", "دخول"),
+    signupBtn: getLabel("signupBtn", "Create Account", "إنشاء الحساب"),
+    haveAccount: getLabel("haveAccount", "Already have an account? Sign In", "لديك حساب بالفعل؟ سجل دخولك"),
+    noAccount: getLabel("noAccount", "New to Fashion Gate? Create Account", "جديد في بوابة الأزياء؟ أنشئ حساباً"),
+    backHome: getLabel("backHome", "Back to Boulevard", "العودة إلى البوليفارد"),
+    successMsg: getLabel("successMsg", "Authenticating...", "جاري التحقق...")
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,37 +121,10 @@ export default function AuthClient({ initialLang }: AuthClientProps) {
             transition: "opacity 0.2s ease-in-out"
           }}
         >
-          <Button 
-            onClick={handleLangToggle}
-            startIcon={lang === "ar" ? <EnglandFlag /> : <SyriaFlag />}
-            sx={{ 
-              color: "#ffffff", 
-              textTransform: "uppercase", 
-              fontSize: 12, 
-              fontWeight: 600, 
-              letterSpacing: "0.1em",
-              px: 1.5,
-              py: 0.5,
-              border: "none",
-              borderRadius: 0,
-              fontFamily: '"Cairo", sans-serif',
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 1,
-              minWidth: 0,
-              "& .MuiButton-startIcon": {
-                margin: 0,
-                display: "flex",
-                alignItems: "center"
-              },
-              "&:hover": {
-                color: "#CB6116",
-                bgcolor: "transparent"
-              }
-            }}
-          >
-            {lang === "ar" ? "EN" : "AR"}
-          </Button>
+          <LanguageSwitcher 
+            currentLang={lang} 
+            onToggleStart={() => setIsTransitioning(true)} 
+          />
         </Box>
         
         {/* Centered Login / Sign Up Form Card */}
@@ -199,7 +138,7 @@ export default function AuthClient({ initialLang }: AuthClientProps) {
             px: 3,
             position: "relative",
             overflow: "hidden",
-            backgroundImage: "url('/assets/headerbg.png')",
+            backgroundImage: `url('${sanityData?.bgImage?.asset?.url || "/assets/headerbg.png"}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             opacity: isTransitioning ? 0 : 1,

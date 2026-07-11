@@ -13,25 +13,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useLoader } from "@/components/LoaderProvider";
 import type { Product } from "@/lib/productData";
 import { getAnnouncements, getLocalizedValue } from "@/lib/sanity";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const MotionBox = motion.create(Box);
 
 // Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
-const EnglandFlag = () => (
-  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
-    <rect width="18" height="13" fill="#ffffff" />
-    <rect x="8.2" width="1.6" height="13" fill="#cf142b" />
-    <rect y="5.7" width="18" height="1.6" fill="#cf142b" />
-  </svg>
-);
 
-const SyriaFlag = () => (
-  <img 
-    src="/assets/Syrian-flag.svg" 
-    alt="Syria Flag" 
-    style={{ display: "inline-block", verticalAlign: "middle", width: 26, height: 20 }}
-  />
-);
 
 interface SiteSettings {
   title?: string;
@@ -475,27 +462,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
     return headerTranslations[lang][strKey] || strKey;
   };
 
-  const handleLangToggle = () => {
-    if (typeof window === "undefined") return;
-    setLoading(true);
-    if (onLangToggleStart) {
-      onLangToggleStart();
-    }
-    setTimeout(() => {
-      const nextLang = lang === "ar" ? "en" : "ar";
-      let nextPath = pathname;
-      if (pathname.endsWith("/en")) {
-        nextPath = pathname.substring(0, pathname.length - 3) + "/ar";
-      } else if (pathname.endsWith("/ar")) {
-        nextPath = pathname.substring(0, pathname.length - 3) + "/en";
-      } else if (pathname === "/en" || pathname === "/ar" || pathname === "/") {
-        nextPath = `/${nextLang}`;
-      } else {
-        nextPath = pathname.replace(/\/(ar|en)$/, `/${nextLang}`);
-      }
-      router.push(nextPath);
-    }, 180);
-  };
+
 
   const handleMenuHover = (menu: "women" | "men" | "designers" | "fashion" | "perfumes" | "skincare" | null) => {
     setActiveDropdown(menu);
@@ -584,37 +551,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               products={headerProducts}
             />
 
-            <Button 
-              onClick={handleLangToggle}
-              startIcon={lang === "ar" ? <EnglandFlag /> : <SyriaFlag />}
-              sx={{ 
-                color: "#ffffff", 
-                textTransform: "uppercase", 
-                fontSize: 12, 
-                fontWeight: 600, 
-                letterSpacing: "0.1em",
-                px: 1.5,
-                py: 0.5,
-                border: "none",
-                borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif',
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 1,
-                minWidth: 0,
-                "& .MuiButton-startIcon": {
-                  margin: 0,
-                  display: "flex",
-                  alignItems: "center"
-                },
-                "&:hover": {
-                  color: "#CB6116",
-                  bgcolor: "transparent"
-                }
-              }}
-            >
-              {lang === "ar" ? "EN" : "AR"}
-            </Button>
+            <LanguageSwitcher 
+              currentLang={lang} 
+              onToggleStart={onLangToggleStart} 
+            />
 
             {/* Profile Button */}
             <Tooltip title={t("Sign In / Register")}>
@@ -899,7 +839,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             onMouseLeave={() => handleMenuHover(null)}
             sx={{ display: "inline-block", height: "100%", position: "relative" }}
           >
-            <Button component={Link} href={`/category/designers/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "designers" || isLinkActive("designers")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button onClick={(e) => e.preventDefault()} className="luxury-link" sx={{ color: (activeDropdown === "designers" || isLinkActive("designers")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Designers")}
             </Button>
             <AnimatePresence>
@@ -1140,9 +1080,6 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             {t("Dining")}
           </Button>
 
-          <Button component={Link} href={`/blogs/${lang}`} className="luxury-link" sx={{ color: isLinkActive("blogs") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("Blogs")}
-          </Button>
 
           <Button component={Link} href={`/about/${lang}`} className="luxury-link" sx={{ color: isLinkActive("about") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
             {t("About Us")}
@@ -1191,20 +1128,25 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               { label: t("Home"), href: `/${lang}` },
               { label: t("Women"), href: `/category/women/${lang}` },
               { label: t("Men"), href: `/category/men/${lang}` },
-              { label: t("Designers"), href: `/category/designers/${lang}` },
+              { label: t("Designers"), href: undefined, onClick: (e: any) => e.preventDefault() },
               { label: t("Fashion"), href: `/category/fashion/${lang}` },
               { label: t("Perfumes"), href: `/category/perfumes/${lang}` },
               { label: t("Skincare"), href: `/category/skincare/${lang}` },
               { label: t("Dining"), href: `/category/dining/${lang}` },
-              { label: t("Blogs"), href: `/blogs/${lang}` },
               { label: t("About Us"), href: `/about/${lang}` },
               { label: t("Contact Us"), href: `/contact/${lang}` }
             ].map((item) => (
               <MuiLink
                 key={item.label}
-                component={Link}
+                component={item.href ? Link : "span"}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={(e: React.MouseEvent) => {
+                  if (item.onClick) {
+                    item.onClick(e);
+                  } else {
+                    setOpen(false);
+                  }
+                }}
                 sx={{
                   color: "rgba(255,255,255,0.85)",
                   fontSize: 15,

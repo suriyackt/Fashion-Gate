@@ -4,7 +4,7 @@ import { useMemo, useRef, useEffect, useState } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
-import { products } from "@/lib/productData";
+import { brands as fallbackBrands } from "@/lib/brandData";
 import type { Section } from "@/lib/types";
 import { getLocalizedValue } from "@/lib/sanity";
 
@@ -13,11 +13,13 @@ const MotionBox = motion.create(Box);
 export default function LookbookSection({ 
   section, 
   t, 
-  lang 
+  lang,
+  brands
 }: { 
   section: Section; 
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
+  brands?: any[];
 }) {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -25,6 +27,19 @@ export default function LookbookSection({
   const isDraggingRef = useRef(false);
   const isHoveredRef = useRef(false);
   const x = useMotionValue(0);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+
+  const unifiedBrands = useMemo(() => {
+    const list = brands && brands.length > 0 ? brands : fallbackBrands;
+    return list.map((b) => {
+      const id = b.slug?.current || b.id || "";
+      const name = b.title || b.name || "";
+      const nameAr = b.nameAr || b.title || "";
+      const headline = b.headline?.[lang] || b.headline || "";
+      const bgUrl = b.bgImage?.asset?.url || b.backdropUrl || "/assets/headerbg.png";
+      return { id, name, nameAr, headline, bgUrl };
+    });
+  }, [brands, lang]);
 
   useEffect(() => {
     const updateConstraints = () => {
@@ -212,17 +227,36 @@ export default function LookbookSection({
               touchAction: "pan-y"
             }}
           >
-            {products.map((product, idx) => {
-              const title = lang === "ar" ? product.titleAr : product.title;
-              const category = lang === "ar" ? product.categoryAr : product.category;
-
+            {unifiedBrands.map((brand, idx) => {
+              const name = lang === "ar" ? brand.nameAr : brand.name;
               return (
                 <Link 
-                  key={`${product.id}-${idx}`}
-                  href={`/product/${product.id}/${lang}`}
+                  key={`${brand.id}-${idx}`}
+                  href={`/brand/${brand.id}/${lang}`}
                   style={{ textDecoration: "none" }}
                   draggable="false"
+                  onMouseDown={(e) => {
+                    dragStartPos.current = { x: e.clientX, y: e.clientY };
+                  }}
+                  onTouchStart={(e) => {
+                    if (e.touches && e.touches[0]) {
+                      dragStartPos.current = {
+                        x: e.touches[0].clientX,
+                        y: e.touches[0].clientY,
+                      };
+                    }
+                  }}
                   onClick={(e) => {
+                    const isKeyboardClick = e.clientX === 0 && e.clientY === 0;
+                    if (!isKeyboardClick) {
+                      const diffX = Math.abs(e.clientX - dragStartPos.current.x);
+                      const diffY = Math.abs(e.clientY - dragStartPos.current.y);
+                      if (diffX > 10 || diffY > 10) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                    }
                     if (isDraggingRef.current) {
                       e.preventDefault();
                       e.stopPropagation();
@@ -259,19 +293,19 @@ export default function LookbookSection({
                       "&:hover .hover-overlay": {
                         opacity: 1
                       },
-                      "&:hover .product-title": {
+                      "&:hover .brand-name": {
                         transform: "translateY(0)",
                         opacity: 1
                       },
-                      "&:hover .product-btn": {
+                      "&:hover .brand-headline": {
                         transform: "translateY(0)",
                         opacity: 1
                       }
                     }}
                   >
                     <motion.img 
-                      src={product.imageUrl} 
-                      alt={title} 
+                      src={brand.bgUrl} 
+                      alt={name} 
                       whileHover={{ scale: 1.04 }}
                       transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
                       style={{
@@ -299,25 +333,40 @@ export default function LookbookSection({
                         textAlign: lang === "ar" ? "right" : "left"
                       }}
                     >
-                      <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", mb: 0.5, fontFamily: '"Cairo", sans-serif' }}>
-                        {category}
-                      </Typography>
-                      
                       <Typography 
-                        className="product-title"
+                        className="brand-name"
                         sx={{ 
                           color: "#ffffff", 
                           fontFamily: "var(--heading-font)", 
-                          fontSize: 20, 
+                          fontSize: { xs: 22, md: 28 }, 
                           fontWeight: 500, 
-                          mb: 1,
-                          transform: "translateY(15px)",
+                          mb: 0.8,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
                           opacity: 0,
+                          transform: "translateY(15px)",
+                          transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease"
+                        }}
+                      >
+                        {name}
+                      </Typography>
+
+                      <Typography 
+                        className="brand-headline"
+                        sx={{ 
+                          color: "primary.main", 
+                          fontSize: 11, 
+                          fontWeight: 700, 
+                          textTransform: "uppercase", 
+                          letterSpacing: "0.15em", 
+                          fontFamily: '"Cairo", sans-serif',
+                          opacity: 0,
+                          transform: "translateY(15px)",
                           transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease",
                           transitionDelay: "0.05s"
                         }}
                       >
-                        {title}
+                        {brand.headline}
                       </Typography>
                     </Box>
                   </Box>

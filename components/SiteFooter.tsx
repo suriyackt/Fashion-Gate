@@ -145,7 +145,7 @@ export default function SiteFooter() {
     { label: { en: "Home & Deco", ar: "منزل وديكور" }, href: "#home-deco" },
     { label: { en: "The Boulevard", ar: "البوليفارد" }, href: "#boulevard" },
     { label: { en: "Brand", ar: "العلامة" }, href: "about" },
-    { label: { en: "Journal", ar: "المدونة" }, href: "blogs" },
+    { label: { en: "Blogs", ar: "المدونة" }, href: "blogs" },
     { label: { en: "Contact", ar: "اتصل بنا" }, href: "contact" },
     { label: { en: "Atelier", ar: "الأتيلييه" }, href: "about" }
   ];

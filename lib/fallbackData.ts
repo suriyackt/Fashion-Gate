@@ -29,6 +29,11 @@ export const fallbackSections = [
     imageUrl: "/brand-pages/page_01.jpg"
   },
   {
+    _id: "brandMarquee",
+    type: "brandMarquee",
+    anchor: "brands"
+  },
+  {
     _id: "manifesto",
     type: "manifesto",
     anchor: "manifesto",

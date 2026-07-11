@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Container, Stack, Typography, ThemeProvider, createTheme, Divider } from "@mui/material";
+import { Box, Button, Typography, ThemeProvider, createTheme } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -41,9 +41,14 @@ const brandVectorLogos: Record<string, React.ReactNode> = {
       <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', serif" fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
     </svg>
   ),
-  "sandro-moje": (
-    <svg width="300" height="50" viewBox="0 0 150 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="17" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">SANDRO moje</text>
+  sandro: (
+    <svg width="240" height="50" viewBox="0 0 120 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.15em" textAnchor="middle">SANDRO</text>
+    </svg>
+  ),
+  moje: (
+    <svg width="180" height="50" viewBox="0 0 100 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Didot', 'Times New Roman', serif" fontSize="21" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">moje</text>
     </svg>
   )
 };
@@ -53,7 +58,7 @@ export default function BrandDetailClient({
   initialLang,
   settings
 }: { 
-  brand: Brand; 
+  brand: any; 
   initialLang: "ar" | "en";
   settings?: { primaryColor?: string; accentColor?: string };
 }) {
@@ -89,6 +94,11 @@ export default function BrandDetailClient({
     router.replace(`/brand/${brand.id}/${nextLang}`);
   };
 
+  const bgUrl = brand.bgImage?.asset?.url || brand.backdropUrl || "/assets/headerbg.png";
+  const headlineText = brand.headline?.[lang] || brand.headline || "";
+  const descriptionText = brand.description?.[lang] || brand.description || "";
+  const logoUrl = brand.image?.asset?.url;
+
   return (
     <ThemeProvider theme={theme}>
       <Box 
@@ -107,23 +117,24 @@ export default function BrandDetailClient({
           onLangToggleStart={handleLangToggle}
         />
         
-        {/* Main coming soon block */}
+        {/* Immersive Brand Hero Container */}
         <Box 
           sx={{ 
             flexGrow: 1, 
             display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center", 
-            py: { xs: 10, md: 16 },
-            px: 3,
+            alignItems: "flex-end", 
+            justifyContent: "flex-end", 
+            minHeight: "calc(100vh - 80px)",
             position: "relative",
             overflow: "hidden",
-            backgroundImage: "url('/assets/headerbg.png')",
+            backgroundImage: `url('${bgUrl}')`,
             backgroundSize: "cover",
-            backgroundPosition: "center"
+            backgroundPosition: "center",
+            py: { xs: 8, md: 12 },
+            px: { xs: 4, md: 10 }
           }}
         >
-          {/* Radial soft background overlay */}
+          {/* Radial & linear dark wash overlay for premium legibility */}
           <Box 
             sx={{
               position: "absolute",
@@ -131,111 +142,125 @@ export default function BrandDetailClient({
               left: 0,
               right: 0,
               bottom: 0,
-              background: "radial-gradient(circle at center, rgba(203, 97, 22, 0.12) 0%, rgba(5,5,5,0.92) 80%)",
+              background: "linear-gradient(to top, rgba(5,5,5,0.72) 0%, rgba(5,5,5,0.2) 50%, rgba(5,5,5,0.05) 100%)",
               zIndex: 1
             }}
           />
 
-          <Container maxWidth="md" sx={{ position: "relative", zIndex: 2, textAlign: "center" }}>
-            {/* Back button */}
+          {/* Absolute positioned Back Button in the Top Left Corner */}
+          <Box 
+            sx={{ 
+              position: "absolute", 
+              top: 32, 
+              left: 32, 
+              zIndex: 10 
+            }}
+          >
             <Button
               component={Link}
               href={`/${lang}`}
-              startIcon={lang === "en" && <ArrowBackIcon />}
-              endIcon={lang === "ar" && <ArrowBackIcon sx={{ transform: "scaleX(-1)" }} />}
+              startIcon={lang === "en" && <ArrowBackIcon sx={{ fontSize: 14 }} />}
+              endIcon={lang === "ar" && <ArrowBackIcon sx={{ transform: "scaleX(-1)", fontSize: 14 }} />}
               sx={{
                 color: "#ffffff",
-                border: "1px solid rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.25)",
                 borderRadius: 0,
                 px: 2.5,
                 py: 0.8,
-                fontSize: 12,
-                mb: 6,
+                fontSize: 11,
+                fontWeight: 600,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 fontFamily: '"Cairo", sans-serif',
+                backdropFilter: "blur(8px)",
+                bgcolor: "rgba(5,5,5,0.45)",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   border: "1px solid #ffffff",
-                  bgcolor: "rgba(255,255,255,0.05)"
+                  bgcolor: "rgba(255,255,255,0.2)",
+                  transform: "translateY(-2px)"
                 }
               }}
             >
               {lang === "ar" ? "رجوع" : "Back"}
             </Button>
+          </Box>
 
-            {/* Brand Logo representation */}
-            <Box sx={{ color: "#ffffff", mb: 5, display: "flex", justifyContent: "center", transform: "scale(1.05)" }}>
-              {brandVectorLogos[brand.id] || (
-                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                  {lang === "ar" ? brand.nameAr : brand.name}
-                </Typography>
+          {/* Bottom Right Brand Details Box */}
+          <Box 
+            sx={{ 
+              position: "relative",
+              zIndex: 2, 
+              maxWidth: 620,
+              textAlign: "right",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              bgcolor: "rgba(5, 5, 5, 0.6)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              p: { xs: 4, md: 5.5 },
+              boxShadow: "0 20px 40px rgba(0,0,0,0.55)"
+            }}
+          >
+            {/* Brand Logo (Right-based) */}
+            <Box 
+              sx={{ 
+                color: "#ffffff", 
+                mb: 3, 
+                display: "flex", 
+                justifyContent: "flex-end",
+                transform: "scale(1.05)",
+                width: "max-content"
+              }}
+            >
+              {logoUrl ? (
+                <Box 
+                  component="img" 
+                  src={logoUrl} 
+                  alt={brand.title} 
+                  sx={{ height: 48, width: "auto", objectFit: "contain" }} 
+                />
+              ) : (
+                brandVectorLogos[brand.id] || (
+                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase" }}>
+                    {lang === "ar" ? brand.nameAr || brand.title : brand.name || brand.title}
+                  </Typography>
+                )
               )}
             </Box>
 
-            <Divider sx={{ borderColor: "rgba(255,255,255,0.08)", width: "120px", mx: "auto", mb: 5 }} />
-
-            {/* Sub-headline */}
-            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 13, fontWeight: 800, letterSpacing: "0.3em", mb: 2.5, fontFamily: '"Cairo", sans-serif' }}>
-              {lang === "ar" ? "قريباً" : "Coming Soon"}
+            {/* Headline */}
+            <Typography 
+              sx={{ 
+                fontFamily: "var(--heading-font)", 
+                fontSize: { xs: 26, sm: 32, md: 44 }, 
+                fontWeight: 500, 
+                lineHeight: 1.25, 
+                mb: 2,
+                color: "#ffffff",
+                letterSpacing: "0.02em"
+              }}
+            >
+              {headlineText}
             </Typography>
 
-            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 30, md: 42 }, fontWeight: 500, lineHeight: 1.25, mb: 3 }}>
-              {lang === "ar" ? "نحضر لكم مساحة الفخامة المخصصة" : "A Spatial Showcase in the Making"}
-            </Typography>
+            {/* Divider */}
+            <Box sx={{ width: 80, height: 2, bgcolor: "primary.main", mb: 3.5 }} />
 
-            <Typography sx={{ color: "rgba(255,255,255,0.64)", fontSize: 15, lineHeight: 1.8, maxWidth: 640, mx: "auto", mb: 6, fontFamily: '"Cairo", sans-serif' }}>
-              {lang === "ar" 
-                ? "نحن نجهز لإطلاق المساحة الخاصة بالدار في فاشن جيت مول، بوليفارد دمشق. ترقبوا التشكيلات الحصرية وقطع التصميم الفاخرة التي تصل قريباً."
-                : `We are preparing an exclusive spatial boutique showcase for ${brand.name} at Fashion Gate Mall, Damascus Boulevard. Sign up to stay informed on arrival dates and seasonal private viewings.`
-              }
+            {/* Description */}
+            <Typography 
+              sx={{ 
+                color: "rgba(255,255,255,0.72)", 
+                fontSize: { xs: 14, md: 15.5 }, 
+                lineHeight: 1.8, 
+                fontFamily: '"Cairo", sans-serif',
+                fontWeight: 300
+              }}
+            >
+              {descriptionText}
             </Typography>
-
-            <Stack direction="row" justifyContent="center" gap={3}>
-              <Button
-                component={Link}
-                href={`/${lang}`}
-                sx={{
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  px: 4,
-                  py: 1.4,
-                  borderRadius: 0,
-                  textTransform: "uppercase",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.15em",
-                  fontFamily: '"Cairo", sans-serif',
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.05)",
-                    borderColor: "#ffffff"
-                  }
-                }}
-              >
-                {lang === "ar" ? "العودة للرئيسية" : "Return Home"}
-              </Button>
-              <Button
-                component={Link}
-                href={`/contact/${lang}`}
-                sx={{
-                  bgcolor: "primary.main",
-                  color: "#ffffff",
-                  px: 4,
-                  py: 1.4,
-                  borderRadius: 0,
-                  textTransform: "uppercase",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.15em",
-                  fontFamily: '"Cairo", sans-serif',
-                  "&:hover": {
-                    bgcolor: "primary.dark"
-                  }
-                }}
-              >
-                {lang === "ar" ? "تواصل مع خدمة العملاء" : "Contact Concierge"}
-              </Button>
-            </Stack>
-          </Container>
+          </Box>
         </Box>
 
         {/* Site Footer */}

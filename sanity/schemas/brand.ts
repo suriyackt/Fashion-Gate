@@ -38,6 +38,22 @@ export default defineType({
       },
       initialValue: "medium",
     }),
+    defineField({
+      name: "headline",
+      title: "Headline",
+      type: "localizedString",
+    }),
+    defineField({
+      name: "description",
+      title: "Description",
+      type: "localizedText",
+    }),
+    defineField({
+      name: "bgImage",
+      title: "Background Image",
+      type: "image",
+      options: { hotspot: true },
+    }),
   ],
   preview: {
     select: {

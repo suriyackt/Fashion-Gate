@@ -33,6 +33,7 @@ import { footerSettings } from "./footerSettings";
 import { aboutPage } from "./aboutPage";
 import { contactPage } from "./contactPage";
 import { blogsPage } from "./blogsPage";
+import { loginPage } from "./loginPage";
 
 export const schemaTypes = [
   // E-commerce & Base
@@ -72,4 +73,6 @@ export const schemaTypes = [
   aboutPage,
   contactPage,
   blogsPage,
+  loginPage,
 ];
+

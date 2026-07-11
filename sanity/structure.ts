@@ -90,17 +90,9 @@ export const structure: StructureResolver = (S) =>
                 .title("Login Page")
                 .child(
                   S.document()
-                    .schemaType("page")
-                    .documentId("login")
+                    .schemaType("loginPage")
+                    .documentId("loginPage")
                     .title("Login Page")
-                ),
-              S.listItem()
-                .title("Sign Up Page")
-                .child(
-                  S.document()
-                    .schemaType("page")
-                    .documentId("signup")
-                    .title("Sign Up Page")
                 ),
               S.listItem()
                 .title("Perfume Page")
@@ -174,6 +166,7 @@ export const structure: StructureResolver = (S) =>
             "aboutPage",
             "contactPage",
             "blogsPage",
+            "loginPage",
             "post",
             "faq",
             "testimonial",
