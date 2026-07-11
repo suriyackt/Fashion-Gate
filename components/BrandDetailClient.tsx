@@ -11,39 +11,39 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
 const brandVectorLogos: Record<string, React.ReactNode> = {
-  chanel: (
-    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="22" fontWeight="bold" letterSpacing="0.35em" textAnchor="middle">CHANEL</text>
+  adidas: (
+    <svg width="220" height="50" viewBox="0 0 120 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">adidas</text>
     </svg>
   ),
-  "christian-dior": (
-    <svg width="360" height="70" viewBox="0 0 140 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', 'Bodoni MT', serif" fontSize="18" fontWeight="700" letterSpacing="0.25em" textAnchor="middle">CHRISTIAN DIOR</text>
+  "calvin-klein": (
+    <svg width="280" height="50" viewBox="0 0 140 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="17" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">CALVIN KLEIN</text>
     </svg>
   ),
-  gucci: (
-    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="22" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">GUCCI</text>
+  skechers: (
+    <svg width="260" height="50" viewBox="0 0 140 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Arial Black', sans-serif" fontSize="18" fontWeight="900" letterSpacing="0.15em" textAnchor="middle">SKECHERS</text>
     </svg>
   ),
   "paul-shark": (
-    <svg width="390" height="70" viewBox="0 0 160 30" fill="currentColor">
+    <svg width="340" height="50" viewBox="0 0 160 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Futura', 'Arial Black', sans-serif" fontSize="16" fontWeight="900" letterSpacing="0.18em" textAnchor="middle">PAUL & SHARK</text>
     </svg>
   ),
-  "tom-ford": (
-    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">TOM FORD</text>
+  maxmara: (
+    <svg width="260" height="50" viewBox="0 0 120 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="21" fontWeight="bold" letterSpacing="0.15em" textAnchor="middle">MaxMara</text>
     </svg>
   ),
-  givenchy: (
-    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.24em" textAnchor="middle">GIVENCHY</text>
+  editorial: (
+    <svg width="260" height="50" viewBox="0 0 120 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', serif" fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
     </svg>
   ),
-  lancome: (
-    <svg width="340" height="70" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Granjon', 'Garamond', serif" fontSize="21" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">LANCÔME</text>
+  "sandro-moje": (
+    <svg width="300" height="50" viewBox="0 0 150 30" fill="currentColor">
+      <text x="50%" y="22" fontFamily="'Futura', 'Helvetica Neue', 'Arial', sans-serif" fontSize="17" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">SANDRO moje</text>
     </svg>
   )
 };

@@ -2,13 +2,75 @@
 
 import { useEffect, useState } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import {
+  SiTiktok,
+  SiInstagram,
+  SiFacebook,
+  SiWhatsapp,
+  SiYoutube,
+  SiPinterest,
+  SiSnapchat,
+  SiX
+} from "react-icons/si";
 import { Box, Button, Container, IconButton, InputBase, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { getFooterSettings, getLocalizedValue } from "@/lib/sanity";
+
+interface SiteTooltipProps {
+  title: string;
+  children: React.ReactElement;
+}
+
+function SiteTooltip({ title, children }: SiteTooltipProps) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <Box 
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+      sx={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+    >
+      {children}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: "135%", // Float above the icon
+          left: "50%",
+          transform: `translateX(-50%) translateY(${active ? "0px" : "8px"})`,
+          bgcolor: "#111111",
+          color: "#ffffff",
+          px: 1.5,
+          py: 0.6,
+          borderRadius: "2px",
+          fontSize: 11,
+          fontWeight: 600,
+          fontFamily: '"Cairo", sans-serif',
+          letterSpacing: "0.06em",
+          whiteSpace: "nowrap",
+          opacity: active ? 1 : 0,
+          visibility: active ? "visible" : "hidden",
+          pointerEvents: "none",
+          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
+          zIndex: 100,
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            top: "100%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            borderWidth: "5px",
+            borderStyle: "solid",
+            borderColor: "#111111 transparent transparent transparent"
+          }
+        }}
+      >
+        {title}
+      </Box>
+    </Box>
+  );
+}
 
 export default function SiteFooter() {
   const pathname = usePathname();
@@ -68,6 +130,11 @@ export default function SiteFooter() {
   const instagramUrl = settings?.instagramUrl || "#";
   const whatsAppUrl = settings?.whatsAppUrl || "#";
   const floatingWhatsAppUrl = settings?.floatingWhatsAppUrl || "#";
+  const tiktokUrl = settings?.tiktokUrl || "#";
+  const youtubeUrl = settings?.youtubeUrl || "#";
+  const pinterestUrl = settings?.pinterestUrl || "#";
+  const snapchatUrl = settings?.snapchatUrl || "#";
+  const xUrl = settings?.xUrl || "#";
 
   // Resolve Quick Links
   const rawLinks = settings?.links || [
@@ -230,46 +297,191 @@ export default function SiteFooter() {
           </Typography>
 
           {/* Social Links */}
-          <Box sx={{ display: "flex", gap: 1.5 }}>
-            <IconButton
-              href={instagramUrl}
-              sx={{
-                width: 36,
-                height: 36,
-                color: "rgba(0,0,0,0.54)",
-                border: "1px solid rgba(0,0,0,0.08)",
-                transition: "all 0.3s ease",
-                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
-              }}
-            >
-              <InstagramIcon sx={{ fontSize: 17 }} />
-            </IconButton>
-            <IconButton
-              href={facebookUrl}
-              sx={{
-                width: 36,
-                height: 36,
-                color: "rgba(0,0,0,0.54)",
-                border: "1px solid rgba(0,0,0,0.08)",
-                transition: "all 0.3s ease",
-                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
-              }}
-            >
-              <FacebookIcon sx={{ fontSize: 17 }} />
-            </IconButton>
-            <IconButton
-              href={whatsAppUrl}
-              sx={{
-                width: 36,
-                height: 36,
-                color: "rgba(0,0,0,0.54)",
-                border: "1px solid rgba(0,0,0,0.08)",
-                transition: "all 0.3s ease",
-                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
-              }}
-            >
-              <WhatsAppIcon sx={{ fontSize: 17 }} />
-            </IconButton>
+          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", justifyContent: "center" }}>
+            {instagramUrl && instagramUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "إنستغرام" : "Instagram"}>
+                <IconButton
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiInstagram style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {facebookUrl && facebookUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "فيسبوك" : "Facebook"}>
+                <IconButton
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiFacebook style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {whatsAppUrl && whatsAppUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "واتساب" : "WhatsApp"}>
+                <IconButton
+                  href={whatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiWhatsapp style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {tiktokUrl && tiktokUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "تيك توك" : "TikTok"}>
+                <IconButton
+                  href={tiktokUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiTiktok style={{ fontSize: 17 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {youtubeUrl && youtubeUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "يوتيوب" : "YouTube"}>
+                <IconButton
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiYoutube style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {pinterestUrl && pinterestUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "بينتيريست" : "Pinterest"}>
+                <IconButton
+                  href={pinterestUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiPinterest style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {snapchatUrl && snapchatUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "سناب شات" : "Snapchat"}>
+                <IconButton
+                  href={snapchatUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiSnapchat style={{ fontSize: 18 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
+            {xUrl && xUrl !== "#" && (
+              <SiteTooltip title={lang === "ar" ? "إكس (تويتر)" : "X (Twitter)"}>
+                <IconButton
+                  href={xUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    color: "rgba(0,0,0,0.56)",
+                    bgcolor: "transparent",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    "&:hover": { 
+                      color: "primary.main", 
+                      bgcolor: "rgba(197, 160, 89, 0.08)", 
+                      transform: "translateY(-4px)" 
+                    }
+                  }}
+                >
+                  <SiX style={{ fontSize: 15 }} />
+                </IconButton>
+              </SiteTooltip>
+            )}
           </Box>
         </Stack>
       </Container>
@@ -294,7 +506,7 @@ export default function SiteFooter() {
           "&:hover": { bgcolor: "primary.main", transform: "translateY(-2px)" }
         }}
       >
-        <WhatsAppIcon sx={{ fontSize: 22 }} />
+        <SiWhatsapp style={{ fontSize: 22 }} />
       </IconButton>
     </Box>
   );

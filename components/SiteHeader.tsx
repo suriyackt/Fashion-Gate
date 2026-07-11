@@ -26,13 +26,11 @@ const EnglandFlag = () => (
 );
 
 const SyriaFlag = () => (
-  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
-    <rect width="18" height="4.3" fill="#E00613" />
-    <rect y="4.3" width="18" height="4.3" fill="#ffffff" />
-    <rect y="8.6" width="18" height="4.4" fill="#000000" />
-    <path d="M6 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
-    <path d="M12 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
-  </svg>
+  <img 
+    src="/assets/Syrian-flag.svg" 
+    alt="Syria Flag" 
+    style={{ display: "inline-block", verticalAlign: "middle", width: 26, height: 20 }}
+  />
 );
 
 interface SiteSettings {
@@ -86,13 +84,13 @@ const headerTranslations = {
 };
 
 const brandSuggestions = [
-  { id: "paul-shark", label: "Paul & Shark" },
-  { id: "tom-ford", label: "Tom Ford" },
-  { id: "givenchy", label: "Givenchy" },
-  { id: "christian-dior", label: "Christian Dior" },
-  { id: "gucci", label: "Gucci" },
-  { id: "chanel", label: "Chanel" },
-  { id: "lancome", label: "Lancome" }
+  { id: "adidas", label: "adidas" },
+  { id: "calvin-klein", label: "CALVIN KLEIN" },
+  { id: "skechers", label: "SKECHERS" },
+  { id: "maxmara", label: "MaxMara" },
+  { id: "editorial", label: "EDITORIAL" },
+  { id: "paul-shark", label: "PAUL & SHARK" },
+  { id: "sandro-moje", label: "SANDRO moje" }
 ];
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {

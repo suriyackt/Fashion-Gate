@@ -11,73 +11,73 @@ export interface Brand {
 
 export const brands: Brand[] = [
   {
+    id: "adidas",
+    name: "adidas",
+    nameAr: "أديداس",
+    headline: "Global Icon of Athletic Heritage & Streetwear Style",
+    headlineAr: "أيقونة عالمية للتراث الرياضي وأسلوب ملابس الشارع",
+    description: "A global leader in sportswear and athletic culture, adidas fuses performance technology with iconic street style, inspiring athletes and fashion pioneers alike.",
+    descriptionAr: "رائدة عالمية في الموضة الرياضية والثقافة الحركية، تمزج أديداس بين تكنولوجيا الأداء وأسلوب الشارع الأيقوني، مما يلهم الرياضيين ورواد الموضة على حد سواء.",
+    backdropUrl: "/brand-pages/contact_bg.png"
+  },
+  {
+    id: "calvin-klein",
+    name: "CALVIN KLEIN",
+    nameAr: "كالفين كلاين",
+    headline: "Minimalist American Luxury & Sensual Modernism",
+    headlineAr: "الفخامة الأمريكية البسيطة والحداثة الحسية",
+    description: "Founded in 1968, Calvin Klein is a global lifestyle brand that exemplifies bold, progressive ideals and a seductive, often minimal aesthetic through clean lines and classic comfort.",
+    descriptionAr: "تأسست كالفين كلاين في عام ١٩٦٨، وهي علامة تجارية عالمية لأسلوب الحياة تجسد المثل العليا الجريئة والتقدمية والجماليات الجذابة والبسيطة من خلال خطوط نظيفة وراحة كلاسيكية.",
+    backdropUrl: "/brand-pages/contact_bg.png"
+  },
+  {
+    id: "skechers",
+    name: "SKECHERS",
+    nameAr: "سكيتشرز",
+    headline: "Comfort-First Footwear Innovation & Active Lifestyle",
+    headlineAr: "ابتكار الأحذية المريحة وأسلوب الحياة النشط",
+    description: "As a global leader in the footwear industry, Skechers is renowned for designing innovative, comfort-driven shoes and athletic apparel for active people everywhere.",
+    descriptionAr: "بصفتها رائدة عالمية في صناعة الأحذية، تشتهر سكيتشرز بتصميم أحذية مبتكرة تركز على الراحة والملابس الرياضية للأشخاص النشطين في كل مكان.",
+    backdropUrl: "/brand-pages/contact_bg.png"
+  },
+  {
+    id: "maxmara",
+    name: "MaxMara",
+    nameAr: "ماكس مارا",
+    headline: "Italian Tailoring Heritage & Iconic Outerwear Elegance",
+    headlineAr: "تراث الخياطة الإيطالية وأناقة معاطف الخارجية الأيقونية",
+    description: "An emblem of Italian ready-to-wear excellence, Max Mara is world-famous for its luxury fabrics, structured silhouettes, and timeless neutral-toned wool coats.",
+    descriptionAr: "رمز للتميز الإيطالي في الملابس الجاهزة، تشتهر ماكس مارا عالميًا بأقمشتها الفاخرة، وقصاتها المنظمة، ومعاطفها الصوفية الخالدة ذات الألوان المحايدة.",
+    backdropUrl: "/brand-pages/contact_bg.png"
+  },
+  {
+    id: "editorial",
+    name: "EDITORIAL",
+    nameAr: "إيديتوريال",
+    headline: "Curated Seasonal Edits & Avant-Garde Designer Selections",
+    headlineAr: "مجموعات موسمية منسقة وخيارات مصممين رياديين",
+    description: "A space for progressive design and high-fashion curation, Editorial brings together avant-garde fashion statements and bold, boundary-pushing seasonal apparel.",
+    descriptionAr: "مساحة للتصميم المتقدم وتنسيق الموضة الراقية، تجمع إيديتوريال بين لمسات الموضة الطليعية والملابس الموسمية الجريئة التي تتجاوز الحدود.",
+    backdropUrl: "/brand-pages/contact_bg.png"
+  },
+  {
     id: "paul-shark",
-    name: "Paul & Shark",
+    name: "PAUL & SHARK",
     nameAr: "بول آند شارك",
     headline: "Luxury Yachting & Italian Sportswear Elegance",
     headlineAr: "فخامة اليخوت وأناقة الملابس الرياضية الإيطالية",
-    description: "Founded in 1975, Paul & Shark is synonymous with Italian elegance and high-performance yachting-inspired clothing, crafted with technical innovation and premium materials.",
-    descriptionAr: "تأسست بول آند شارك في عام ١٩٧٥، وهي مرادفة للأناقة الإيطالية والملابس المستوحاة من اليخوت عالية الأداء، والمصنوعة من الابتكارات التقنية والمواد المتميزة.",
+    description: "Synonymous with Italian elegance and high-performance yachting-inspired clothing, crafted with technical innovation and premium materials.",
+    descriptionAr: "مرادفة للأناقة الإيطالية والملابس المستوحاة من اليخوت عالية الأداء، والمصنوعة من الابتكارات التقنية والمواد المتميزة.",
     backdropUrl: "/brand-pages/contact_bg.png"
   },
   {
-    id: "tom-ford",
-    name: "Tom Ford",
-    nameAr: "توم فورد",
-    headline: "Modern Glamour, Sensuality & Tailoring Perfection",
-    headlineAr: "الجاذبية المعاصرة، والإثارة، والكمال في الخياطة",
-    description: "Renowned for its sharp tailoring, luxury eyewear, and iconic beauty collections, Tom Ford represents sophisticated modern glamour and high-fashion luxury.",
-    descriptionAr: "تشتهر توم فورد بالخياطة الحادة، والنظارات الفاخرة، ومجموعات الجمال الأيقونية، وتمثل الجاذبية المعاصرة الراقية والفخامة في الموضة.",
-    backdropUrl: "/brand-pages/contact_bg.png"
-  },
-  {
-    id: "givenchy",
-    name: "Givenchy",
-    nameAr: "جيفنشي",
-    headline: "Aristocratic Style, Couture Spirit & French Romance",
-    headlineAr: "الأسلوب الأرستقراطي، وروح الهوت كوتور، والرومانسية الفرنسية",
-    description: "Founded in 1952 by Hubert de Givenchy, the house blends dark romanticism, structured couture tailoring, and Parisian elegance with streetwear elements.",
-    descriptionAr: "تأسست دار جيفنشي عام ١٩٥٢ على يد هوبير دي جيفنشي، وهي تمزج بين الرومانسية الداكنة، والخياطة الهيكلية للهوت كوتور، والأناقة الباريسية مع عناصر ملابس الشارع.",
-    backdropUrl: "/brand-pages/contact_bg.png"
-  },
-  {
-    id: "christian-dior",
-    name: "Christian Dior",
-    nameAr: "كريستيان ديور",
-    headline: "The Pinnacle of Parisian Elegance & Grace",
-    headlineAr: "قمة الأناقة والجمال الباريسي",
-    description: "Since Christian Dior's 'New Look' revolutionized fashion in 1947, the House of Dior has stood as the global emblem of romantic femininity, exquisite craftsmanship, and grand Parisian elegance.",
-    descriptionAr: "منذ أن أحدث 'المظهر الجديد' لكريستيان ديور ثورة في عالم الموضة عام ١٩٤٧، كانت دار ديور بمثابة الرمز العالمي للأنوثة الرومانسية، والحرفية الرائعة، والأناقة الباريسية الكبرى.",
-    backdropUrl: "/brand-pages/contact_bg.png"
-  },
-  {
-    id: "gucci",
-    name: "Gucci",
-    nameAr: "غوتشي",
-    headline: "Contemporary Maximalism & Florentine Heritage",
-    headlineAr: "الجماليات المعاصرة والتراث الفلورنسي",
-    description: "Under a vision of bold eclecticism, Gucci redefines 21st-century luxury. Woven with Italian heritage and vibrant design, each piece is an invitation to self-expression.",
-    descriptionAr: "تحت رؤية انتقائية جريئة، تعيد غوتشي تعريف فخامة القرن الحادي والعشرين. منسوجة بالتراث الإيطالي والتصميم النابض بالحياة، كل قطعة هي دعوة للتعبير عن الذات.",
-    backdropUrl: "/brand-pages/contact_bg.png"
-  },
-  {
-    id: "chanel",
-    name: "Chanel",
-    nameAr: "شانيل",
-    headline: "The Definition of Haute Couture & Timeless Allure",
-    headlineAr: "تعريف الهوت كوتور والجاذبية الخالدة",
-    description: "Founded by Gabrielle Chanel in 1910, Chanel redefined women's style with revolutionary simplicity. Today, it remains the ultimate symbol of French luxury and modern elegance.",
-    descriptionAr: "تأسست دار شانيل على يد غابرييل شانيل في عام ١٩١٠، وأعادت تحديد أسلوب المرأة ببساطة ثورية. واليوم، تظل الرمز النهائي للفخامة الفرنسية والأناقة العصرية.",
-    backdropUrl: "/brand-pages/contact_bg.png"
-  },
-  {
-    id: "lancome",
-    name: "Lancome",
-    nameAr: "لانكوم",
-    headline: "Parisian Beauty, Advanced Skincare & Exquisite Scents",
-    headlineAr: "الجمال الباريسي، والعناية المتقدمة بالبشرة، والعطور الرائعة",
-    description: "Founded in 1935, Lancôme represents French refinement, science-backed skincare innovation, and luxurious fragrances celebrating elegant femininity worldwide.",
-    descriptionAr: "تأسست لانكوم في عام ١٩٣٥، وهي تمثل الرقي الفرنسي، والابتكارات في مجال العناية بالبشرة المدعومة بالعلم، والعطور الفاخرة التي تحتفي بالأنوثة الأنيقة في جميع أنحاء العالم.",
+    id: "sandro-moje",
+    name: "SANDRO moje",
+    nameAr: "ساندرو موهي",
+    headline: "Parisian Chic, Modern Tailoring & Effortless Luxury",
+    headlineAr: "الأناقة الباريسية، الخياطة الحديثة والفخامة التلقائية",
+    description: "A leading Parisian luxury brand, Sandro expresses an effortless Parisian elegance through sleek tailoring, refined textures, and romantic modern separates.",
+    descriptionAr: "علامة تجارية باريسية رائدة للفخامة، تعبر ساندرو عن أناقة باريسية سهلة من خلال خياطة أنيقة، وقوام ناعم، وقطع منفصلة رومانسية حديثة.",
     backdropUrl: "/brand-pages/contact_bg.png"
   }
 ];

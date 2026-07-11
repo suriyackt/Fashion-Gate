@@ -15,10 +15,11 @@ export default function HeroSection({
   t: (s?: string) => string;
   lang: "ar" | "en";
 }) {
+  console.log("HERO SECTION PROP IN COMPONENT:", JSON.stringify(section, null, 2));
   // Resolve background video or image URL dynamically
   const isVideoBg = section.bgType === "video" && (section.bgVideo?.asset?.url || section.video?.asset?.url);
 
-  let bgImageUrl = "/brand/hero-woman-wide.png";
+  let bgImageUrl = "/brand-pages/page_01.jpg";
   if (section.bgImage?.asset) {
     try {
       bgImageUrl = imageUrl(section.bgImage).url() || bgImageUrl;
@@ -95,8 +96,8 @@ export default function HeroSection({
       id={section.anchor || "arrival"}
       component="section"
       sx={{
-        height: { xs: "calc(100svh - 100px)", md: "calc(100svh - 112px)" },
-        minHeight: { xs: "calc(100svh - 100px)", md: "calc(100svh - 112px)" },
+        height: { xs: "calc(100svh - 105px)", md: "calc(100svh - 148px)" },
+        minHeight: { xs: "calc(100svh - 105px)", md: "calc(100svh - 148px)" },
         position: "relative",
         overflow: "hidden",
         color: "#fff",

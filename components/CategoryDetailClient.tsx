@@ -142,13 +142,13 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
     } else if (categoryId === "perfumes" || categoryId === "skincare" || categoryId === "designers") {
       return [
         { id: "all", label: lang === "ar" ? "الكل" : "All Brands" },
-        { id: "paul-shark", label: "Paul & Shark" },
-        { id: "tom-ford", label: "Tom Ford" },
-        { id: "givenchy", label: "Givenchy" },
-        { id: "christian-dior", label: "Christian Dior" },
-        { id: "gucci", label: "Gucci" },
-        { id: "chanel", label: "Chanel" },
-        { id: "lancome", label: "Lancome" }
+        { id: "adidas", label: "adidas" },
+        { id: "calvin-klein", label: "CALVIN KLEIN" },
+        { id: "skechers", label: "SKECHERS" },
+        { id: "maxmara", label: "MaxMara" },
+        { id: "editorial", label: "EDITORIAL" },
+        { id: "paul-shark", label: "PAUL & SHARK" },
+        { id: "sandro-moje", label: "SANDRO moje" }
       ];
     } else if (categoryId === "fashion") {
       return [
