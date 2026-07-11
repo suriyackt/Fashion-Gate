@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getAllSanityProducts } from "@/lib/sanity";
 
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
   return categories.map((id) => ({ id }));

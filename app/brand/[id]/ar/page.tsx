@@ -2,6 +2,8 @@ import { getBrandById, getAllBrands } from "@/lib/brandData";
 import BrandDetailClient from "@/components/BrandDetailClient";
 import { notFound } from "next/navigation";
 
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   return getAllBrands().map((brand) => ({ id: brand.id }));
 }
