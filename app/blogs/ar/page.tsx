@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "Fashion Gate Journal: elegant editorial stories, project notes, and luxury design insights."
 };
 
+export const revalidate = 0;
+
 export default async function BlogsPage() {
   const posts = await getSanityBlogPosts();
   const settings = await getBlogsPageSettings();

@@ -2,6 +2,8 @@ import { getSanityBlogPost, getAllSanityBlogPostSlugs } from "@/lib/sanity";
 import BlogDetailClient from "@/components/BlogDetailClient";
 import { notFound } from "next/navigation";
 
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   return getAllSanityBlogPostSlugs();
 }

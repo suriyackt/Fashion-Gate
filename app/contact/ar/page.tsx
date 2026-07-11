@@ -1,7 +1,7 @@
 import ContactClient from "@/components/ContactClient";
 import { getContactPageData } from "@/lib/sanity";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function ContactArPage() {
   let initialData = null;

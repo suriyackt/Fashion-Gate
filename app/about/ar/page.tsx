@@ -1,7 +1,7 @@
 import AboutClient from "@/components/AboutClient";
 import { getAboutPageData } from "@/lib/sanity";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function AboutArPage() {
   let initialData = null;

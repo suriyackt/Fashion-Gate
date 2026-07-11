@@ -3,7 +3,7 @@ import { fallbackSections, fallbackSettings } from "@/lib/fallbackData";
 import Storefront from "@/components/Storefront";
 import type { Section, SiteSettings } from "@/lib/types";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function Home() {
   let data: { settings?: SiteSettings; page?: { sections?: Section[] } } = {};

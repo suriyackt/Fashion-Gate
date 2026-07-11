@@ -2,6 +2,8 @@ import { getSanityProduct, getAllSanityProductSlugs } from "@/lib/sanity";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import { notFound } from "next/navigation";
 
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   return getAllSanityProductSlugs();
 }
