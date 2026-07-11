@@ -31,6 +31,12 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
 
   // Lock the preloader on initial mount to let the ease sweep finish fully (2.6 seconds)
   useEffect(() => {
+    if (window.location.pathname.includes("/studio")) {
+      setLoading(false);
+      setMinTimeActive(false);
+      setPendingClose(false);
+      return;
+    }
     const timer = setTimeout(() => {
       setMinTimeActive(false);
     }, 2600);
@@ -110,6 +116,10 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
           ) {
             try {
               const url = new URL(href, window.location.origin);
+              // Bypass completely if current page or destination page is studio
+              if (url.pathname.includes("/studio") || window.location.pathname.includes("/studio")) {
+                break;
+              }
               // Only trigger loader if navigating to a different pathname
               if (url.pathname !== window.location.pathname) {
                 e.preventDefault(); // Stay on current page while loader turns on
@@ -121,6 +131,10 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
                 }, 180);
               }
             } catch (err) {
+              // Bypass completely if destination page is studio
+              if (href.includes("/studio")) {
+                break;
+              }
               const isLogin = href.includes("/login");
               if (href !== window.location.pathname) {
                 e.preventDefault();

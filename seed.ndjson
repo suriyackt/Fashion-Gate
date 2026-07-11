@@ -1,0 +1,7 @@
+{"_id": "brand-chanel", "_type": "brand", "title": "Chanel", "slug": {"_type": "slug", "current": "chanel"}, "size": "medium"}
+{"_id": "brand-prada", "_type": "brand", "title": "Prada", "slug": {"_type": "slug", "current": "prada"}, "size": "medium"}
+{"_id": "brand-gucci", "_type": "brand", "title": "Gucci", "slug": {"_type": "slug", "current": "gucci"}, "size": "medium"}
+{"_id": "brand-dior", "_type": "brand", "title": "Dior", "slug": {"_type": "slug", "current": "dior"}, "size": "medium"}
+{"_id": "brand-ysl", "_type": "brand", "title": "Saint Laurent", "slug": {"_type": "slug", "current": "ysl"}, "size": "medium"}
+{"_id": "brand-hermes", "_type": "brand", "title": "Hermès", "slug": {"_type": "slug", "current": "hermes"}, "size": "medium"}
+{"_id": "brand-adidas", "_type": "brand", "title": "Adidas Y-3", "slug": {"_type": "slug", "current": "adidas"}, "size": "medium"}

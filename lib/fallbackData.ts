@@ -84,13 +84,5 @@ export const fallbackSections = [
       { title: "Brand guide plate", imageUrl: "/brand-pages/page_18.jpg" },
       { title: "Brand guide plate", imageUrl: "/brand-pages/page_32.jpg" }
     ]
-  }, 
-  {
-    _id: "brand",
-    type: "editorial",
-    anchor: "brand",
-    eyebrow: "Heritage & Craftsmanship",
-    headline: "The Pinnacle of Syrian Luxury Shopping",
-    description: "Fashion Gate brings together the world's most renowned haute couture houses, bespoke local ateliers, and curations of fine design. Housed in the prestigious Boulevard district, we offer an immersive luxury journey that connects the heritage of Silk Road craftsmanship with contemporary global style."
   }
 ];

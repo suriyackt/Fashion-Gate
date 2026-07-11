@@ -4,6 +4,7 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import type { CollectionItem, Section } from "@/lib/types";
 import { resolveImage } from "../Storefront";
+import { getLocalizedValue } from "@/lib/sanity";
 
 export default function CollectionsSection({ 
   section, 
@@ -14,28 +15,89 @@ export default function CollectionsSection({
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
-  const collections = section.collections || [];
+  const fallbackCollections = [
+    { title: "Designer Collections", headline: "Designer Collections", description: "A curated presentation of international fashion houses, avant-garde silhouettes, and seasonal runway selections for women and men.", imageUrl: "/brand/designer-collections.png" },
+    { title: "Beauty & Accessories", headline: "Luxury Accessories & Beauty", description: "Intimate displays of rare scents, advanced skincare, and hand-finished leather accessories from the world's most refined makers.", imageUrl: "/brand/luxury-beauty.png" },
+    { title: "Gourmet & Fine Foods", headline: "Gourmet & Gifting", description: "An exquisite selection of curated gourmet foods, artisanal confectioneries, and luxury gift hampers sourced from the world's most prestigious makers.", imageUrl: "/brand/luxury-gourmet-epicerie.png" }
+  ];
+  const collections = (section.collections && section.collections.length > 0) 
+    ? (section.collections as any[]) 
+    : (fallbackCollections as any[]);
+
+  // Resolve section localized fields using our helper
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    lang === "ar" ? "الوجهات" : "The Departments"
+  );
+
+  const headlineText = getLocalizedValue(
+    section.headline,
+    lang,
+    ""
+  );
+
+  const descriptionText = getLocalizedValue(
+    section.description,
+    lang,
+    ""
+  );
 
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 10, md: 16 }, bgcolor: "var(--fg-white)", color: "#111" }}>
       <Container maxWidth="xl">
         <Stack spacing={{ xs: 8, md: 12 }}>
           <Box sx={{ maxWidth: 840, textAlign: lang === "ar" ? "right" : "left" }}>
-            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>{t(section.eyebrow)}</Typography>
-            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, md: 54 }, fontWeight: 500, lineHeight: 1.15, mt: 1.5 }}>{t(section.headline)}</Typography>
-            <Typography sx={{ color: "rgba(0,0,0,.6)", fontSize: 16, lineHeight: 1.8, mt: 2, fontFamily: '"Cairo", sans-serif', maxWidth: 780 }}>{t(section.description)}</Typography>
+            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {eyebrowText}
+            </Typography>
+            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, md: 54 }, fontWeight: 500, lineHeight: 1.15, mt: 1.5 }}>
+              {headlineText}
+            </Typography>
+            <Typography sx={{ color: "rgba(0,0,0,.6)", fontSize: 16, lineHeight: 1.8, mt: 2, fontFamily: '"Cairo", sans-serif', maxWidth: 780 }}>
+              {descriptionText}
+            </Typography>
           </Box>
           
           <Stack spacing={{ xs: 8, md: 14 }}>
             {collections.map((item: CollectionItem, index) => {
-              const image = resolveImage(item.coverImage, item.imageUrl);
+              let image = resolveImage(item.coverImage, item.imageUrl);
+              if (image === "/brand-pages/page_01.jpg") {
+                const titleLower = (getLocalizedValue(item.title, "en", "") || "").toLowerCase();
+                if (titleLower.includes("designer") || index === 0) {
+                  image = "/brand/designer-collections.png";
+                } else if (titleLower.includes("beauty") || titleLower.includes("accessories") || index === 1) {
+                  image = "/brand/luxury-beauty.png";
+                } else if (titleLower.includes("gourmet") || titleLower.includes("food") || index === 2) {
+                  image = "/brand/luxury-gourmet-epicerie.png";
+                }
+              }
               const isEven = index % 2 === 0;
               const isRtl = lang === "ar";
               const showReverse = isRtl ? isEven : !isEven;
 
+              // Resolve item localized fields using our helper
+              const itemTitle = getLocalizedValue(
+                item.title,
+                lang,
+                isRtl ? (item.titleAr || "") : (item.titleEn || "")
+              );
+
+              const itemHeadline = getLocalizedValue(
+                item.headline,
+                lang,
+                isRtl ? (item.headlineAr || "") : (item.headlineEn || "")
+              );
+
+              const itemDescription = getLocalizedValue(
+                item.description,
+                lang,
+                isRtl ? (item.descriptionAr || "") : (item.descriptionEn || "")
+              );
+
               return (
                 <Box 
-                  key={`${item.title}-${index}`}
+                  key={`${itemTitle}-${index}`}
                   sx={{ 
                     display: "flex", 
                     flexDirection: { xs: "column", md: showReverse ? "row-reverse" : "row" }, 
@@ -60,7 +122,7 @@ export default function CollectionsSection({
                       transition={{ duration: 1, ease: "easeOut" }}
                       whileHover={{ scale: 1.03 }}
                       src={image}
-                      alt={item.title}
+                      alt={itemTitle}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -95,13 +157,13 @@ export default function CollectionsSection({
                     </Typography>
 
                     <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", mb: 1, fontFamily: '"Cairo", sans-serif' }}>
-                      {t(item.title)}
+                      {itemTitle}
                     </Typography>
                     <Typography sx={{ color: "#111111", fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 500, mb: 2, lineHeight: 1.25 }}>
-                      {t(item.headline)}
+                      {itemHeadline}
                     </Typography>
                     <Typography sx={{ color: "rgba(0,0,0,0.65)", fontSize: 14, lineHeight: 1.8, fontFamily: '"Cairo", sans-serif', maxWidth: 480 }}>
-                      {t(item.description)}
+                      {itemDescription}
                     </Typography>
                   </Box>
                 </Box>

@@ -1,0 +1,1156 @@
+[
+  {
+    "id": "chanel-tweed-jacket",
+    "title": "Chanel Tweed Jacket",
+    "titleAr": "سترة شانيل من التويد",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "outerwear-women",
+    "subcategoryAr": "ملابس خارجية نسائية",
+    "slogan": "An icon of Parisian luxury craftsmanship.",
+    "sloganAr": "أيقونة الحرفية الباريسية الفاخرة.",
+    "description": "Hand-woven from silk and wool boucle yarns, this structured silhouette features intricate braided borders and signature CC-logo brass buttons. The ultimate pinnacle of Parisian couture.",
+    "descriptionAr": "منسوجة يدوياً من خيوط الحرير والصوف البوكلي، ويتميز هذا التصميم الهيكلي بحواف مضفرة معقدة وأزرار نحاسية تحمل شعار CC المميز. القمة المطلقة للأزياء الباريسية الراقية.",
+    "details": [
+      "55% Wool, 30% Silk, 15% Alpaca",
+      "Brushed brass CC monogram buttons",
+      "Hand-finished braided trim along openings",
+      "Silk satin inner lining",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "٥٥٪ صوف، ٣٠٪ حرير، ١٥٪ ألبكة",
+      "أزرار نحاسية مصقولة تحمل مونوغرام CC",
+      "حواف مضفرة مشطبة يدوياً على طول الفتحات",
+      "بطانة داخلية من حرير الساتان",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_5.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "prada-oversized-wool-coat",
+      "dior-bar-jacket"
+    ]
+  },
+  {
+    "id": "chanel-no5-perfume",
+    "title": "Chanel No.5 Perfume",
+    "titleAr": "عطر شانيل رقم ٥",
+    "category": "Perfumes",
+    "categoryAr": "العطور",
+    "subcategory": "perfumes",
+    "subcategoryAr": "العطور",
+    "slogan": "The world's most legendary fragrance.",
+    "sloganAr": "العطر الأكثر أسطورية في العالم.",
+    "description": "An absolute classic. Combining notes of May rose, jasmine, and aldehyde bursts, Chanel No. 5 is a mysterious, floral olfactory signature that transcends generations.",
+    "descriptionAr": "كلاسيكية مطلقة. يجمع بين نفحات ورد مايو والياسمين ورشات الألدهيد، شانيل رقم ٥ هو توقيع عطري زهري غامض يتجاوز الأجيال.",
+    "details": [
+      "Eau de Parfum concentration",
+      "Key notes: Aldehydes, Jasmine, May Rose, Ylang-Ylang",
+      "Refined glass flacon with minimalist typography",
+      "100ml spray bottle",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "تركيز أو دو برفان",
+      "الروائح الأساسية: ألدهيدات، ياسمين، ورد مايو، يلانغ يلانغ",
+      "قارورة زجاجية راقية بتصميم بسيط",
+      "بخاخ حجم ١٠٠ مل",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_6.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "dior-sauvage-elixir",
+      "chanel-classic-flap-bag"
+    ]
+  },
+  {
+    "id": "chanel-classic-flap-bag",
+    "title": "Chanel Classic Flap Bag",
+    "titleAr": "حقيبة كتف شانيل الكلاسيكية",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "A timeless masterpiece of leather design.",
+    "sloganAr": "تحفة فنية خالدة في عالم المنتجات الجلدية.",
+    "description": "Crafted in premium quilted caviar skin, featuring a double-flap closure and the signature metal interlaced leather shoulder strap. A legendary accessory investment.",
+    "descriptionAr": "مأخوذة من جلد العجل الفاخر المبطن، وتتميز بإغلاق مزدوج وحزام كتف جلدي متداخل مع المعدن. قطعة إكسسوار أسطورية للاقتناء.",
+    "details": [
+      "Quilted Caviar Leather",
+      "Gold-tone metal hardware and CC clasp",
+      "Double-flap interior compartments",
+      "Adjustable metal-leather woven chain strap",
+      "Dimensions: 19.5 × 30 × 10 cm"
+    ],
+    "detailsAr": [
+      "جلد كافيار مبطن فاخر",
+      "إكسسوارات معدنية ذهبية وقفل CC",
+      "مقصورات داخلية ذات غطاء مزدوج",
+      "حزام سلسلة قابل للتعديل من الجلد والمعدن",
+      "الأبعاد: ١٩.٥ × ٣٠ × ١٠ سم"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "hermes-birkin-30",
+      "prada-galleria-tote"
+    ]
+  },
+  {
+    "id": "prada-galleria-tote",
+    "title": "Prada Galleria Leather Bag",
+    "titleAr": "حقيبة برادا غاليريا الجلدية",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "Structured elegance in signature Saffiano leather.",
+    "sloganAr": "أناقة هيكلية بجلد السافيانو المميز.",
+    "description": "Defined by its structured outline and cross-hatch Saffiano texture. Built with double zip compartments, rolled leather handles, and the iconic triangular enameled metal logo.",
+    "descriptionAr": "تتميز بهيكلها المنظم وملمس جلد السافيانو المتقاطع. تحتوي على مقصورتين بسحاب، ومقابض جلدية ملفوفة، وشعار برادا المثلث الكلاسيكي من المعدن المطلية بالمينا.",
+    "details": [
+      "Signature cross-hatched Saffiano leather",
+      "Double top handles and removable shoulder strap",
+      "Two external zipper pockets, central open slot",
+      "Enameled metal triangle logo",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "جلد السافيانو المخطط الحاصل على براءة اختراع",
+      "مقابض علوية مزدوجة وحزام كتف قابل للإزالة",
+      "جيبان خارجيان بسحاب، وفتحة مركزية مفتوحة",
+      "شعار معدني مثلث مطلي بالمينا",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "prada",
+    "relatedIds": [
+      "chanel-classic-flap-bag",
+      "gucci-marmont-shoulder-bag"
+    ]
+  },
+  {
+    "id": "prada-nylon-backpack",
+    "title": "Prada Nylon Backpack",
+    "titleAr": "حقيبة ظهر برادا ري-نايلون",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-accessories",
+    "subcategoryAr": "إكسسوارات رجالية",
+    "slogan": "Industrial utility meeting high-fashion codes.",
+    "sloganAr": "فائدة صناعية تلتقي برموز الموضة الراقية.",
+    "description": "Made from innovative regenerated ocean nylon fabrics with Saffiano leather details. Highly functional double front pockets and drawstring flap closure.",
+    "descriptionAr": "مصنوعة من ألياف النايلون المجددة المبتكرة من المحيطات مع تفاصيل من جلد السافيانو. تتميز بجيوب أمامية مزدوجة عملية وإغلاق برباط مع غطاء.",
+    "details": [
+      "Eco-friendly Re-Nylon fabric",
+      "Saffiano leather trims and straps",
+      "Enameled metal triangle logo on flap",
+      "Adjustable padded shoulder harness",
+      "Two external buckle pockets"
+    ],
+    "detailsAr": [
+      "نسيج ري-نايلون صديق للبيئة",
+      "حواف وأحزمة من جلد السافيانو",
+      "شعار معدني مثلث مطلي بالمينا على الغطاء",
+      "حمالات كتف مبطنة وقابلة للتعديل",
+      "جيبان خارجيان بإبزيم"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "prada",
+    "relatedIds": [
+      "adidas-y3-sneakers",
+      "gucci-horsebit-loafers"
+    ]
+  },
+  {
+    "id": "prada-oversized-wool-coat",
+    "title": "Prada Wool Coat",
+    "titleAr": "معطف برادا الفاخر من الكشمير",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "outerwear-women",
+    "subcategoryAr": "ملابس خارجية نسائية",
+    "slogan": "Enveloping warmth in structured minimal silhouettes.",
+    "sloganAr": "دفء غامر في قصات بسيطة وهندسية.",
+    "description": "Tailored in a double-faced cashmere and virgin wool blend. Features drop shoulders, a broad notched lapel, and raw edge hand-stitch finishes for conceptual luxury.",
+    "descriptionAr": "مفصل من مزيج الكشمير ذي الوجهين والصوف البكر. يتميز بأكتاف منسدلة، وياقة عريضة مطوية، وحواف مخيطة يدوياً للفخامة الفكرية.",
+    "details": [
+      "80% Virgin Wool, 20% Cashmere",
+      "Double-breasted front closures",
+      "Slightly oversized cocoon shape",
+      "Deep welt side pockets",
+      "Dry clean only"
+    ],
+    "detailsAr": [
+      "٨٠٪ صوف بكر، ٢٠٪ كشمير",
+      "إغلاق أمامي مزدوج الصدر",
+      "تصميم شرنقة فضفاض قليلاً",
+      "جيوب جانبية عميقة",
+      "تنظيف جاف فقط"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_7.png",
+    "brandId": "prada",
+    "relatedIds": [
+      "chanel-tweed-jacket",
+      "dior-bar-jacket"
+    ]
+  },
+  {
+    "id": "gucci-marmont-shoulder-bag",
+    "title": "Gucci Marmont Shoulder Bag",
+    "titleAr": "حقيبة كتف غوتشي جي جي مارمونت",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "Vibrant matelasse leather with iconic double-G hardware.",
+    "sloganAr": "جلد مبطن نابض بالحياة مع إكسسوارات شعار GG الكلاسيكي.",
+    "description": "Features a soft, structured shape and a flap closure with Double G metal logo. The sliding chain strap can be worn as a shoulder strap or top handle.",
+    "descriptionAr": "تتميز بشكلها الناعم والمنظم وإغلاقها بغطاء مع شعار Double G المعدني. يمكن ارتداء حزام السلسلة المنزلق كحزام كتف أو مقبض علوي.",
+    "details": [
+      "Chevron matelasse calfskin leather",
+      "Antique gold-toned GG metal hardware",
+      "Sliding chain shoulder strap with leather pad",
+      "Microfiber lining with suede-like finish",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "جلد عجل مبطن بنمط متعرج",
+      "إكسسوارات معدنية GG باللون الذهبي العتيق",
+      "حزام كتف سلسلة منزلق مع وسادة جلدية",
+      "بطانة من الألياف الدقيقة بلمسة نهائية تشبه الجلد المدبوغ",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "gucci",
+    "relatedIds": [
+      "prada-galleria-tote",
+      "chanel-classic-flap-bag"
+    ]
+  },
+  {
+    "id": "gucci-horsebit-loafers",
+    "title": "Gucci Horsebit Loafers",
+    "titleAr": "حذاء لوفر غوتشي هورسبت الجلدي",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-shoes",
+    "subcategoryAr": "أحذية رجالية",
+    "slogan": "The definitive Florentine loafer since 1953.",
+    "sloganAr": "حذاء اللوفر الفلورنسي الأكثر تميزاً منذ عام ١٩٥٣.",
+    "description": "Crafted in premium black leather, detailed with the iconic metal Horsebit across the vamp. Soft leather back can be folded down to wear as a slipper.",
+    "descriptionAr": "مصنوع من الجلد الأسود الفاخر، ومزين بمعدن هورسبت الكلاسيكي عبر الجزء الأمامي. يمكن طي الجزء الخلفي الجلدي الناعم لارتدائه كخف.",
+    "details": [
+      "100% fine Italian calfskin",
+      "Gold-tone Horsebit metal detail",
+      "Foldable heel counter for dual-wear",
+      "Leather sole and lining",
+      "Hand-stitched details"
+    ],
+    "detailsAr": [
+      "١٠٠٪ جلد عجل إيطالي فاخر",
+      "تفاصيل معدنية ذهبية اللون لشعار هورسبت",
+      "جزء خلفي قابل للطي للارتداء المزدوج",
+      "نعل وبطانة من الجلد",
+      "تفاصيل مخيطة يدوياً"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_2.png",
+    "brandId": "gucci",
+    "relatedIds": [
+      "prada-nylon-backpack",
+      "hermes-h-hour-watch"
+    ]
+  },
+  {
+    "id": "gucci-floral-silk-scarf",
+    "title": "Gucci Silk Scarf",
+    "titleAr": "وشاح غوتشي الحريري بنقشة الزهور",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-accessories",
+    "subcategoryAr": "إكسسوارات نسائية",
+    "slogan": "Romantic botanical prints on hand-rolled Italian silk.",
+    "sloganAr": "طبعات نباتية رومانسية على حرير إيطالي ملتف يدوياً.",
+    "description": "A historic botanical print first created for Princess Grace of Monaco. Rendered on fluid, organic silk twill with colorful borders and hand-rolled edges.",
+    "descriptionAr": "طبعة نباتية تاريخية تم إنشاؤها لأول مرة لـ أميرة موناكو غريس. مقدمة على حرير مضلع عضوي انسيابي مع حواف ملونة وحواف ملتفة يدوياً.",
+    "details": [
+      "100% Organic Silk Twill",
+      "Historic multicolored Flora print",
+      "Hand-rolled finished border edges",
+      "Dimensions: 90 x 90 cm",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ حرير مضلع عضوي",
+      "طبعة فلورا التاريخية متعددة الألوان",
+      "حواف مطوية يدوياً بالكامل",
+      "الأبعاد: ٩٠ × ٩٠ سم",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_4.png",
+    "brandId": "gucci",
+    "relatedIds": [
+      "prada-oversized-wool-coat",
+      "chanel-tweed-jacket"
+    ]
+  },
+  {
+    "id": "dior-sauvage-elixir",
+    "title": "Dior Sauvage Elixir",
+    "titleAr": "عطر ديور سوفاج إكسير",
+    "category": "Perfumes",
+    "categoryAr": "العطور",
+    "subcategory": "perfumes",
+    "subcategoryAr": "العطور",
+    "slogan": "An raw, intoxicating concentration of wild spices.",
+    "sloganAr": "تركيز خام ومسكر من التوابل البرية.",
+    "description": "Sauvage Elixir is an extraordinarily concentrated fragrance steeped in the iconic freshness of Sauvage with an intoxicating heart of spices and organic lavender essence.",
+    "descriptionAr": "ديور سوفاج إكسير هو عطر مركز بشكل استثنائي غارق في نضارة سوفاج الكلاسيكية مع قلب مسكر من التوابل وخلاصة الخزامى العضوية.",
+    "details": [
+      "Extraordinarily high fragrance concentration (Elixir)",
+      "Key notes: Grapefruit, Cardamom, Nutmeg, Organic Lavender, Rich Woods",
+      "Midnight blue lacquered glass bottle",
+      "60ml spray bottle",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "عطر مركز بشكل استثنائي (إكسير)",
+      "الروائح الأساسية: الجريب فروت، الهيل، جوزة الطيب، الخزامى العضوي، الأخشاب الغنية",
+      "زجاجة مطلية باللون الأزرق الداكن",
+      "بخاخ حجم ٦٠ مل",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_6.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "chanel-no5-perfume",
+      "hermes-birkin-30"
+    ]
+  },
+  {
+    "id": "dior-lady-dior-handbag",
+    "title": "Lady Dior Handbag",
+    "titleAr": "حقيبة كتف ليدي ديور الجلدية",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "Architectural cannage quilting with metal charm accents.",
+    "sloganAr": "تطريز هندسي بارز مع لمسات ساحرة من الحلي المعدنية.",
+    "description": "The ultimate emblem of Dior elegance. Crafted in lambskin quilted with the iconic Cannage pattern, finished with swinging pale gold-finish DIOR charms.",
+    "descriptionAr": "شعار ديور النهائي للأناقة. مصنوعة من جلد الحمل المبطن بنقشة الكانيج الكلاسيكية، وتكتمل بحلي معدنية ذهبية متأرجحة تحمل أحرف ديور.",
+    "details": [
+      "100% fine Cannage lambskin leather",
+      "D.I.O.R. metal charms hanging on handles",
+      "Removable chain shoulder strap included",
+      "Internal zipper pocket and card compartments",
+      "Dimensions: 17 x 20 x 8 cm"
+    ],
+    "detailsAr": [
+      "١٠٠٪ جلد حمل بنقشة كانيج الهندسية",
+      "حلي معدنية معلقة تحمل حروف D.I.O.R",
+      "تتضمن حزام كتف سلسلة قابل للإزالة",
+      "جيب داخلي بسحاب ومقصورات للبطاقات",
+      "الأبعاد: ١٧ × ٢٠ × ٨ سم"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "hermes-birkin-30",
+      "chanel-classic-flap-bag"
+    ]
+  },
+  {
+    "id": "dior-bar-jacket",
+    "title": "Dior Bar Jacket",
+    "titleAr": "سترة ديور الكلاسيكية",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "outerwear-women",
+    "subcategoryAr": "ملابس خارجية نسائية",
+    "slogan": "The historic emblem of the New Look silhouette.",
+    "sloganAr": "الشعار التاريخي لمظهر النيو لوك الشهير.",
+    "description": "Tailored with structured padding that emphasizes a narrow waist and rounded hips. Crafted from premium double-woven wool and silk blend.",
+    "descriptionAr": "مفصلة بحشوة هيكلية تؤكد على الخصر النحيف والأرداف الدائرية. مصنوعة من مزيج فاخر من الصوف والحرير مزدوج النسج.",
+    "details": [
+      "77% Wool, 23% Silk blend",
+      "Structured architectural hip pads",
+      "Notched lapels, fabric covered front buttons",
+      "Silk crepe inner lining",
+      "Dry clean only"
+    ],
+    "detailsAr": [
+      "مزيج ٧٧٪ صوف، ٢٣٪ حرير",
+      "حشوة أكتاف وأرداف هيكلية",
+      "ياقة مطوية، أزرار أمامية مغطاة بالقماش",
+      "بطانة داخلية من حرير الكريب",
+      "تنظيف جاف فقط"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_5.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "chanel-tweed-jacket",
+      "prada-oversized-wool-coat"
+    ]
+  },
+  {
+    "id": "ysl-tuxedo-suit",
+    "title": "Saint Laurent Tuxedo Suit",
+    "titleAr": "بدلة تاكسيدو من سان لوران",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-formal-suits",
+    "subcategoryAr": "بدل رسمية رجالية",
+    "slogan": "Sharp masculine tailoring reimagined for modern nights.",
+    "sloganAr": "خياطة رجالية حادة معاد تصورها لليالي العصرية.",
+    "description": "First introduced by YSL in 1966. Crafted in wool grain de poudre with satin peak lapels and flat-front trousers, projecting rebellious sophistication.",
+    "descriptionAr": "تم تقديمها لأول مرة بواسطة سان لوران في عام ١٩٦٦. مصنوعة من صوف غران دي بودر مع ياقة ساتان مدببة وسروال مسطح من الأمام، لتبرز الرقي المتمرد.",
+    "details": [
+      "100% Wool Grain de Poudre fabric",
+      "Satin peak lapels and side pant stripes",
+      "Single-button jacket closure",
+      "Silk satin inner lining",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ صوف حبيبي فاخر",
+      "ياقة ساتان مدببة وخطوط جانبية للسروال",
+      "إغلاق السترة بزر واحد",
+      "بطانة داخلية من حرير الساتان",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/brand/modern-sophistication.png",
+    "brandId": "ysl",
+    "relatedIds": [
+      "gucci-horsebit-loafers",
+      "prada-nylon-backpack"
+    ]
+  },
+  {
+    "id": "ysl-sac-de-jour",
+    "title": "Saint Laurent Sac de Jour Bag",
+    "titleAr": "حقيبة سان لوران ساك دو جور",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "Sleek, minimalist accordion structure in fine calfskin.",
+    "sloganAr": "هيكل أكورديون أنيق وبسيط من جلد العجل الفاخر.",
+    "description": "Defined by its rigid frame, tubular leather handles, and expandable accordion sides. A signature statement of quiet elegance.",
+    "descriptionAr": "تتميز بإطارها الصلب، ومقابضها الجلدية الملفوفة، وجوانبها الأكورديون القابلة للتوسيع. قطعة مميزة تدل على الأناقة الهادئة.",
+    "details": [
+      "100% fine grained calfskin leather",
+      "Tubular leather top handles and removable shoulder strap",
+      "Accordion side panels with compression straps",
+      "Removable padlock with leather sheath",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ جلد عجل ناعم ومحبب",
+      "مقابض علوية جلدية ملفوفة وحزام كتف قابل للإزالة",
+      "ألواح جانبية أكورديون مع أحزمة ضغط",
+      "قفل قابل للإزالة مع غلاف جلدي",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "ysl",
+    "relatedIds": [
+      "prada-galleria-tote",
+      "gucci-marmont-shoulder-bag"
+    ]
+  },
+  {
+    "id": "hermes-birkin-30",
+    "title": "Hermes Birkin 30 Bag",
+    "titleAr": "حقيبة هيرميس بيركين ٣٠ الجلدية",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-bags",
+    "subcategoryAr": "حقائب نسائية",
+    "slogan": "The ultimate peak of equestrian leather artistry.",
+    "sloganAr": "الذروة النهائية لفنون الجلود المستوحاة من الفروسية.",
+    "description": "Crafted in Togo calfskin, featuring rolled leather handles, a flap top, and the legendary sangles straps secured by a palladium metal turn-lock.",
+    "descriptionAr": "مصنوعة من جلد عجل توغو الفاخر، وتتميز بمقابض جلدية ملفوفة، وغطاء علوي، وأحزمة سانغل الأسطورية المثبتة بقفل دوار من البلاديوم.",
+    "details": [
+      "Fine Togo calfskin leather (scratch-resistant)",
+      "Polished palladium-finish metal hardware",
+      "Double top handles and central lock closure",
+      "Hand-sewn saddle stitching",
+      "Includes key clochette, padlock, and dust bag"
+    ],
+    "detailsAr": [
+      "جلد عجل توغو ناعم (مقاوم للخدش)",
+      "إكسسوارات معدنية مصقولة مطلية بالبلاديوم",
+      "مقابض علوية مزدوجة وقفل مركزي دوار",
+      "خياطة سرج مخيطة يدوياً بالكامل",
+      "تتضمن كلوشيت مفاتيح وقفل وحقيبة غبار"
+    ],
+    "imageUrl": "/brand/lookbook-tote.png",
+    "brandId": "hermes",
+    "relatedIds": [
+      "chanel-classic-flap-bag",
+      "dior-lady-dior-handbag"
+    ]
+  },
+  {
+    "id": "hermes-h-hour-watch",
+    "title": "Hermes Watch",
+    "titleAr": "ساعة هيرميس إتش-أور الجلدية",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-accessories",
+    "subcategoryAr": "إكسسوارات رجالية",
+    "slogan": "Iconic H-shaped steel case with hand-stitched strap.",
+    "sloganAr": "علبة فولاذية مميزة على شكل حرف H مع حزام مخيط يدوياً.",
+    "description": "Designed by Philippe Mouquet in 1996. Featuring an iconic H-shaped steel bezel enclosing a white dial with sunburst stamping and a swift calfskin leather strap.",
+    "descriptionAr": "صممها فيليب موكيه عام ١٩٩٦. تتميز بإطار فولاذي مميز على شكل حرف H يحيط بميناء أبيض منقوش بنقشة أشعة الشمس وحزام جلدي ناعم.",
+    "details": [
+      "Swiss-made quartz movement",
+      "30.5mm steel H-shaped case bezel",
+      "Scratch-resistant sapphire crystal glass",
+      "Double-wrap swift calfskin leather strap",
+      "Water resistant to 3 bar"
+    ],
+    "detailsAr": [
+      "حركة كوارتز سويسرية الصنع",
+      "علبة فولاذية قياس ٣٠.٥ مم على شكل حرف H",
+      "زجاج كريستال ياقوتي مقاوم للخدش",
+      "حزام جلدي ناعم يلتف حول المعصم",
+      "مقاومة للماء حتى عمق ٣٠ متراً"
+    ],
+    "imageUrl": "/brand/signature-accents.png",
+    "brandId": "hermes",
+    "relatedIds": [
+      "gucci-horsebit-loafers",
+      "ysl-tuxedo-suit"
+    ]
+  },
+  {
+    "id": "hermes-porcelain-plate",
+    "title": "Hermes Porcelain Plate",
+    "titleAr": "طبق هيرميس من البورسلان الفاخر",
+    "category": "Dining",
+    "categoryAr": "المائدة والضيافة",
+    "subcategory": "dining",
+    "subcategoryAr": "المائدة والضيافة",
+    "slogan": "Wild equatorial flora and fauna painted on fine porcelain.",
+    "sloganAr": "نباتات وحيوانات استوائية برية مرسومة على البورسلان الفاخر.",
+    "description": "Designed by naturalist artist Robert Dallet. Features detailed illustrations of jaguars and parrots on white porcelain bordered by a fine gold outline.",
+    "descriptionAr": "صممه الفنان الطبيعي روبرت داليت. يتميز برسومات توضيحية مفصلة للنمور والببغاوات على البورسلان الأبيض المحاط بإطار ذهبي رقيق.",
+    "details": [
+      "Limoges fine white porcelain",
+      "Hand-painted 24-carat gold border trim",
+      "Scratch-resistant enamel glazing",
+      "Dimensions: Diameter 21cm",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "بورسلان ليموج أبيض فاخر",
+      "حافة ذهبية عيار ٢٤ قيراطاً مطلية يدوياً",
+      "طلاء مينا مقاوم للخدش",
+      "الأبعاد: القطر ٢١ سم",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/brand/honey.png",
+    "brandId": "hermes",
+    "relatedIds": [
+      "hermes-h-hour-watch",
+      "chanel-tweed-jacket"
+    ]
+  },
+  {
+    "id": "adidas-y3-sneakers",
+    "title": "Adidas Y-3 Sneakers",
+    "titleAr": "حذاء أديداس Y-3 الرياضي",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-shoes",
+    "subcategoryAr": "أحذية رجالية",
+    "slogan": "Avant-garde tubular design with neo-futurist bands.",
+    "sloganAr": "تصميم أنبوبي طليعي مع أحزمة مستقبلية حديثة.",
+    "description": "Designed in collaboration with Yohji Yamamoto. Built on a signature tubular outsole with elastic straps wrapping around a neoprene sock upper.",
+    "descriptionAr": "تم تصميمه بالتعاون مع يوجي ياماموتو. يرتكز على نعل خارجي أنبوبي مميز مع أحزمة مرنة تلتف حول جزء علوي من النيوبرين.",
+    "details": [
+      "Neoprene sock upper with elastic straps",
+      "Leather toe cap and heel counter details",
+      "Yohji Yamamoto brand name on strap",
+      "Tubular EVA sole cushion",
+      "High-top sneaker construction"
+    ],
+    "detailsAr": [
+      "جزء علوي من النيوبرين مع أحزمة مرنة",
+      "تفاصيل مقدمة الحذاء وكعب جلدي",
+      "اسم العلامة التجارية يوجي ياماموتو على الحزام",
+      "نعل أنبوبي مبطن خفيف الوزن",
+      "تصميم حذاء رياضي مرتفع الكاحل"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_2.png",
+    "brandId": "adidas",
+    "relatedIds": [
+      "adidas-originals-track-jacket",
+      "prada-nylon-backpack"
+    ]
+  },
+  {
+    "id": "adidas-originals-track-jacket",
+    "title": "Adidas Track Jacket",
+    "titleAr": "سترة أديداس أوريجينالز الرياضية",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-outerwear",
+    "subcategoryAr": "ملابس خارجية رجالية",
+    "slogan": "Classic athletic heritage re-woven in recycled fibers.",
+    "sloganAr": "تراث رياضي كلاسيكي معاد حياكته بألياف معاد تدويرها.",
+    "description": "A reissue of the definitive 1980s sportswear jacket. Made from heavy tricot fabric, finished with the iconic three stripes running down the sleeves.",
+    "descriptionAr": "إعادة إصدار لسترة الملابس الرياضية الكلاسيكية من فترة الثمانينيات. مصنوعة من نسيج التريكو الثقيل، ومزينة بالخطوط الثلاثة المميزة على طول الأكمام.",
+    "details": [
+      "100% recycled polyester tricot",
+      "Stand-up mock collar and full zip closure",
+      "Embroidered Trefoil logo on chest",
+      "Ribbed cuffs and hemline",
+      "Zipper pocket enclosures"
+    ],
+    "detailsAr": [
+      "١٠٠٪ تريكو بوليستر معاد تدويره",
+      "ياقة مرتفعة وإغلاق بسحاب كامل",
+      "شعار تريفويل مطرز على الصدر",
+      "أطراف أكمام وحاشية مضلعة",
+      "جيوب جانبية بسحاب"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_3.png",
+    "brandId": "adidas",
+    "relatedIds": [
+      "adidas-y3-sneakers",
+      "gucci-horsebit-loafers"
+    ]
+  },
+  {
+    "id": "dior-silk-evening-dress",
+    "title": "Dior Silk Dress",
+    "titleAr": "فستان سهرة ديور من الحرير",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "dresses",
+    "subcategoryAr": "فساتين",
+    "slogan": "An ethereal masterpiece of drape and elegance.",
+    "sloganAr": "تحفة فنية أثيرية من الانسيابية والأناقة.",
+    "description": "Flowing silk georgette gown featuring a pleated bodice and a sweeping hemline. Designed for grand events and red carpets.",
+    "descriptionAr": "ثوب انسيابي من الحرير يتميز بجزء علوي مطوي وحافة واسعة. مصمم للمناسبات الكبرى والسجاد الأحمر.",
+    "details": [
+      "100% Silk Georgette",
+      "Hand-pleated bodice details",
+      "Silk satin inner slip",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ حرير جيوغيت",
+      "تفاصيل صدر مطوية يدوياً",
+      "فستان داخلي من حرير الساتان",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_5.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "chanel-tweed-jacket",
+      "prada-oversized-wool-coat"
+    ]
+  },
+  {
+    "id": "gucci-floral-embroidered-abaya",
+    "title": "Gucci Silk Abaya",
+    "titleAr": "عباءة غوتشي الحريرية المطرزة بالزهور",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "abayas-kaftans",
+    "subcategoryAr": "عبايات وقفاطين",
+    "slogan": "Cultural grace met with Florentine botanical details.",
+    "sloganAr": "نعمة ثقافية تلتقي مع التفاصيل النباتية الفلورنسية.",
+    "description": "Floor-length silk kaftan featuring delicate multicolor Flora embroidery along the lapels and cuffs. Includes a matching silk belt.",
+    "descriptionAr": "قفطان حريري طويل يتميز بتطريز فلورا ملون ورقيق على الياقات والأكمام. يتضمن حزاماً حريرياً متطابقاً.",
+    "details": [
+      "100% Crepe de Chine Silk",
+      "Intricate multicolor embroidery",
+      "Relaxed floor-skimming silhouette",
+      "Dry clean only"
+    ],
+    "detailsAr": [
+      "١٠٠٪ حرير كريب دي شين",
+      "تطريز ملون معقد",
+      "قصة مريحة تلامس الأرض",
+      "تنظيف جاف فقط"
+    ],
+    "imageUrl": "/brand/autumn-edit.png",
+    "brandId": "gucci",
+    "relatedIds": [
+      "gucci-floral-silk-scarf",
+      "hermes-silk-pyjamas"
+    ]
+  },
+  {
+    "id": "prada-poplin-blouse",
+    "title": "Prada Poplin Blouse",
+    "titleAr": "بلوزة برادا من البوبلين بربطة عنق",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "tops-blouses",
+    "subcategoryAr": "بلوزات وقمصان علوية",
+    "slogan": "Tailored minimalist lines in crisp cotton.",
+    "sloganAr": "خطوط تفصيلية بسيطة في قطن ناصع.",
+    "description": "Crafted in premium cotton poplin, this blouse features a removable bow tie collar and structured cuffs.",
+    "descriptionAr": "مصنوعة من قطن البوبلين الفاخر، وتتميز هذه البلوزة بياقة ذات ربطة عنق قابلة للإزالة وأكمام مهيكلة.",
+    "details": [
+      "100% Premium Cotton Poplin",
+      "Removable bow tie detail",
+      "Hidden button placket",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ قطن بوبلين فاخر",
+      "ربطة عنق قابلة للإزالة",
+      "أزرار مخفية",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/brand/modern-sophistication.png",
+    "brandId": "prada",
+    "relatedIds": [
+      "prada-oversized-wool-coat",
+      "chanel-tweed-jacket"
+    ]
+  },
+  {
+    "id": "chanel-logo-tshirt",
+    "title": "Chanel Logo T-Shirt",
+    "titleAr": "قميص شانيل بشعار CC المتداخل",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "t-shirts",
+    "subcategoryAr": "تي شيرت نسائي",
+    "slogan": "Effortless knit basics with a couture monogram.",
+    "sloganAr": "أساسيات قطنية سهلة مع مونوغرام هوت كوتور.",
+    "description": "Crafted in premium organic cotton jersey, finished with a subtle interlocking CC logo on the chest.",
+    "descriptionAr": "مصنوع من جيرسي القطن العضوي الفاخر، ومزين بشعار CC المتداخل والمطرز بدقة على الصدر.",
+    "details": [
+      "100% Organic Cotton Jersey",
+      "Embroidered CC logo on chest",
+      "Ribbed crewneck",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "١٠٠٪ جيرسي قطن عضوي",
+      "شعار CC مطرز على الصدر",
+      "ياقة مستديرة مضلعة",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/brand/signature-accents.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "chanel-tweed-jacket",
+      "prada-poplin-blouse"
+    ]
+  },
+  {
+    "id": "ysl-leather-pants",
+    "title": "Saint Laurent Leather Pants",
+    "titleAr": "سروال جلدي من سان لوران",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "pants-trousers",
+    "subcategoryAr": "سراويل وبناطيل",
+    "slogan": "Sleek and rebellious structured leg lines.",
+    "sloganAr": "خطوط هيكلية أنيقة ومتمردة للساق.",
+    "description": "High-rise leather trousers crafted in supple lambskin leather, featuring a straight leg cut and raw edge hem.",
+    "descriptionAr": "سروال جلدي ذو خصر مرتفع مصنوع من جلد الحمل المرن، ويتميز بقصة ساق مستقيمة وحافة خام.",
+    "details": [
+      "100% Lambskin Leather",
+      "High-rise fit",
+      "Five-pocket design",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ جلد حمل",
+      "خصر مرتفع",
+      "تصميم بخمسة جيوب",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_7.png",
+    "brandId": "ysl",
+    "relatedIds": [
+      "ysl-sac-de-jour",
+      "prada-oversized-wool-coat"
+    ]
+  },
+  {
+    "id": "chanel-tweed-skirt",
+    "title": "Chanel Tweed Skirt",
+    "titleAr": "تنورة شانيل الكلاسيكية من التويد",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "skirts",
+    "subcategoryAr": "تنانير",
+    "slogan": "The timeless counterpart to the boucle jacket.",
+    "sloganAr": "النظير الخالد لسترة البوكلي.",
+    "description": "A knee-length tweed skirt crafted with woven gold threads and silk lining, designed to match the iconic jacket.",
+    "descriptionAr": "تنورة من التويد بطول الركبة مصنوعة من خيوط ذهبية منسوجة وبطانة حريرية، مصممة لتتناسب مع السترة الأيقونية.",
+    "details": [
+      "Wool and silk tweed weave",
+      "Gold metallic yarn accents",
+      "CC monogram zip pull",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "نسيج تويد من الصوف والحرير",
+      "لمسات من الخيوط المعدنية الذهبية",
+      "سحاب يحمل شعار CC",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_5.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "chanel-tweed-jacket",
+      "dior-bar-jacket"
+    ]
+  },
+  {
+    "id": "dior-monogram-coords",
+    "title": "Dior Monogram Co-ords",
+    "titleAr": "طقم ديور المحبوك بنقشة أوبليك",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "coords-sets",
+    "subcategoryAr": "أطقم متطابقة",
+    "slogan": "Cozy elegance knit in signature oblique motifs.",
+    "sloganAr": "أناقة دافئة محبوكة بنقوش أوبليك المميزة.",
+    "description": "Two-piece cashmere set featuring a cropped cardigan sweater and matching wide-leg lounge trousers.",
+    "descriptionAr": "طقم من قطعتين من الكشمير يتميز بكنزة كارديغان قصيرة وسروال صالة واسع متطابق.",
+    "details": [
+      "100% Premium Cashmere",
+      "Dior Oblique jacquard motif",
+      "Ribbed knit borders",
+      "Dry clean only"
+    ],
+    "detailsAr": [
+      "١٠٠٪ كشمير فاخر",
+      "نقش جاكار ديور أوبليك",
+      "حواف محبوكة مضلعة",
+      "تنظيف جاف فقط"
+    ],
+    "imageUrl": "/brand/modern-sophistication.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "dior-bar-jacket",
+      "prada-oversized-wool-coat"
+    ]
+  },
+  {
+    "id": "adidas-y3-leggings",
+    "title": "Adidas Y-3 Leggings",
+    "titleAr": "بنطال Y-3 الرياضي الضيق",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-activewear",
+    "subcategoryAr": "ملابس رياضية نسائية",
+    "slogan": "High-performance sportswear with Yohji's cuts.",
+    "sloganAr": "ملابس رياضية عالية الأداء بلمسة يوجي.",
+    "description": "Features seamless knit construction with body-mapped ventilation zones and subtle Y-3 logo detailing.",
+    "descriptionAr": "تتميز بهيكل محبوك غير ملحوم مع مناطق تهوية مخصصة وتفاصيل شعار Y-3 الدقيقة.",
+    "details": [
+      "Recycled polyamide blend",
+      "Seamless construction",
+      "Moisture-wicking material",
+      "Subtle Y-3 logo print"
+    ],
+    "detailsAr": [
+      "مزيج بولي أميد معاد تدويره",
+      "هيكل غير ملحوم",
+      "مادة طاردة للرطوبة",
+      "طباعة شعار Y-3 دقيقة"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_2.png",
+    "brandId": "adidas",
+    "relatedIds": [
+      "adidas-y3-sneakers",
+      "prada-nylon-backpack"
+    ]
+  },
+  {
+    "id": "hermes-silk-pyjamas",
+    "title": "Hermes Silk Pyjamas",
+    "titleAr": "بيجامة حرير هيرميس",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "sleepwear-innerwear",
+    "subcategoryAr": "ملابس نوم وداخلية نسائية",
+    "slogan": "Fluid silk twill sleep sets in signature shades.",
+    "sloganAr": "طقم نوم حريري منسوج باللون البرتقالي المميز.",
+    "description": "Luxury silk pajama set featuring contrast piping, Mother of Pearl buttons, and hand-finished borders.",
+    "descriptionAr": "طقم بيجامة حريري فاخر يتميز بحواف متباينة، وأزرار عرق اللؤلؤ، وحواف مشطبة يدوياً.",
+    "details": [
+      "100% Silk Twill",
+      "Mother of Pearl buttons",
+      "Elastic waist flat front pants",
+      "Includes travel silk pouch"
+    ],
+    "detailsAr": [
+      "١٠٠٪ حرير مضلع",
+      "أزرار عرق اللؤلؤ",
+      "سروال بخصر مطاطي من الأمام",
+      "يتضمن حقيبة سفر حريرية"
+    ],
+    "imageUrl": "/brand/honey.png",
+    "brandId": "hermes",
+    "relatedIds": [
+      "hermes-porcelain-plate",
+      "gucci-floral-embroidered-abaya"
+    ]
+  },
+  {
+    "id": "chanel-cc-earrings",
+    "title": "Chanel CC Earrings",
+    "titleAr": "أقراط شانيل الكريستالية بشعار CC",
+    "category": "Women",
+    "categoryAr": "النساء",
+    "subcategory": "women-jewellery",
+    "subcategoryAr": "مجوهرات نسائية",
+    "slogan": "Classic gold-tone metal encrusted with fine crystals.",
+    "sloganAr": "معدن ذهبي كلاسيكي مرصع بالكريستال الفاخر.",
+    "description": "Elegant drop earrings featuring the iconic CC monogram embellished with glittering pave crystals.",
+    "descriptionAr": "أقراط متدلية أنيقة تتميز بمونوغرام CC المميز والمرصع بكريستال بافي اللامع.  ",
+    "details": [
+      "Gold-finished metal brass",
+      "Fine pave glass crystals",
+      "Push-back closure for pierced ears",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "نحاس معدني مطلي بالذهب",
+      "كريستال زجاجي بافي دقيق",
+      "إغلاق مريح للأذن المثقوبة",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/brand/signature-accents.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "chanel-classic-flap-bag",
+      "dior-lady-dior-handbag"
+    ]
+  },
+  {
+    "id": "prada-cotton-polo",
+    "title": "Prada Cotton Polo",
+    "titleAr": "قميص بولو برادا بقطن فاخر",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "t-shirts-polos",
+    "subcategoryAr": "تي شيرت وبولو رجالي",
+    "slogan": "Clean knit polo detailed with Saffiano leather.",
+    "sloganAr": "قميص بولو محبوك ومزين بجلد السافيانو.",
+    "description": "Classic fit pique cotton polo shirt featuring a Saffiano leather breast pocket and enamel triangle logo.",
+    "descriptionAr": "قميص بولو كلاسيكي من قطن البيكيه يتميز بجيب صدر من جلد السافيانو وشعار برادا المثلث الكلاسيكي.",
+    "details": [
+      "100% Pique Cotton",
+      "Saffiano leather chest pocket",
+      "Enameled metal triangle logo",
+      "Made in Italy"
+    ],
+    "detailsAr": [
+      "١٠٠٪ قطن بيكيه",
+      "جيب صدر من جلد السافيانو",
+      "شعار معدني مثلث مطلي بالمينا",
+      "صنع في إيطاليا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_3.png",
+    "brandId": "prada",
+    "relatedIds": [
+      "prada-nylon-backpack",
+      "adidas-originals-track-jacket"
+    ]
+  },
+  {
+    "id": "chanel-men-shirt",
+    "title": "Chanel Men Shirt",
+    "titleAr": "قميص شانيل الرجالي من البوبلين",
+    "category": "Men",
+    "categoryAr": "الرجال",
+    "subcategory": "men-shirts",
+    "subcategoryAr": "قمصان رجالية",
+    "slogan": "Crisp Italian tailoring in luxurious cotton weave.",
+    "sloganAr": "خياطة إيطالية دقيقة في نسيج قطني فاخر.",
+    "description": "Classic fit formal button-down shirt featuring French cuffs and signature buttons.",
+    "descriptionAr": "قميص رسمي كلاسيكي بأزرار يتميز بأطراف أكمام فرنسية وأزرار مميزة.",
+    "details": [
+      "100% Egyptian Cotton Poplin",
+      "French double cuffs",
+      "Mother of pearl monogram buttons",
+      "Made in France"
+    ],
+    "detailsAr": [
+      "١٠٠٪ قطن بوبلين مصري",
+      "أطراف أكمام مزدوجة فرنسية",
+      "أزرار مونوغرام من عرق اللؤلؤ",
+      "صنع في فرنسا"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_3.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "ysl-tuxedo-suit",
+      "gucci-horsebit-loafers"
+    ]
+  },
+  {
+    "id": "chanel-sublimage-cream",
+    "title": "Chanel Sublimage Cream",
+    "titleAr": "كريم شانيل سوبليماج الفاخر للوجه",
+    "category": "Skincare",
+    "categoryAr": "العناية بالبشرة",
+    "subcategory": "skincare",
+    "subcategoryAr": "العناية بالبشرة",
+    "slogan": "The ultimate skin rejuvenation in a jar.",
+    "sloganAr": "التجديد النهائي للبشرة في عبوة فاخرة.",
+    "description": "Formulated with Planifolia PFA, this luxurious cream hydrates, firms, and restores radiance to aging skin.",
+    "descriptionAr": "معزز بمكونات بلانيفوليا PFA، يعمل هذا الكريم الفاخر على ترطيب البشرة وشدها واستعادة نضارتها.",
+    "details": [
+      "Infused with Vanilla Planifolia essence",
+      "Targeted anti-aging hydration",
+      "Sleek gold glass jar",
+      "50g net weight"
+    ],
+    "detailsAr": [
+      "مستخلص من خلاصة الفانيليا بلانيفوليا",
+      "ترطيب مستهدف لمكافحة الشيخوخة",
+      "وعاء زجاجي ذهبي أنيق",
+      "الوزن الصافي ٥٠ جرام"
+    ],
+    "imageUrl": "/brand/lookbook-scent.png",
+    "brandId": "chanel",
+    "relatedIds": [
+      "dior-prestige-cream",
+      "chanel-no5-perfume"
+    ]
+  },
+  {
+    "id": "dior-prestige-cream",
+    "title": "Dior Prestige Cream",
+    "titleAr": "كريم ديور برستيج المكثف للبشرة",
+    "category": "Skincare",
+    "categoryAr": "العناية بالبشرة",
+    "subcategory": "skincare",
+    "subcategoryAr": "العناية بالبشرة",
+    "slogan": "Rose de Granville essence for velvet skin textures.",
+    "sloganAr": "مستخلص ورد دي غرانفيل لبشرة مخملية.",
+    "description": "A rich cream that target signs of aging while wrapping the skin in a comforting, rose-scented velvet cocoon.",
+    "descriptionAr": "كريم غني يستهدف علامات الشيخوخة بينما يغلف البشرة بشرنقة مخملية مريحة برائحة الورد.",
+    "details": [
+      "Formulated with Rose de Granville",
+      "Deep skin repair and firming",
+      "Refined gold-accented packaging",
+      "50ml bottle"
+    ],
+    "detailsAr": [
+      "مصنوع من مستخلص ورد دي غرانفيل",
+      "إصلاح عميق للبشرة وشدها",
+      "عبوة راقية مزينة بالذهب",
+      "حجم ٥٠ مل"
+    ],
+    "imageUrl": "/brand/lookbook-scent.png",
+    "brandId": "dior",
+    "relatedIds": [
+      "chanel-sublimage-cream",
+      "dior-sauvage-elixir"
+    ]
+  },
+  {
+    "id": "gucci-flora-gardenia",
+    "title": "Gucci Flora Gardenia",
+    "titleAr": "عطر غوتشي فلورا غاردينيا",
+    "category": "Perfumes",
+    "categoryAr": "العطور",
+    "subcategory": "perfumes",
+    "subcategoryAr": "العطور",
+    "slogan": "A sweet, floral signature scent for women.",
+    "sloganAr": "عطر زهري حلو ومميز للنساء.",
+    "description": "Built around the Gardenia flower, this fragrance combines white gardenia, jasmine absolute, and pear blossom accord.",
+    "descriptionAr": "مبني حول زهرة الغاردينيا، ويجمع هذا العطر بين الغاردينيا البيضاء، وخلاصة الياسمين، ونسيم زهر الكمثرى.",
+    "details": [
+      "Eau de Parfum",
+      "Key notes: Red Berries, White Gardenia, Jasmine, Patchouli",
+      "Lacquered pink glass flacon with floral motif",
+      "100ml spray"
+    ],
+    "detailsAr": [
+      "أو دو برفان",
+      "الروائح الأساسية: التوت الأحمر، الغاردينيا البيضاء، الياسمين، الباتشولي",
+      "قارورة زجاجية وردية مطلية بنقشة الزهور",
+      "بخاخ ١٠٠ مل"
+    ],
+    "imageUrl": "/assets/uploaded_products/product_6.png",
+    "brandId": "gucci",
+    "relatedIds": [
+      "dior-sauvage-elixir",
+      "chanel-no5-perfume"
+    ]
+  },
+  {
+    "id": "ysl-libre-perfume",
+    "title": "Saint Laurent Libre Perfume",
+    "titleAr": "عطر سان لوران ليبر",
+    "category": "Perfumes",
+    "categoryAr": "العطور",
+    "subcategory": "perfumes",
+    "subcategoryAr": "العطور",
+    "slogan": "The fragrance of freedom with lavender and orange blossom.",
+    "sloganAr": "عطر الحرية مع الخزامى وزهر البرتقال.",
+    "description": "A grand floral perfume combining Moroccan orange blossom and French lavender, finished with an elegant black asymmetric cap and gold chain accents.",
+    "descriptionAr": "عطر زهري رائع يجمع بين زهر البرتقال المغربي والخزامى الفرنسي، ومكتمل بغطاء أسود غير متماثل وسلسلة ذهبية.",
+    "details": [
+      "Eau de Parfum concentration",
+      "Key notes: Lavender, Orange Blossom, Vanilla, Ambergris",
+      "Sculpted glass flacon with wrap-around YSL logo",
+      "90ml spray bottle"
+    ],
+    "detailsAr": [
+      "تركيز أو دو برفان",
+      "الروائح الأساسية: خزامى، زهر البرتقال، فانيليا، عنبر",
+      "قارورة زجاجية منحوتة بشعار YSL الملتف",
+      "بخاخ ٩٠ مل"
+    ],
+    "imageUrl": "/brand/lookbook-scent.png",
+    "brandId": "ysl",
+    "relatedIds": [
+      "dior-sauvage-elixir",
+      "gucci-flora-gardenia"
+    ]
+  },
+  {
+    "id": "hermes-terre-perfume",
+    "title": "Terre d'Hermes Perfume",
+    "titleAr": "عطر تير دي هيرميس للرجال",
+    "category": "Perfumes",
+    "categoryAr": "العطور",
+    "subcategory": "perfumes",
+    "subcategoryAr": "العطور",
+    "slogan": "A mineral, woody fragrance for men.",
+    "sloganAr": "عطر معدني وخشبي للرجال.",
+    "description": "An olfactory connection between earth and sky. Built on woody, earthy notes of cedar, vetiver, and flint.",
+    "descriptionAr": "اتصال عطري بين الأرض والسماء. مبني على نفحات خشبية وترابية من خشب الأرز، نجيل الهند، والصوان.",
+    "details": [
+      "Eau de Toilette",
+      "Key notes: Grapefruit, Flint, Cedarwood, Vetiver",
+      "Iconic H-base glass bottle",
+      "100ml spray bottle"
+    ],
+    "detailsAr": [
+      "أو دو تواليت",
+      "الروائح الأساسية: الجريب فروت، الصوان، خشب الأرز، نجيل الهند",
+      "زجاجة أيقونية بقاعدة على شكل حرف H",
+      "بخاخ ١٠٠ مل"
+    ],
+    "imageUrl": "/brand/lookbook-scent.png",
+    "brandId": "hermes",
+    "relatedIds": [
+      "dior-sauvage-elixir",
+      "ysl-libre-perfume"
+    ]
+  }
+]

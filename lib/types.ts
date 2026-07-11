@@ -15,10 +15,14 @@ export type MediaItem = {
 };
 
 export type Slide = {
-  title?: string;
-  description?: string;
+  title?: string | { en?: string; ar?: string };
+  description?: string | { en?: string; ar?: string };
   image?: SanityImage;
   imageUrl?: string;
+  titleEn?: string;
+  titleAr?: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
 };
 
 export type CollectionItem = {
@@ -27,15 +31,23 @@ export type CollectionItem = {
   description?: string;
   coverImage?: SanityImage;
   imageUrl?: string;
+  titleEn?: string;
+  titleAr?: string;
+  headlineEn?: string;
+  headlineAr?: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
 };
 
 export type Section = {
   _id?: string;
+  _type?: string;
+  enabled?: boolean;
   type?: "hero" | "manifesto" | "carousel" | "collections" | "editorial" | "lookbook" | "marquee" | "boulevard-selection" | "packaging-experience";
   anchor?: string;
-  eyebrow?: string;
-  headline?: string;
-  description?: string;
+  eyebrow?: string | { en?: string; ar?: string };
+  headline?: string | { en?: string; ar?: string };
+  description?: string | { en?: string; ar?: string };
   ctaLabel?: string;
   ctaHref?: string;
   image?: SanityImage;
@@ -43,6 +55,46 @@ export type Section = {
   slides?: Slide[];
   collections?: CollectionItem[];
   media?: MediaItem[];
+  video?: { asset?: { url?: string } };
+  
+  // New localized and background fields
+  eyebrowEn?: string;
+  eyebrowAr?: string;
+  headlineEn?: string;
+  headlineAr?: string;
+  subHeadlineEnLine1?: string;
+  subHeadlineEnLine2?: string;
+  subHeadlineArLine1?: string;
+  subHeadlineArLine2?: string;
+  subHeadlineLine1?: { en?: string; ar?: string };
+  subHeadlineLine2?: { en?: string; ar?: string };
+  descriptionEn?: string;
+  descriptionAr?: string;
+  bgType?: "image" | "video";
+  bgImage?: SanityImage;
+  bgVideo?: { asset?: { url?: string } };
+  cta?: {
+    label?: string | { en?: string; ar?: string };
+    labelEn?: string;
+    labelAr?: string;
+    href?: string;
+    type?: "primary" | "secondary" | "link";
+    linkType?: string;
+    internalLink?: string;
+    externalLink?: string;
+  };
+  leftCard?: {
+    eyebrow?: string | { en?: string; ar?: string };
+    title?: string | { en?: string; ar?: string };
+    description?: string | { en?: string; ar?: string };
+    image?: SanityImage;
+  };
+  rightCard?: {
+    eyebrow?: string | { en?: string; ar?: string };
+    title?: string | { en?: string; ar?: string };
+    description?: string | { en?: string; ar?: string };
+    image?: SanityImage;
+  };
 };
 
 export type SiteSettings = {

@@ -5,6 +5,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import type { Section } from "@/lib/types";
 import { resolveImage, imageLayer } from "../Storefront";
+import { getLocalizedValue } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
 
@@ -17,10 +18,36 @@ export default function CarouselSection({
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
-  const slides = section.slides?.length ? section.slides : [];
+  const fallbackSlides = [
+    { title: "The Autumn Edit", description: "A curation of timeless silhouettes, crafted in premium silks and warm cashmeres designed for the modern woman.", imageUrl: "/brand/autumn-edit.png" },
+    { title: "Modern Sophistication", description: "Effortless elegance meeting structured tailoring. Discover pieces that redefine classic design for daily luxury.", imageUrl: "/brand/modern-sophistication.png" },
+    { title: "Signature Accents", description: "Exquisite bags and finely polished accessories that complete the definitive Fashion Gate statement.", imageUrl: "/brand/signature-accents.png" }
+  ];
+  const slides = (section.slides && section.slides.length > 0) 
+    ? (section.slides as any[]) 
+    : (fallbackSlides as any[]);
   const [active, setActive] = useState(0);
   const slide = slides[active] || slides[0];
   const image = resolveImage(slide?.image, slide?.imageUrl || section.imageUrl);
+
+  // Localized texts with fallbacks using our helper
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    lang === "ar" ? "الوجهة" : "A Destination"
+  );
+
+  const slideTitle = getLocalizedValue(
+    slide?.title || section.headline,
+    lang,
+    ""
+  );
+
+  const slideDescription = getLocalizedValue(
+    slide?.description || section.description,
+    lang,
+    ""
+  );
 
   return (
     <Box 
@@ -62,7 +89,7 @@ export default function CarouselSection({
               mb: 1
             }}
           >
-            {t(section.eyebrow)}
+            {eyebrowText}
           </Typography>
 
           <Typography 
@@ -75,7 +102,7 @@ export default function CarouselSection({
               mb: 2.5
             }}
           >
-            {t(slide?.title || section.headline)}
+            {slideTitle}
           </Typography>
 
           <Typography 
@@ -88,7 +115,7 @@ export default function CarouselSection({
               maxWidth: 550
             }}
           >
-            {t(slide?.description || section.description)}
+            {slideDescription}
           </Typography>
           
           <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap sx={{ mt: "auto" }}>

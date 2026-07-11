@@ -1,18 +1,39 @@
 "use client";
 
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Box, Button, Container, Drawer, IconButton, Stack, Typography, useTheme, Tooltip, Avatar } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box, Button, Container, Drawer, IconButton, Stack, Typography, Tooltip, Divider, Link as MuiLink } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useLoader } from "@/components/LoaderProvider";
+import type { Product } from "@/lib/productData";
+import { getAnnouncements, getLocalizedValue } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
+
+// Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
+const EnglandFlag = () => (
+  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
+    <rect width="18" height="13" fill="#ffffff" />
+    <rect x="8.2" width="1.6" height="13" fill="#cf142b" />
+    <rect y="5.7" width="18" height="1.6" fill="#cf142b" />
+  </svg>
+);
+
+const SyriaFlag = () => (
+  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
+    <rect width="18" height="4.3" fill="#E00613" />
+    <rect y="4.3" width="18" height="4.3" fill="#ffffff" />
+    <rect y="8.6" width="18" height="4.4" fill="#000000" />
+    <path d="M6 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
+    <path d="M12 6.45l.23.71h.74l-.6.44.23.71-.6-.44-.6.44.23-.71-.6-.44h.74z" fill="#009639" />
+  </svg>
+);
 
 interface SiteSettings {
   title?: string;
@@ -27,173 +48,115 @@ interface SiteHeaderProps {
 
 const headerTranslations = {
   en: {
+    "Home": "Home",
     "Women": "Women",
     "Men": "Men",
-    "Beauty": "Beauty",
-    "Home & Deco": "Home & Deco",
-    "Brand": "Brand",
+    "Designers": "Designers",
+    "Fashion": "Fashion",
+    "Perfumes": "Perfumes",
+    "Skincare": "Skincare",
+    "Dining": "Dining",
     "Blogs": "Blogs",
-    "Contact": "Contact",
-    "Explore": "Explore",
-    "On Boulevard. For the world.": "On Boulevard. For the world."
+    "About Us": "About Us",
+    "Contact Us": "Contact Us",
+    "Sign In / Register": "Sign In / Register",
+    "Wishlist": "Wishlist",
+    "Cart": "Cart",
+    "Search...": "Search...",
+    "Search Boulevard...": "Search Boulevard..."
   },
   ar: {
+    "Home": "الرئيسية",
     "Women": "النساء",
     "Men": "الرجال",
-    "Beauty": "الجمال",
-    "Home & Deco": "المنزل والديكور",
-    "Brand": "العلامة التجارية",
+    "Designers": "المصممون",
+    "Fashion": "الأزياء",
+    "Perfumes": "العطور",
+    "Skincare": "العناية بالبشرة",
+    "Dining": "المائدة والضيافة",
     "Blogs": "المدونة",
-    "Contact": "اتصل بنا",
-    "Explore": "استكشف",
-    "On Boulevard. For the world.": "على البوليفارد. للعالم."
+    "About Us": "من نحن",
+    "Contact Us": "اتصل بنا",
+    "Sign In / Register": "تسجيل الدخول / التسجيل",
+    "Wishlist": "المفضلة",
+    "Cart": "السلة",
+    "Search...": "ابحث...",
+    "Search Boulevard...": "ابحث في البوليفارد..."
   }
 };
 
-const menuDescriptions = {
-  en: {
-    "Women": "Seasonal silhouettes & tailoring",
-    "Men": "Timeless cuts & modern fits",
-    "Beauty": "Curated scents & skin care",
-    "Home & Deco": "Artisanal objects & furniture",
-    "Brand": "Our heritage & design manifesto",
-    "Blogs": "Refined journal notes & case studies",
-    "Contact": "Connect with our private concierge"
-  },
-  ar: {
-    "Women": "تصاميم موسمية وخياطة راقية",
-    "Men": "قصات خالدة ومقاسات عصرية",
-    "Beauty": "عطور منسقة وعناية بالبشرة",
-    "Home & Deco": "تحف فنية وأثاث راقٍ",
-    "Brand": "تراثنا وبيان التصميم الخاص بنا",
-    "Blogs": "ملاحظات الجريدة ودراسات الحالة",
-    "Contact": "تواصل مع مستشارنا الخاص"
-  }
-};
-
-export const shopNavigation = [
-  { label: "Women", anchor: "#women" },
-  { label: "Men", anchor: "#men" },
-  { label: "Beauty", anchor: "#beauty" },
-  { label: "Home & Deco", anchor: "#home-deco" },
-  { label: "Brand", anchor: "#brand" }
+const brandSuggestions = [
+  { id: "paul-shark", label: "Paul & Shark" },
+  { id: "tom-ford", label: "Tom Ford" },
+  { id: "givenchy", label: "Givenchy" },
+  { id: "christian-dior", label: "Christian Dior" },
+  { id: "gucci", label: "Gucci" },
+  { id: "chanel", label: "Chanel" },
+  { id: "lancome", label: "Lancome" }
 ];
-
-function BrandMark({ 
-  settings, 
-  light = false, 
-  lang,
-  searchActive = false
-}: { 
-  settings?: SiteSettings; 
-  light?: boolean; 
-  lang: "ar" | "en";
-  searchActive?: boolean;
-}) {
-  const textColor = light ? "#111111" : "#ffffff";
-  const subColor = light ? "rgba(0,0,0,.54)" : "rgba(255,255,255,.68)";
-  const title = settings?.title || "Fashion Gate";
-
-  return (
-    <Box
-      component={Link}
-      href={`/${lang}#arrival`}
-      sx={{
-        display: "inline-flex",
-        alignItems: "center",
-        textDecoration: "none",
-        cursor: "pointer"
-      }}
-    >
-      <Stack direction="row" gap={lang === "ar" ? 3.5 : 2} alignItems="center">
-        <Box 
-          component="img" 
-          src="/brand/logo.png" 
-          alt={title} 
-          sx={{ 
-            height: { xs: 26, md: 32 }, 
-            width: "auto",
-            objectFit: "contain",
-            filter: light ? "brightness(0)" : "none"
-          }} 
-        />
-        <Stack 
-          spacing={0.1} 
-          alignItems="flex-start" 
-          sx={{ 
-            display: searchActive ? "none" : "flex"
-          }}
-        >
-          <Typography 
-            sx={{ 
-              fontFamily: "var(--heading-font)", 
-              fontWeight: 600, 
-              fontSize: { xs: 13, sm: 14, md: 17 }, 
-              lineHeight: 1, 
-              textTransform: "uppercase", 
-              color: textColor,
-              letterSpacing: "0.08em",
-              whiteSpace: "nowrap"
-            }}
-          >
-            {lang === "ar" ? "بوابة الأزياء" : "Fashion Gate"}
-          </Typography>
-          <Typography 
-            sx={{ 
-              fontSize: { xs: 7, md: 8 }, 
-              letterSpacing: "0.1em", 
-              textTransform: "uppercase", 
-              color: subColor,
-              whiteSpace: "nowrap",
-              display: { xs: "none", sm: "block" }
-            }}
-          >
-            {lang === "ar" ? "على البوليفارد. للعالم." : "On Boulevard. For the world."}
-          </Typography>
-        </Stack>
-      </Stack>
-    </Box>
-  );
-}
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   const [index, setIndex] = useState(0);
-
-  const announcements = useMemo(() => [
-    {
-      en: "Free Worldwide Shipping & Returns on Selected Designer Collections",
-      ar: "شحن مجاني وإرجاع سهل لكافة أنحاء العالم على مجموعات مختارة"
-    },
-    {
-      en: "Syria's First Luxury Department Store — On Boulevard. For the world.",
-      ar: "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
-    },
-    {
-      en: "Complimentary Personal Shopping & Private Atelier Bookings",
-      ar: "تسوق شخصي وحجز أتيلييه مجاني في صالون دمشق الخاص"
-    }
-  ], []);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
+    getAnnouncements().then((data) => {
+      if (data && data.length > 0) {
+        setAnnouncements(
+          data.map((item: any) => ({
+            text: getLocalizedValue(item.text, lang),
+            link: item.link || ""
+          }))
+        );
+      } else {
+        setAnnouncements([
+          {
+            text: lang === "ar"
+              ? "شحن مجاني وإرجاع سهل لكافة أنحاء العالم على مجموعات مختارة"
+              : "Free Worldwide Shipping & Returns on Selected Designer Collections",
+            link: ""
+          },
+          {
+            text: lang === "ar"
+              ? "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
+              : "Syria's First Luxury Department Store — On Boulevard. For the world.",
+            link: ""
+          },
+          {
+            text: lang === "ar"
+              ? "تسوق شخصي وحجز أتيلييه مجاني في صالون دمشق الخاص"
+              : "Complimentary Personal Shopping & Private Atelier Bookings",
+            link: ""
+          }
+        ]);
+      }
+    });
+  }, [lang]);
+
+  useEffect(() => {
+    if (announcements.length === 0) return;
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % announcements.length);
     }, 4500);
     return () => clearInterval(timer);
   }, [announcements.length]);
 
+  if (announcements.length === 0) return null;
+
   return (
     <Box 
+      component="div"
       sx={{ 
         bgcolor: "#050505", 
         color: "#CB6116", 
-        py: { xs: 1, md: 1 }, 
+        py: 0.8, 
         px: { xs: 3, md: 4 }, 
         display: "flex", 
         justifyContent: "center", 
         alignItems: "center",
         borderBottom: "1px solid rgba(255,255,255,0.06)",
         position: "relative",
-        minHeight: { xs: 40, md: 40 },
+        minHeight: 38,
         overflow: "hidden"
       }}
     >
@@ -206,21 +169,52 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           style={{
             fontFamily: '"Cairo", sans-serif',
-            fontSize: "13px",
+            fontSize: "12px",
             fontWeight: 600,
-            letterSpacing: "0.08em",
+            letterSpacing: "0.06em",
             textAlign: "center",
-            lineHeight: 1.4
+            lineHeight: 1.4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%"
           }}
         >
-          {announcements[index][lang]}
+          {announcements[index].link ? (
+            <Typography
+              component={Link}
+              href={announcements[index].link}
+              sx={{
+                fontSize: { xs: 11, md: 12 },
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textAlign: "center",
+                maxWidth: "90%",
+                textDecoration: "none",
+                color: "inherit",
+                "&:hover": { textDecoration: "underline" }
+              }}
+            >
+              {announcements[index].text}
+            </Typography>
+          ) : (
+            <Typography
+              sx={{
+                fontSize: { xs: 11, md: 12 },
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textAlign: "center",
+                maxWidth: "90%"
+              }}
+            >
+              {announcements[index].text}
+            </Typography>
+          )}
         </motion.div>
       </AnimatePresence>
     </Box>
   );
 }
-
-import type { Product } from "@/lib/productData";
 
 interface SearchOptionProps {
   lang: "ar" | "en";
@@ -234,8 +228,7 @@ interface SearchOptionProps {
 
 function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery, products }: SearchOptionProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  // Filter products based on search query
+
   const matchingProducts = useMemo(() => {
     if (!searchQuery.trim()) return [];
     return products.filter(p => {
@@ -247,25 +240,6 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
     }).slice(0, 5);
   }, [searchQuery, products]);
 
-  const navSuggestions = [
-    { label: "Women", labelAr: "نسائي", anchor: "#arrival" },
-    { label: "Men", labelAr: "رجالي", anchor: "#arrival" },
-    { label: "Beauty", labelAr: "عطور وتجميل", anchor: "#beauty" },
-    { label: "Home & Deco", labelAr: "ديكور ومنزل", anchor: "#home-deco" },
-    { label: "Blogs", labelAr: "مجلة البوابة", path: "/blogs" },
-    { label: "Contact", labelAr: "اتصل بنا", path: "/contact" }
-  ];
-
-  const brandSuggestions = [
-    { id: "chanel", label: "Chanel" },
-    { id: "prada", label: "Prada" },
-    { id: "gucci", label: "Gucci" },
-    { id: "dior", label: "Dior" },
-    { id: "ysl", label: "Saint Laurent" },
-    { id: "hermes", label: "Hermès" },
-    { id: "adidas", label: "Adidas Y-3" }
-  ];
-
   const handleLinkClick = () => {
     setSearchActive(false);
     setSearchQuery("");
@@ -273,7 +247,6 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
 
   return (
     <Box sx={{ position: "relative" }}>
-      {/* Click Away / Close Backdrop when active */}
       {searchActive && (
         <Box 
           onClick={handleLinkClick}
@@ -290,31 +263,31 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
         />
       )}
 
-      {/* Input container */}
-      <Stack direction="row" alignItems="center" sx={{ position: { xs: "static", sm: "relative" }, zIndex: 1000, overflow: "hidden" }}>
-        {/* Expanded search field */}
+      <Stack direction="row" alignItems="center" sx={{ position: "relative", zIndex: 1000, overflow: "hidden" }}>
         <Box
           component="input"
           type="text"
-          placeholder={lang === "ar" ? "ابحث في البوليفارد..." : "Search Boulevard..."}
+          placeholder={lang === "ar" ? "ابحث في البوليفارد..." : "Search..."}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setSearchActive(true)}
           sx={{
             bgcolor: "rgba(255,255,255,0.06)",
-            border: "1px solid",
-            borderColor: searchActive ? "rgba(255,255,255,0.15)" : "transparent",
+            border: searchActive 
+              ? "1px solid rgba(255,255,255,0.15)"
+              : { xs: "none", sm: "1px solid rgba(255,255,255,0.15)" },
             color: "#ffffff",
             outline: "none",
             py: 0.8,
             fontSize: 12,
             fontFamily: '"Cairo", sans-serif',
-            width: searchActive 
-              ? { xs: "130px", sm: "180px", md: "260px" } 
-              : "0px",
-            px: searchActive ? 1.5 : 0,
-            opacity: searchActive ? 1 : 0,
-            transition: "width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease, border-color 0.3s ease, padding 0.3s ease",
+            width: searchActive
+              ? { xs: "90px", sm: "140px", md: "240px" } 
+              : { xs: "0px", sm: "120px", md: "160px" },
+            px: searchActive
+              ? 1.5
+              : { xs: 0, sm: 1.5 },
+            transition: "width 0.4s ease, padding 0.4s ease, border-color 0.4s ease",
             borderRadius: 0,
             "&::placeholder": { color: "rgba(255,255,255,0.4)" }
           }}
@@ -329,8 +302,8 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
             }
           }}
           sx={{ 
-            color: "#ffffff", 
-            p: 0.8,
+            color: "#CB6116", 
+            p: 1.14,
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 0,
             ml: 0.5,
@@ -348,201 +321,124 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
         </IconButton>
       </Stack>
 
-      {/* Popover overlay dropdown */}
       <AnimatePresence>
         {searchActive && (
           <MotionBox
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             sx={{
               position: "absolute",
-              top: "100%", // Align exactly with the bottom of the header stack
-              right: { xs: 0, sm: lang === "ar" ? "auto" : 0 },
-              left: { xs: 0, sm: lang === "ar" ? 0 : "auto" },
-              width: { xs: "100vw", sm: "400px", md: "520px" },
-              maxHeight: "75vh",
+              top: "100%",
+              right: lang === "ar" ? "auto" : 0,
+              left: lang === "ar" ? 0 : "auto",
+              width: { xs: "280px", sm: "360px", md: "420px" },
+              maxHeight: "60vh",
               overflowY: "auto",
-              bgcolor: "#ffffff", // Pure light mode background
-              boxShadow: "0 20px 45px rgba(0,0,0,0.16)",
-              borderBottom: "1px solid rgba(0,0,0,0.08)",
-              borderLeft: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
-              borderRight: { xs: "none", sm: "1px solid rgba(0,0,0,0.08)" },
-              p: 3,
+              bgcolor: "#FAF8F5", // Light background for search popover
+              border: "1px solid rgba(0,0,0,0.08)",
+              boxShadow: "0 20px 45px rgba(0,0,0,0.15)",
+              p: 2,
               zIndex: 1000,
-              color: "#111111", // Dark text
+              color: "#111111", // Dark color text
               borderRadius: 0,
               textAlign: lang === "ar" ? "right" : "left"
             }}
           >
-          {!searchQuery.trim() ? (
-            <Box 
-              sx={{ 
-                display: "grid", 
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, 
-                gap: 3 
-              }}
-            >
-              {/* Navigation Suggestions Column */}
-              <Box>
-                <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
-                  {lang === "ar" ? "تصفح الأقسام" : "Suggested Navs"}
-                </Typography>
-                <Stack spacing={1} alignItems={lang === "ar" ? "flex-start" : "flex-start"}>
-                  {navSuggestions.map((item) => (
-                    <Box
-                      key={item.label}
-                      component="span"
-                      onClick={(e) => {
-                        setSearchActive(false);
-                        setSearchQuery("");
-                        
-                        if (item.path) {
-                          router.push(`/${lang}${item.path}`);
-                        } else {
-                          const categoryId = item.anchor === "#arrival" 
-                            ? (item.label === "Women" ? "women" : "men")
-                            : (item.anchor === "#beauty" ? "beauty" : (item.anchor === "#home-deco" ? "home-deco" : ""));
-                            
-                          const sectionId = categoryId ? "curated-departments" : (item.anchor?.replace("#", "") || "arrival");
-
-                          if (typeof window !== "undefined") {
-                            if (pathname !== `/${lang}`) {
-                              if (categoryId) {
-                                sessionStorage.setItem("pendingCategory", categoryId);
-                              } else {
-                                sessionStorage.setItem("pendingSection", sectionId);
-                              }
-                              router.push(`/${lang}`);
-                            } else {
-                              if (categoryId) {
-                                window.dispatchEvent(new CustomEvent("select-category", { detail: { category: categoryId } }));
-                              } else {
-                                const el = document.getElementById(sectionId);
-                                if (el) {
-                                  el.scrollIntoView({ behavior: "smooth", block: "start" });
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        color: "#111111",
-                        fontSize: "13.5px",
-                        fontWeight: 600,
-                        fontFamily: '"Cairo", sans-serif',
-                        padding: "4px 0",
-                        display: "block",
-                        transition: "color 0.2s"
-                      }}
-                      className="search-popover-link"
-                    >
-                      {lang === "ar" ? item.labelAr : item.label}
-                    </Box>
-                  ))}
-                </Stack>
-              </Box>
-
-              {/* Brands Column */}
-              <Box>
-                <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
-                  {lang === "ar" ? "دور الفخامة" : "Suggested Brands"}
-                </Typography>
-                <Stack spacing={1} alignItems={lang === "ar" ? "flex-start" : "flex-start"}>
-                  {brandSuggestions.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/${lang}/brand/${item.id}`}
-                      onClick={handleLinkClick}
-                      style={{
-                        textDecoration: "none",
-                        color: "#111111",
-                        fontSize: "13.5px",
-                        fontWeight: 600,
-                        fontFamily: '"Cairo", sans-serif',
-                        padding: "4px 0",
-                        display: "block",
-                        transition: "color 0.2s"
-                      }}
-                      className="search-popover-link"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </Stack>
-              </Box>
-            </Box>
-          ) : (
-            <Box>
-              <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#999999", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
-                {lang === "ar" ? "النتائج المطابقة" : "Matching Pieces"}
-              </Typography>
-              {matchingProducts.length === 0 ? (
-                <Typography sx={{ color: "rgba(0,0,0,0.5)", fontSize: 13, py: 2, fontFamily: '"Cairo", sans-serif' }}>
-                  {lang === "ar" ? "لم نجد أي قطع تطابق بحثك..." : "No matching pieces found..."}
-                </Typography>
-              ) : (
-                <Stack spacing={2}>
-                  {matchingProducts.map((p) => {
-                    const title = lang === "ar" ? p.titleAr : p.title;
-                    const cat = lang === "ar" ? p.categoryAr : p.category;
-                    return (
-                      <Link
-                        key={p.id}
-                        href={`/${lang}/product/${p.id}`}
+            {!searchQuery.trim() ? (
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+                <Box>
+                  <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+                    {lang === "ar" ? "الأقسام المقتارة" : "Departments"}
+                  </Typography>
+                  <Stack spacing={1} alignItems="flex-start">
+                    <Button component={Link} href={`/category/women/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "النساء" : "Women"}</Button>
+                    <Button component={Link} href={`/category/men/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "الرجال" : "Men"}</Button>
+                    <Button component={Link} href={`/category/perfumes/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "العطور" : "Perfumes"}</Button>
+                    <Button component={Link} href={`/category/skincare/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "العناية بالبشرة" : "Skincare"}</Button>
+                  </Stack>
+                </Box>
+                <Box>
+                  <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+                    {lang === "ar" ? "دور الفخامة" : "Suggested Brands"}
+                  </Typography>
+                  <Stack spacing={1} alignItems="flex-start">
+                    {brandSuggestions.map((item) => (
+                      <Button
+                        key={item.id}
+                        component={Link}
+                        href={`/brand/${item.id}/${lang}`}
                         onClick={handleLinkClick}
-                        style={{ textDecoration: "none", display: "block" }}
+                        sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}
                       >
-                        <Stack 
-                          direction="row" 
-                          spacing={2} 
-                          alignItems="center"
-                          sx={{ 
-                            p: 1, 
-                            "&:hover": { bgcolor: "rgba(0,0,0,0.03)" },
-                            transition: "background 0.2s"
-                          }}
+                        {item.label}
+                      </Button>
+                    ))}
+                  </Stack>
+                </Box>
+              </Box>
+            ) : (
+              <Box>
+                <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+                  {lang === "ar" ? "النتائج المطابقة" : "Matching Pieces"}
+                </Typography>
+                {matchingProducts.length === 0 ? (
+                  <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12, py: 1, fontFamily: '"Cairo", sans-serif' }}>
+                    {lang === "ar" ? "لم نجد أي قطع تطابق بحثك..." : "No matching pieces found..."}
+                  </Typography>
+                ) : (
+                  <Stack spacing={1.5}>
+                    {matchingProducts.map((p) => {
+                      const title = lang === "ar" ? p.titleAr : p.title;
+                      const cat = lang === "ar" ? p.categoryAr : p.category;
+                      return (
+                        <Link
+                          key={p.id}
+                          href={`/product/${p.id}/${lang}`}
+                          onClick={handleLinkClick}
+                          style={{ textDecoration: "none", display: "block" }}
                         >
-                          <Box 
-                            component="img" 
-                            src={p.imageUrl || "/brand/logo.png"} 
-                            alt={title}
+                          <Stack 
+                            direction="row" 
+                            spacing={2} 
+                            alignItems="center"
                             sx={{ 
-                              width: 50, 
-                              height: 50, 
-                              objectFit: "cover", 
-                              bgcolor: "#f7f7f7" 
+                              p: 0.8, 
+                              "&:hover": { bgcolor: "rgba(203, 97, 22, 0.08)" }, // Premium orange light hover color
+                              transition: "background 0.2s"
                             }}
-                          />
-                          <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-                            <Typography sx={{ fontSize: 13, fontWeight: 700, color: "#111111", lineHeight: 1.2 }}>
-                              {title}
-                            </Typography>
-                            <Typography sx={{ fontSize: 10, color: "primary.main", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.1em", mt: 0.5 }}>
-                              {p.brandId.toUpperCase()} — {cat}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </Link>
-                    );
-                  })}
-                </Stack>
-              )}
-            </Box>
-          )}
+                          >
+                            <Box 
+                              component="img" 
+                              src={p.imageUrl || "/brand/logo.png"} 
+                              alt={title}
+                              sx={{ 
+                                width: 40, 
+                                height: 40, 
+                                objectFit: "cover", 
+                                bgcolor: "#e5e5e5" 
+                              }}
+                            />
+                            <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                              <Typography sx={{ fontSize: 12, fontWeight: 700, color: "#111111", lineHeight: 1.2 }}>
+                                {title}
+                              </Typography>
+                              <Typography sx={{ fontSize: 9, color: "#CB6116", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.1em", mt: 0.3 }}>
+                                {p.brandId.toUpperCase()} — {cat}
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Link>
+                      );
+                    })}
+                  </Stack>
+                )}
+              </Box>
+            )}
           </MotionBox>
         )}
       </AnimatePresence>
-
-      {/* Styled hover link style override inside the light-mode popover */}
-      <style>{`
-        .search-popover-link:hover {
-          color: #CB6116 !important;
-        }
-      `}</style>
     </Box>
   );
 }
@@ -552,88 +448,68 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const pathname = usePathname();
   const router = useRouter();
 
-  const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
-  const isHome = pathname === `/${lang}` || pathname === `/${lang}/` || pathname === "/" || pathname === `/ar` || pathname === `/en`;
+  const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
   const [open, setOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [headerProducts, setHeaderProducts] = useState<Product[]>([]);
   const { setLoading } = useLoader();
 
-  useEffect(() => {
-    // Dynamic import to isolate static data from Next.js build trace analysis
-    import("@/lib/productData").then((mod) => {
-      setHeaderProducts(mod.products);
-    }).catch(err => console.error("Failed to load search data dynamically", err));
-  }, []);
+  // Dropdown states for mega-menus
+  const [activeDropdown, setActiveDropdown] = useState<"women" | "men" | "designers" | "fashion" | "perfumes" | "skincare" | null>(null);
+  const [hoveredFashionCategory, setHoveredFashionCategory] = useState<"women-fashion" | "men-fashion" | null>(null);
+
+  const isLinkActive = (pathSegment: string) => {
+    if (!pathname) return false;
+    if (pathSegment === "home") {
+      return pathname === `/${lang}` || pathname === "/";
+    }
+    return pathname.includes(`/${pathSegment}/`) || pathname.endsWith(`/${pathSegment}`) || pathname.includes(`/${pathSegment}?`) || pathname.includes(`/${pathSegment}#`);
+  };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (open) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
-      }
-    }
-    return () => {
-      if (typeof window !== "undefined") {
-        document.body.style.overflow = "";
-      }
-    };
-  }, [open]);
+    import("@/lib/productData").then((mod) => {
+      setHeaderProducts(mod.products);
+    }).catch(err => console.error("Failed to load header products", err));
+  }, []);
 
   const t = (strKey: keyof typeof headerTranslations["en"]) => {
     return headerTranslations[lang][strKey] || strKey;
   };
 
-  const descT = (menuKey: keyof typeof menuDescriptions["en"]) => {
-    return menuDescriptions[lang][menuKey] || "";
-  };
-
   const handleLangToggle = () => {
     if (typeof window === "undefined") return;
-    setLoading(true); // Trigger the preloader immediately on language switch
+    setLoading(true);
     if (onLangToggleStart) {
       onLangToggleStart();
     }
     setTimeout(() => {
       const nextLang = lang === "ar" ? "en" : "ar";
-      const nextPath = pathname.replace(/^\/(ar|en)/, `/${nextLang}`);
+      let nextPath = pathname;
+      if (pathname.endsWith("/en")) {
+        nextPath = pathname.substring(0, pathname.length - 3) + "/ar";
+      } else if (pathname.endsWith("/ar")) {
+        nextPath = pathname.substring(0, pathname.length - 3) + "/en";
+      } else if (pathname === "/en" || pathname === "/ar" || pathname === "/") {
+        nextPath = `/${nextLang}`;
+      } else {
+        nextPath = pathname.replace(/\/(ar|en)$/, `/${nextLang}`);
+      }
       router.push(nextPath);
     }, 180);
   };
 
-  const handleMenuClick = (e: React.MouseEvent, sectionId: string, categoryId?: string) => {
-    e.preventDefault();
-    if (typeof window === "undefined") return;
-
-    if (pathname !== `/${lang}`) {
-      if (categoryId) {
-        sessionStorage.setItem("pendingCategory", categoryId);
-      } else {
-        sessionStorage.setItem("pendingSection", sectionId);
-      }
-      router.push(`/${lang}`);
-    } else {
-      if (categoryId) {
-        window.dispatchEvent(new CustomEvent("select-category", { detail: { category: categoryId } }));
-      } else {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
+  const handleMenuHover = (menu: "women" | "men" | "designers" | "fashion" | "perfumes" | "skincare" | null) => {
+    setActiveDropdown(menu);
+    if (menu === "women") {
+      setHoveredFashionCategory("women-fashion");
+    } else if (menu === "men") {
+      setHoveredFashionCategory("men-fashion");
     }
-    setOpen(false);
-  };
-
-  const getHref = (anchor: string) => {
-    return isHome ? anchor : `/${lang}${anchor}`;
   };
 
   return (
     <>
-
       <Box 
         component="header"
         sx={{ 
@@ -646,82 +522,60 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           backgroundImage: 'url("/assets/headerbg.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
-          borderBottom: "none",
-          boxShadow: "none"
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
         <AnnouncementBar lang={lang} />
-        <Stack direction="row" alignItems="center" sx={{ minHeight: { xs: 64, md: 74 }, px: { xs: 2.5, md: 4 } }}>
-          {/* Left navigation */}
-          <Stack 
-            direction="row" 
-            gap={lang === "ar" ? 4.5 : 3.5} 
-            alignItems="center" 
-            sx={{ 
-              flex: 1, 
-              display: { xs: "none", lg: "flex" },
-              pr: lang === "ar" ? 0 : 8,
-              pl: lang === "ar" ? 8 : 0,
-              opacity: searchActive ? 0 : 1,
-              visibility: searchActive ? "hidden" : "visible",
-              transition: "opacity 0.25s ease, visibility 0.25s ease"
+        
+        {/* ROW 1: Logo (Left), Search/Utilities (Right) */}
+        <Stack 
+          direction="row" 
+          justifyContent="space-between" 
+          alignItems="center" 
+          sx={{ minHeight: 64, px: { xs: 2.5, md: 4 } }}
+        >
+          {/* Logo on the left */}
+          <Box
+            component={Link}
+            href={`/${lang}`}
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              textDecoration: "none",
+              cursor: "pointer"
             }}
           >
-            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "women")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Women")}
-            </Button>
-            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "men")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Men")}
-            </Button>
-            <Button onClick={(e) => handleMenuClick(e, "curated-departments", "beauty")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Beauty")}
-            </Button>
-          </Stack>
-          
-          {/* Centered Brand Name & Logo */}
-          <Box sx={{ flex: { xs: 1, lg: "none" }, position: { lg: "absolute" }, left: { lg: "50%" }, transform: { lg: "translateX(-50%)" } }}>
-            <BrandMark settings={settings} lang={lang} searchActive={searchActive} />
+            <Stack direction="row" gap={1.5} alignItems="center">
+              <Box 
+                component="img" 
+                src="/brand/logo.png" 
+                alt="Fashion Gate" 
+                sx={{ 
+                  height: 36, 
+                  width: "auto",
+                  objectFit: "contain"
+                }} 
+              />
+              <Typography 
+                sx={{ 
+                  fontFamily: "var(--heading-font)", 
+                  fontWeight: 600, 
+                  fontSize: { xs: 14, sm: 15, md: 19 }, 
+                  lineHeight: 1, 
+                  textTransform: "uppercase", 
+                  color: "#ffffff",
+                  letterSpacing: "0.08em",
+                  whiteSpace: "nowrap",
+                  display: { xs: "none", sm: "block" }
+                }}
+              >
+                FASHION GATE
+              </Typography>
+            </Stack>
           </Box>
 
-          {/* Right navigation */}
-          <Stack 
-            direction="row" 
-            gap={lang === "ar" ? 4.5 : 3.5} 
-            justifyContent="flex-end" 
-            alignItems="center" 
-            sx={{ 
-              flex: 1, 
-              display: { xs: "none", lg: "flex" },
-              pl: lang === "ar" ? 0 : 8,
-              pr: lang === "ar" ? 8 : 0
-            }}
-          >
-            {/* Nav links stack - fades out when search is active to free up space */}
-            <Stack
-              direction="row"
-              gap={lang === "ar" ? 4.5 : 3.5}
-              alignItems="center"
-              sx={{
-                opacity: searchActive ? 0 : 1,
-                visibility: searchActive ? "hidden" : "visible",
-                transition: "opacity 0.25s ease, visibility 0.25s ease",
-                display: "flex"
-              }}
-            >
-              <Button onClick={(e) => handleMenuClick(e, "curated-departments", "home-deco")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-                {t("Home & Deco")}
-              </Button>
-              <Button onClick={(e) => handleMenuClick(e, "brand")} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-                {t("Brand")}
-              </Button>
-              <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-                {t("Blogs")}
-              </Button>
-              <Button component={Link} href={`/${lang}/contact`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-                {t("Contact")}
-              </Button>
-            </Stack>
-            
+          {/* Search, Language Selector, User Profile Icon on the right */}
+          <Stack direction="row" spacing={{ xs: 1, sm: 1.5, md: 2 }} alignItems="center">
             {/* Search Option */}
             <SearchOption 
               lang={lang} 
@@ -732,111 +586,577 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               products={headerProducts}
             />
 
-            {/* Language Selector */}
             <Button 
               onClick={handleLangToggle}
+              startIcon={lang === "ar" ? <EnglandFlag /> : <SyriaFlag />}
               sx={{ 
-                color: "#CB6116", 
+                color: "#ffffff", 
                 textTransform: "uppercase", 
-                fontSize: 11, 
-                fontWeight: 800, 
-                letterSpacing: "0.15em",
+                fontSize: 12, 
+                fontWeight: 600, 
+                letterSpacing: "0.1em",
                 px: 1.5,
                 py: 0.5,
-                border: "1px solid",
-                borderColor: "#CB6116",
+                border: "none",
                 borderRadius: 0,
                 fontFamily: '"Cairo", sans-serif',
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+                minWidth: 0,
+                "& .MuiButton-startIcon": {
+                  margin: 0,
+                  display: "flex",
+                  alignItems: "center"
+                },
                 "&:hover": {
-                  bgcolor: "rgba(203, 97, 22, 0.08)",
-                  borderColor: "#CB6116"
+                  color: "#CB6116",
+                  bgcolor: "transparent"
                 }
               }}
             >
               {lang === "ar" ? "EN" : "AR"}
             </Button>
 
-            {/* Profile Button on complete right side */}
-            <Tooltip title={lang === "ar" ? "تسجيل الدخول / تسجيل جديد" : "Sign In / Register"}>
+            {/* Profile Button */}
+            <Tooltip title={t("Sign In / Register")}>
               <IconButton 
                 component={Link} 
-                href={`/${lang}/login`} 
+                href={`/login/${lang}`} 
                 sx={{ 
                   color: "#CB6116", 
                   p: 0.5,
-                  ml: 1.5,
+                  display: { xs: "none", sm: "inline-flex" },
                   transition: "transform 0.2s, color 0.2s",
                   "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
                 }}
               >
-                <PersonOutlineIcon sx={{ fontSize: 20 }} />
+                <PersonOutlineIcon sx={{ fontSize: 22 }} />
               </IconButton>
             </Tooltip>
-          </Stack>
 
-          {/* Mobile Header elements */}
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: "flex", lg: "none" }, ml: "auto" }}>
-            {/* Mobile Search Option */}
-            <SearchOption 
-              lang={lang} 
-              isMobile={true}
-              searchActive={searchActive} 
-              setSearchActive={setSearchActive} 
-              searchQuery={searchQuery} 
-              setSearchQuery={setSearchQuery} 
-              products={headerProducts}
-            />
-
-            <Button 
-              onClick={handleLangToggle}
-              size="small"
-              sx={{ 
-                color: "#CB6116", 
-                textTransform: "uppercase", 
-                fontSize: 10, 
-                fontWeight: 800, 
-                letterSpacing: "0.15em",
-                px: 1.2,
-                py: 0.4,
-                minWidth: 0,
-                border: "1px solid",
-                borderColor: "#CB6116",
-                borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif'
-              }}
-            >
-              {lang === "ar" ? "EN" : "AR"}
-            </Button>
-
-            <IconButton 
-              component={Link}
-              href={`/${lang}/login`}
-              sx={{ 
-                color: "#CB6116",
-                p: 0.5,
-                display: searchActive ? "none" : "inline-flex",
-                transition: "transform 0.2s, color 0.2s",
-                "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
-              }}
-            >
-              <PersonOutlineIcon sx={{ fontSize: 20 }} />
-            </IconButton>
-
+            {/* Mobile menu trigger */}
             <IconButton 
               onClick={() => setOpen(true)} 
               sx={{ 
                 color: "#ffffff", 
                 p: 0.8,
-                border: "1px solid rgba(255,255,255,0.08)"
+                border: "1px solid rgba(255,255,255,0.08)",
+                display: { xs: "inline-flex", lg: "none" }
               }}
             >
               <MenuIcon sx={{ fontSize: 20 }} />
             </IconButton>
           </Stack>
         </Stack>
+
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
+
+        {/* ROW 2: Navigation Bar (11 nav items centered) */}
+        <Stack 
+          direction="row" 
+          justifyContent="center" 
+          alignItems="center" 
+          gap={{ xs: 1.5, sm: 2.5, md: 3.5 }}
+          sx={{ 
+            minHeight: 44, 
+            px: 2, 
+            display: { xs: "none", lg: "flex" },
+            position: "relative"
+          }}
+        >
+          <Button component={Link} href={`/${lang}`} className="luxury-link" sx={{ color: isLinkActive("home") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {t("Home")}
+          </Button>
+
+          {/* Women trigger - Commented out for now */}
+          {/* 
+          <Box 
+            onMouseEnter={() => handleMenuHover("women")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/women/${lang}`} className="luxury-link" sx={{ color: activeDropdown === "women" ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Women")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "women" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("women")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    width: "600px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 0,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left",
+                    display: "flex",
+                    flexDirection: "row"
+                  }}
+                >
+                  <Stack sx={{ width: "40%", bgcolor: "#1a1a1a", borderRight: lang === "en" ? "1px solid rgba(255,255,255,0.04)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                    <Box 
+                      onMouseEnter={() => setHoveredFashionCategory("women-fashion")}
+                      sx={{ 
+                        p: 2, 
+                        cursor: "pointer", 
+                        bgcolor: hoveredFashionCategory === "women-fashion" ? "#222" : "transparent",
+                        color: hoveredFashionCategory === "women-fashion" ? "#CB6116" : "#fff",
+                        borderBottom: "1px solid rgba(255,255,255,0.04)",
+                        fontFamily: '"Cairo", sans-serif',
+                        fontSize: 12,
+                        fontWeight: 700
+                      }}
+                    >
+                      {lang === "ar" ? "أزياء النساء >" : "WOMEN FASHION ❯"}
+                    </Box>
+                    {["women-bags", "women-accessories", "women-jewellery"].map((sub) => (
+                      <Box 
+                        key={sub}
+                        component={Link}
+                        href={`/category/women/${lang}?sub=${sub}`}
+                        onClick={() => setActiveDropdown(null)}
+                        sx={{ 
+                          p: 2, 
+                          color: "#fff",
+                          textDecoration: "none",
+                          borderBottom: "1px solid rgba(255,255,255,0.04)",
+                          fontFamily: '"Cairo", sans-serif',
+                          fontSize: 12,
+                          fontWeight: 600,
+                          "&:hover": { bgcolor: "#222", color: "#CB6116" }
+                        }}
+                      >
+                        {sub === "women-bags" ? (lang === "ar" ? "حقائب النساء" : "WOMEN BAGS") : 
+                         sub === "women-accessories" ? (lang === "ar" ? "إكسسوارات النساء" : "WOMEN ACCESSORIES") : 
+                         (lang === "ar" ? "مجوهرات النساء" : "WOMEN JEWELLERY")}
+                      </Box>
+                    ))}
+                  </Stack>
+                  <Box sx={{ width: "60%", p: 2.5, maxHeight: "360px", overflowY: "auto" }}>
+                    {hoveredFashionCategory === "women-fashion" && (
+                      <Stack spacing={1.2}>
+                        {[
+                          { id: "dresses", label: lang === "ar" ? "فساتين" : "DRESSES" },
+                          { id: "abayas-kaftans", label: lang === "ar" ? "عبايات وقفاطين" : "ABAYAS / KAFTANS" },
+                          { id: "tops-blouses", label: lang === "ar" ? "بلوزات وقمصان علوية" : "TOPS & BLOUSES" },
+                          { id: "t-shirts", label: lang === "ar" ? "تي شيرت" : "WOMEN T-SHIRTS" },
+                          { id: "pants-trousers", label: lang === "ar" ? "سراويل وبناطيل" : "PANTS & TROUSERS" },
+                          { id: "jeans", label: lang === "ar" ? "جينز" : "WOMEN JEANS" },
+                          { id: "skirts", label: lang === "ar" ? "تنانير" : "SKIRTS" },
+                          { id: "coords-sets", label: lang === "ar" ? "أطقم متطابقة" : "CO-ORDS & SETS" },
+                          { id: "outerwear-women", label: lang === "ar" ? "ملابس خارجية" : "OUTERWEAR WOMEN" },
+                          { id: "women-activewear", label: lang === "ar" ? "ملابس رياضية" : "WOMEN ACTIVEWEAR" },
+                          { id: "sleepwear-innerwear", label: lang === "ar" ? "ملابس نوم وداخلية" : "SLEEPWEAR & INNERWEAR" }
+                        ].map((item) => (
+                          <Typography
+                            key={item.id}
+                            component={Link}
+                            href={`/category/women/${lang}?sub=${item.id}`}
+                            onClick={() => setActiveDropdown(null)}
+                            sx={{
+                              color: "rgba(255,255,255,0.7)",
+                              textDecoration: "none",
+                              fontSize: "11.5px",
+                              fontWeight: 500,
+                              fontFamily: '"Cairo", sans-serif',
+                              cursor: "pointer",
+                              "&:hover": { color: "#CB6116" }
+                            }}
+                          >
+                            {item.label}
+                          </Typography>
+                        ))}
+                      </Stack>
+                    )}
+                  </Box>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+          */}
+
+          {/* Men trigger - Commented out for now */}
+          {/* 
+          <Box 
+            onMouseEnter={() => handleMenuHover("men")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/men/${lang}`} className="luxury-link" sx={{ color: activeDropdown === "men" ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Men")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "men" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("men")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    width: "600px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 0,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left",
+                    display: "flex",
+                    flexDirection: "row"
+                  }}
+                >
+                  <Stack sx={{ width: "40%", bgcolor: "#1a1a1a", borderRight: lang === "en" ? "1px solid rgba(255,255,255,0.04)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                    <Box 
+                      onMouseEnter={() => setHoveredFashionCategory("men-fashion")}
+                      sx={{ 
+                        p: 2, 
+                        cursor: "pointer", 
+                        bgcolor: hoveredFashionCategory === "men-fashion" ? "#222" : "transparent",
+                        color: hoveredFashionCategory === "men-fashion" ? "#CB6116" : "#fff",
+                        borderBottom: "1px solid rgba(255,255,255,0.04)",
+                        fontFamily: '"Cairo", sans-serif',
+                        fontSize: 12,
+                        fontWeight: 700
+                      }}
+                    >
+                      {lang === "ar" ? "أزياء الرجال >" : "MEN FASHION ❯"}
+                    </Box>
+                    <Box 
+                      component={Link}
+                      href={`/category/men/${lang}?sub=men-accessories`}
+                      onClick={() => setActiveDropdown(null)}
+                      sx={{ 
+                        p: 2, 
+                        color: "#fff",
+                        textDecoration: "none",
+                        borderBottom: "1px solid rgba(255,255,255,0.04)",
+                        fontFamily: '"Cairo", sans-serif',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        "&:hover": { bgcolor: "#222", color: "#CB6116" }
+                      }}
+                    >
+                      {lang === "ar" ? "إكسسوارات الرجال" : "MEN ACCESSORIES"}
+                    </Box>
+                  </Stack>
+                  <Box sx={{ width: "60%", p: 2.5, maxHeight: "360px", overflowY: "auto" }}>
+                    {hoveredFashionCategory === "men-fashion" && (
+                      <Stack spacing={1.2}>
+                        {[
+                          { id: "men-formal-suits", label: lang === "ar" ? "بدل رسمية" : "MEN FORMAL SUITS" },
+                          { id: "t-shirts-polos", label: lang === "ar" ? "تي شيرت وبولو" : "T-SHIRTS & POLOS" },
+                          { id: "men-shirts", label: lang === "ar" ? "قمصان" : "MEN SHIRTS" },
+                          { id: "men-outerwear", label: lang === "ar" ? "ملابس خارجية" : "MEN OUTERWEAR" },
+                          { id: "men-shoes", label: lang === "ar" ? "أحذية" : "MEN SHOES" },
+                          { id: "innerwear-sleepwear", label: lang === "ar" ? "ملابس داخلية ونوم" : "INNERWEAR & SLEEPWEAR" }
+                        ].map((item) => (
+                          <Typography
+                            key={item.id}
+                            component={Link}
+                            href={`/category/men/${lang}?sub=${item.id}`}
+                            onClick={() => setActiveDropdown(null)}
+                            sx={{
+                              color: "rgba(255,255,255,0.7)",
+                              textDecoration: "none",
+                              fontSize: "11.5px",
+                              fontWeight: 500,
+                              fontFamily: '"Cairo", sans-serif',
+                              cursor: "pointer",
+                              "&:hover": { color: "#CB6116" }
+                            }}
+                          >
+                            {item.label}
+                          </Typography>
+                        ))}
+                      </Stack>
+                    )}
+                  </Box>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+          */}
+
+          {/* Designers trigger */}
+          <Box 
+            onMouseEnter={() => handleMenuHover("designers")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/designers/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "designers" || isLinkActive("designers")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Designers")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "designers" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("designers")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    transform: "none",
+                    width: "360px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 2,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left"
+                  }}
+                >
+                  <Stack spacing={1.5} sx={{ width: "100%" }}>
+                    {brandSuggestions.map((brand) => (
+                      <Typography
+                        key={brand.id}
+                        component={Link}
+                        href={`/brand/${brand.id}/${lang}`}
+                        onClick={() => setActiveDropdown(null)}
+                        sx={{
+                          color: "rgba(255,255,255,0.8)",
+                          textDecoration: "none",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          fontFamily: '"Cairo", sans-serif',
+                          "&:hover": { color: "#CB6116" }
+                        }}
+                      >
+                        {brand.label}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+
+          {/* Fashion trigger */}
+          <Box 
+            onMouseEnter={() => handleMenuHover("fashion")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/fashion/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "fashion" || isLinkActive("fashion")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Fashion")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "fashion" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("fashion")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    width: "180px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 2,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left"
+                  }}
+                >
+                  <Stack spacing={1.5} sx={{ width: "100%" }}>
+                    {[
+                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/fashion/${lang}?sub=women` },
+                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/fashion/${lang}?sub=men` }
+                    ].map((opt) => (
+                      <Typography
+                        key={opt.label}
+                        component={Link}
+                        href={opt.href}
+                        onClick={() => setActiveDropdown(null)}
+                        sx={{
+                          color: "rgba(255,255,255,0.8)",
+                          textDecoration: "none",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          fontFamily: '"Cairo", sans-serif',
+                          "&:hover": { color: "#CB6116" }
+                        }}
+                      >
+                        {opt.label}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+
+          {/* Perfumes trigger */}
+          <Box 
+            onMouseEnter={() => handleMenuHover("perfumes")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/perfumes/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "perfumes" || isLinkActive("perfumes")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Perfumes")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "perfumes" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("perfumes")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    width: "180px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 2,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left"
+                  }}
+                >
+                  <Stack spacing={1.5} sx={{ width: "100%" }}>
+                    {[
+                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/perfumes/${lang}?sub=women` },
+                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/perfumes/${lang}?sub=men` },
+                      { label: lang === "ar" ? "للجنسين" : "UNISEX", href: `/category/perfumes/${lang}?sub=unisex` }
+                    ].map((opt) => (
+                      <Typography
+                        key={opt.label}
+                        component={Link}
+                        href={opt.href}
+                        onClick={() => setActiveDropdown(null)}
+                        sx={{
+                          color: "rgba(255,255,255,0.8)",
+                          textDecoration: "none",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          fontFamily: '"Cairo", sans-serif',
+                          "&:hover": { color: "#CB6116" }
+                        }}
+                      >
+                        {opt.label}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+
+          {/* Skincare trigger */}
+          <Box 
+            onMouseEnter={() => handleMenuHover("skincare")}
+            onMouseLeave={() => handleMenuHover(null)}
+            sx={{ display: "inline-block", height: "100%", position: "relative" }}
+          >
+            <Button component={Link} href={`/category/skincare/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "skincare" || isLinkActive("skincare")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+              {t("Skincare")}
+            </Button>
+            <AnimatePresence>
+              {activeDropdown === "skincare" && (
+                <MotionBox
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.18 }}
+                  onMouseEnter={() => setActiveDropdown("skincare")}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  sx={{
+                    position: "absolute",
+                    top: "100%",
+                    left: lang === "ar" ? "auto" : 0,
+                    right: lang === "ar" ? 0 : "auto",
+                    width: "180px",
+                    bgcolor: "#111111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "none",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
+                    p: 2,
+                    zIndex: 99,
+                    textAlign: lang === "ar" ? "right" : "left"
+                  }}
+                >
+                  <Stack spacing={1.5} sx={{ width: "100%" }}>
+                    {[
+                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/skincare/${lang}?sub=women` },
+                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/skincare/${lang}?sub=men` }
+                    ].map((opt) => (
+                      <Typography
+                        key={opt.label}
+                        component={Link}
+                        href={opt.href}
+                        onClick={() => setActiveDropdown(null)}
+                        sx={{
+                          color: "rgba(255,255,255,0.8)",
+                          textDecoration: "none",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          fontFamily: '"Cairo", sans-serif',
+                          "&:hover": { color: "#CB6116" }
+                        }}
+                      >
+                        {opt.label}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </MotionBox>
+              )}
+            </AnimatePresence>
+          </Box>
+
+          <Button component={Link} href={`/category/dining/${lang}`} className="luxury-link" sx={{ color: isLinkActive("dining") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {t("Dining")}
+          </Button>
+
+          <Button component={Link} href={`/blogs/${lang}`} className="luxury-link" sx={{ color: isLinkActive("blogs") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {t("Blogs")}
+          </Button>
+
+          <Button component={Link} href={`/about/${lang}`} className="luxury-link" sx={{ color: isLinkActive("about") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {t("About Us")}
+          </Button>
+
+          <Button component={Link} href={`/contact/${lang}`} className="luxury-link" sx={{ color: isLinkActive("contact") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {t("Contact Us")}
+          </Button>
+        </Stack>
       </Box>
 
-      {/* Dynamic Drawer Menu Overlay */}
+      {/* Elegant Drawer Menu Overlay (Mobile) */}
       <Drawer
         anchor={lang === "ar" ? "right" : "left"}
         open={open}
@@ -844,202 +1164,92 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
         PaperProps={{
           sx: {
             width: "100%",
-            maxWidth: { xs: "100%", sm: 480 },
-            bgcolor: "#FAF8F5",
+            maxWidth: 320,
+            bgcolor: "#050505", // Luxury dark theme background (no grey!)
             boxShadow: "none",
-            borderLeft: lang === "ar" ? "none" : "1px solid rgba(0,0,0,0.06)",
-            borderRight: lang === "ar" ? "1px solid rgba(0,0,0,0.06)" : "none",
-            p: { xs: 3, sm: 5 },
+            p: 4,
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
+            borderRight: lang === "en" ? "2px solid #CB6116" : "none",
+            borderLeft: lang === "ar" ? "2px solid #CB6116" : "none"
           } 
         }}
       >
-        <Stack spacing={5} sx={{ height: "100%", justifyContent: "space-between" }}>
-          {/* Top Bar inside Overlay */}
+        <Stack spacing={4} sx={{ height: "100%", justifyContent: "space-between" }}>
+          {/* Header Row */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <BrandMark settings={settings} lang={lang} light={true} />
-            <IconButton onClick={() => setOpen(false)} sx={{ color: "#111111", border: "1px solid rgba(0,0,0,0.08)", p: 1, borderRadius: "50%", "&:hover": { bgcolor: "rgba(0,0,0,0.04)" } }}>
-              <CloseIcon sx={{ fontSize: 20 }} />
+            <Stack direction="row" gap={1.2} alignItems="center">
+              <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ height: 26, width: "auto" }} />
+              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, color: "#fff", fontWeight: 700, letterSpacing: "0.05em" }}>FASHION GATE</Typography>
+            </Stack>
+            <IconButton onClick={() => setOpen(false)} sx={{ color: "#fff", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 0 }}>
+              <CloseIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Stack>
           
-          {/* Centered Menu List */}
-          <Stack spacing={{ xs: 2.5, sm: 3 }} sx={{ my: "auto", px: { xs: 1, sm: 4 } }}>
-            {shopNavigation.map((item) => {
-              const label = item.label as keyof typeof menuDescriptions["en"];
-              const desc = descT(label);
-              return (
-                <Stack 
-                  key={label} 
-                  spacing={0.5} 
-                  sx={{ 
-                    borderBottom: "1px solid rgba(0,0,0,0.06)", 
-                    pb: 1.5,
-                    alignItems: lang === "ar" ? "flex-end" : "flex-start" 
-                  }}
-                >
-                  <Button 
-                    onClick={(e) => {
-                      const categoryId = item.label === "Women" 
-                        ? "women" 
-                        : (item.label === "Men" 
-                          ? "men" 
-                          : (item.label === "Beauty" 
-                            ? "beauty" 
-                            : (item.label === "Home & Deco" ? "home-deco" : "")));
-                            
-                      const sectionId = categoryId ? "curated-departments" : (item.anchor?.replace("#", "") || "arrival");
-                      handleMenuClick(e, sectionId, categoryId);
-                    }}
-                    endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
-                    startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
-                    sx={{ 
-                      p: 0,
-                      color: "rgba(0,0,0,0.85)", 
-                      fontSize: { xs: 22, sm: 28 }, 
-                      fontWeight: 500,
-                      fontFamily: "var(--heading-font)",
-                      textTransform: "none",
-                      letterSpacing: "0.02em",
-                      textAlign: lang === "ar" ? "right" : "left",
-                      "&:hover": {
-                        color: "primary.main",
-                        transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
-                      },
-                      transition: "transform 0.3s ease, color 0.3s ease"
-                    }}
-                  >
-                    {t(label)}
-                  </Button>
-                  {desc && (
-                    <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
-                      {desc}
-                    </Typography>
-                  )}
-                </Stack>
-              );
-            })}
-            
-            {/* Blogs Link */}
-            <Stack 
-              spacing={0.5} 
-              sx={{ 
-                borderBottom: "1px solid rgba(0,0,0,0.06)", 
-                pb: 1.5,
-                alignItems: lang === "ar" ? "flex-end" : "flex-start" 
-              }}
-            >
-              <Button 
+          {/* Navigation Links */}
+          <Stack spacing={3.2} sx={{ overflowY: "auto", py: 4, alignItems: "center" }}>
+            {[
+              { label: t("Home"), href: `/${lang}` },
+              { label: t("Women"), href: `/category/women/${lang}` },
+              { label: t("Men"), href: `/category/men/${lang}` },
+              { label: t("Designers"), href: `/category/designers/${lang}` },
+              { label: t("Fashion"), href: `/category/fashion/${lang}` },
+              { label: t("Perfumes"), href: `/category/perfumes/${lang}` },
+              { label: t("Skincare"), href: `/category/skincare/${lang}` },
+              { label: t("Dining"), href: `/category/dining/${lang}` },
+              { label: t("Blogs"), href: `/blogs/${lang}` },
+              { label: t("About Us"), href: `/about/${lang}` },
+              { label: t("Contact Us"), href: `/contact/${lang}` }
+            ].map((item) => (
+              <MuiLink
+                key={item.label}
                 component={Link}
-                href={`/${lang}/blogs`} 
-                onClick={() => setOpen(false)} 
-                endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
-                startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
-                sx={{ 
-                  p: 0,
-                  color: "rgba(0,0,0,0.85)", 
-                  fontSize: { xs: 22, sm: 28 }, 
-                  fontWeight: 500,
-                  fontFamily: "var(--heading-font)",
-                  textTransform: "none",
-                  letterSpacing: "0.02em",
-                  textAlign: lang === "ar" ? "right" : "left",
-                  "&:hover": {
-                    color: "primary.main",
-                    transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
-                  },
-                  transition: "transform 0.3s ease, color 0.3s ease"
+                href={item.href}
+                onClick={() => setOpen(false)}
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  textDecoration: "none",
+                  fontFamily: '"Cairo", sans-serif',
+                  transition: "all 0.25s ease",
+                  textAlign: "center",
+                  "&:hover": { 
+                    color: "#CB6116",
+                    transform: "scale(1.05)"
+                  }
                 }}
               >
-                {t("Blogs")}
-              </Button>
-              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
-                {descT("Blogs")}
-              </Typography>
-            </Stack>
-
-            {/* Contact Link */}
-            <Stack 
-              spacing={0.5} 
-              sx={{ 
-                borderBottom: "1px solid rgba(0,0,0,0.06)", 
-                pb: 1.5,
-                alignItems: lang === "ar" ? "flex-end" : "flex-start" 
-              }}
-            >
-              <Button 
-                component={Link}
-                href={`/${lang}/contact`} 
-                onClick={() => setOpen(false)} 
-                endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
-                startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
-                sx={{ 
-                  p: 0,
-                  color: "rgba(0,0,0,0.85)", 
-                  fontSize: { xs: 22, sm: 28 }, 
-                  fontWeight: 500,
-                  fontFamily: "var(--heading-font)",
-                  textTransform: "none",
-                  letterSpacing: "0.02em",
-                  textAlign: lang === "ar" ? "right" : "left",
-                  "&:hover": {
-                    color: "primary.main",
-                    transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
-                  },
-                  transition: "transform 0.3s ease, color 0.3s ease"
-                }}
-              >
-                {t("Contact")}
-              </Button>
-              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
-                {descT("Contact")}
-              </Typography>
-            </Stack>
-
-            {/* Account Sign In Link */}
-            <Stack 
-              spacing={0.5} 
-              sx={{ 
-                borderBottom: "1px solid rgba(0,0,0,0.06)", 
-                pb: 1.5,
-                alignItems: lang === "ar" ? "flex-end" : "flex-start" 
-              }}
-            >
-              <Button 
-                component={Link}
-                href={`/${lang}/login`} 
-                onClick={() => setOpen(false)} 
-                endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
-                startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
-                sx={{ 
-                  p: 0,
-                  color: "#CB6116", 
-                  fontSize: { xs: 22, sm: 28 }, 
-                  fontWeight: 500,
-                  fontFamily: "var(--heading-font)",
-                  textTransform: "none",
-                  letterSpacing: "0.02em",
-                  textAlign: lang === "ar" ? "right" : "left",
-                  "&:hover": {
-                    color: "primary.dark",
-                    transform: lang === "ar" ? "translateX(-6px)" : "translateX(6px)"
-                  },
-                  transition: "transform 0.3s ease, color 0.3s ease"
-                }}
-              >
-                {lang === "ar" ? "تسجيل الدخول" : "Sign In / Register"}
-              </Button>
-              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: { xs: 11, sm: 12.5 }, fontFamily: '"Cairo", sans-serif', letterSpacing: "0.05em" }}>
-                {lang === "ar" ? "إدارة حسابك الشخصي وطلباتك" : "Access your boutique account and orders"}
-              </Typography>
-            </Stack>
+                {item.label}
+              </MuiLink>
+            ))}
           </Stack>
-          
-          {/* Bottom Overlay Info */}
-          <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", textAlign: "center", fontFamily: '"Cairo", sans-serif' }}>
-            {t("On Boulevard. For the world.")}
-          </Typography>
+
+          {/* Bottom Drawer Section (Sign In & Socials) */}
+          <Stack spacing={2.5} sx={{ borderTop: "1px solid rgba(255,255,255,0.08)", pt: 3, mt: "auto" }}>
+            <Button
+              component={Link}
+              href={`/login/${lang}`}
+              onClick={() => setOpen(false)}
+              fullWidth
+              sx={{
+                color: "#ffffff",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: 0,
+                py: 1,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                fontFamily: '"Cairo", sans-serif',
+                "&:hover": { bgcolor: "rgba(255,255,255,0.05)" }
+              }}
+            >
+              {t("Sign In / Register")}
+            </Button>
+          </Stack>
         </Stack>
       </Drawer>
     </>

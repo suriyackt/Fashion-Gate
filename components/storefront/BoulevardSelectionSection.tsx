@@ -6,6 +6,7 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import { products } from "@/lib/productData";
 import type { Section } from "@/lib/types";
+import { getLocalizedValue } from "@/lib/sanity";
 
 export default function BoulevardSelectionSection({ 
   section, 
@@ -34,6 +35,25 @@ export default function BoulevardSelectionSection({
       .filter(Boolean) as any[];
   }, [lang]);
 
+  // Resolve section localized fields using our helper
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    t("WHAT IS FASHION GATE?")
+  );
+
+  const headlineText = getLocalizedValue(
+    section.headline,
+    lang,
+    lang === "ar" ? "بوابة الموضة بوليفارد — العتبة إلى عالم الاستثناء" : "Fashion Gate Boulevard — The Threshold to the Exceptional"
+  );
+
+  const customDescription = getLocalizedValue(
+    section.description,
+    lang,
+    ""
+  );
+
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 12, md: 18 }, bgcolor: "#ffffff", color: "#111111", position: "relative", overflow: "hidden" }}>
       <Container maxWidth="xl">
@@ -42,10 +62,10 @@ export default function BoulevardSelectionSection({
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pr: { md: 4 } }}>
             <Box>
               <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", fontFamily: '"Cairo", sans-serif', mb: 2 }}>
-                {t("WHAT IS FASHION GATE?")}
+                {eyebrowText}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 46 }, fontWeight: 500, color: "#111111", lineHeight: 1.15, mb: 4 }}>
-                {lang === "ar" ? "بوابة الموضة بوليفارد — العتبة إلى عالم الاستثناء" : "Fashion Gate Boulevard — The Threshold to the Exceptional"}
+                {headlineText}
               </Typography>
             </Box>
             
@@ -88,20 +108,28 @@ export default function BoulevardSelectionSection({
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", pl: { md: 4 }, gap: 3.5 }}>
-            <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.9, fontFamily: '"Cairo", sans-serif', textAlign: "justify" }}>
-              {lang === "ar" ? (
-                "بوابة الموضة بوليفارد هي أول متجر أقسام فاخر في سوريا — تم بناؤه على نموذج أعظم مؤسسات الموضة في العالم: هارودز في لندن، لو بون مارشيه في باريس، غاليري لافاييت، سيلفريدجز. عنوان واحد يحتوي على عوالم متعددة تحت رؤية معمارية موحدة."
-              ) : (
-                "Fashion Gate Boulevard is Syria's first luxury department store — built on the model of the world's great fashion institutions: Harrods in London, Le Bon Marché in Paris, Galeries Lafayette, Selfridges. A single address containing multiple worlds under one unified architectural vision."
-              )}
-            </Typography>
-            <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.9, fontFamily: '"Cairo", sans-serif', textAlign: "justify" }}>
-              {lang === "ar" ? (
-                "تقوم بوابة الموضة بوليفارد برعاية أرقى مجموعات المصممين العالميين للرجال والنساء، إلى جانب الإكسسوارات الفاخرة، ومنتجات التجميل، والأطعمة الفاخرة. إنها ليست مجرد متجر أو مركز تجاري، بل هي وجهة أسلوب حياة راقية حيث تلتقي الموضة والذوق والثقافة تحت سقف واحد."
-              ) : (
-                "Fashion Gate Boulevard curates the finest international designer collections for men and women, alongside premium fashion accessories, beauty products, and gourmet luxury foods. It is not just a store, it is not a mall, it is a sophisticated lifestyle destination where fashion, taste, and culture converge under one roof."
-              )}
-            </Typography>
+            {customDescription ? (
+              <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.9, fontFamily: '"Cairo", sans-serif', textAlign: "justify" }}>
+                {customDescription}
+              </Typography>
+            ) : (
+              <>
+                <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.9, fontFamily: '"Cairo", sans-serif', textAlign: "justify" }}>
+                  {lang === "ar" ? (
+                    "بوابة الموضة بوليفارد هي أول متجر أقسام فاخر في سوريا — تم بناؤه على نموذج أعظم مؤسسات الموضة في العالم: هارودز في لندن، لو بون مارشيه في باريس، غاليري لافاييت، سيلفريدجز. عنوان واحد يحتوي على عوالم متعددة تحت رؤية معمارية موحدة."
+                  ) : (
+                    "Fashion Gate Boulevard is Syria's first luxury department store — built on the model of the world's great fashion institutions: Harrods in London, Le Bon Marché in Paris, Galeries Lafayette, Selfridges. A single address containing multiple worlds under one unified architectural vision."
+                  )}
+                </Typography>
+                <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.9, fontFamily: '"Cairo", sans-serif', textAlign: "justify" }}>
+                  {lang === "ar" ? (
+                    "تقوم بوابة الموضة بوليفارد برعاية أرقى مجموعات المصممين العالميين للرجال والنساء، إلى جانب الإكسسوارات الفاخرة، ومنتجات التجميل، والأطعمة الفاخرة. إنها ليست مجرد متجر أو مركز تجاري، بل هي وجهة أسلوب حياة راقية حيث تلتقي الموضة والذوق والثقافة تحت سقف واحد."
+                  ) : (
+                    "Fashion Gate Boulevard curates the finest international designer collections for men and women, alongside premium fashion accessories, beauty products, and gourmet luxury foods. It is not just a store, it is not a mall, it is a sophisticated lifestyle destination where fashion, taste, and culture converge under one roof."
+                  )}
+                </Typography>
+              </>
+            )}
           </Box>
         </Box>
 
@@ -110,7 +138,6 @@ export default function BoulevardSelectionSection({
             const title = lang === "ar" ? product.titleAr : product.title;
             const category = lang === "ar" ? product.categoryAr : product.category;
             const description = lang === "ar" ? product.descriptionAr : product.description;
-            const seqNumber = String(index + 1).padStart(2, "0");
 
             return (
               <Box
@@ -123,7 +150,7 @@ export default function BoulevardSelectionSection({
                 }}
               >
                 <Link 
-                  href={`/${lang}/product/${product.id}`}
+                  href={`/product/${product.id}/${lang}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Box
@@ -140,18 +167,6 @@ export default function BoulevardSelectionSection({
                       }
                     }}
                   >
-                    {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", mb: 1 }}>
-                      <Typography sx={{ 
-                        fontFamily: '"Cairo", sans-serif', 
-                        fontSize: 12, 
-                        fontWeight: 700, 
-                        color: "rgba(0,0,0,0.3)", 
-                        letterSpacing: "0.1em"
-                      }}>
-                        {seqNumber}
-                      </Typography>
-                    </Box> */}
-
                     <Box
                       sx={{
                         position: "relative",

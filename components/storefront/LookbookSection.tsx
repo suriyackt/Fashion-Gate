@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useRef, useEffect, useState } from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import { products } from "@/lib/productData";
 import type { Section } from "@/lib/types";
+import { getLocalizedValue } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
 
@@ -53,7 +54,7 @@ export default function LookbookSection({
     let animationFrameId: number;
     
     const tick = () => {
-      if (!isDraggingRef.current && !isHoveredRef.current && constraints.left < 0) {
+      if (!isDraggingRef.current && constraints.left < 0) {
         const currentX = x.get();
         const nextX = currentX - 0.7; // Autoplay velocity
         if (nextX < constraints.left) {
@@ -68,6 +69,27 @@ export default function LookbookSection({
     animationFrameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrameId);
   }, [constraints.left, x]);
+
+  // Resolve section localized fields using our helper
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    t("Curated Pieces")
+  );
+
+  const descriptionText = getLocalizedValue(
+    section.description,
+    lang,
+    lang === "ar"
+      ? "استكشف معرضاً فريداً من القطع المميزاً، حيث تلتقي الهندسة المعمارية بالفخامة الملموسة من دمشق إلى العالم."
+      : "Explore a singular gallery of signature items, where architectural geometry meets tactile luxury from Damascus to the world."
+  );
+
+  const customHeadlineText = getLocalizedValue(
+    section.headline,
+    lang,
+    ""
+  );
 
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 10, md: 16 }, bgcolor: "#080808", overflow: "hidden", color: "#fff" }}>
@@ -85,17 +107,19 @@ export default function LookbookSection({
         >
           <Box sx={{ maxWidth: 720 }}>
             <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif', mb: 2 }}>
-              {t("Curated Pieces")}
+              {eyebrowText}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, sm: 48, md: 62 }, fontWeight: 500, lineHeight: 1.1, color: "#ffffff" }}>
-              {lang === "ar" ? (
-                <>
-                  قطع <Box component="span" sx={{ fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', color: "primary.main", fontStyle: "italic", mx: 1 }}>حصرية</Box> مصممة بعناية
-                </>
-              ) : (
-                <>
-                  Curated <Box component="span" sx={{ fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', color: "primary.main", fontStyle: "italic", mx: 1 }}>Designer</Box> Masterpieces
-                </>
+              {customHeadlineText ? customHeadlineText : (
+                lang === "ar" ? (
+                  <>
+                    قطع <Box component="span" sx={{ fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', color: "primary.main", fontStyle: "italic", mx: 1 }}>حصرية</Box> مصممة بعناية
+                  </>
+                ) : (
+                  <>
+                    Curated <Box component="span" sx={{ fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive', color: "primary.main", fontStyle: "italic", mx: 1 }}>Designer</Box> Masterpieces
+                  </>
+                )
               )}
             </Typography>
           </Box>
@@ -118,7 +142,7 @@ export default function LookbookSection({
               }}
             />
             <Typography sx={{ color: "rgba(255,255,255,.62)", fontSize: 15, lineHeight: 1.7, fontFamily: '"Cairo", sans-serif', maxWidth: 440 }}>
-              {t("Explore a singular gallery of signature items, where architectural geometry meets tactile luxury from Damascus to the world.")}
+              {descriptionText}
             </Typography>
           </Box>
         </Box>
@@ -164,7 +188,7 @@ export default function LookbookSection({
             onDragEnd={() => {
               setTimeout(() => {
                 isDraggingRef.current = false;
-              }, 50);
+              }, 250);
             }}
             onMouseEnter={() => {
               isHoveredRef.current = true;
@@ -195,7 +219,7 @@ export default function LookbookSection({
               return (
                 <Link 
                   key={`${product.id}-${idx}`}
-                  href={`/${lang}/product/${product.id}`}
+                  href={`/product/${product.id}/${lang}`}
                   style={{ textDecoration: "none" }}
                   draggable="false"
                   onClick={(e) => {
@@ -286,7 +310,7 @@ export default function LookbookSection({
                           fontFamily: "var(--heading-font)", 
                           fontSize: 20, 
                           fontWeight: 500, 
-                          mb: 3,
+                          mb: 1,
                           transform: "translateY(15px)",
                           opacity: 0,
                           transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease",
@@ -295,32 +319,6 @@ export default function LookbookSection({
                       >
                         {title}
                       </Typography>
-
-                      <Button
-                        className="product-btn"
-                        variant="outlined"
-                        sx={{
-                          borderColor: "primary.main",
-                          color: "#ffffff",
-                          borderRadius: 0,
-                          py: 1,
-                          fontSize: 12,
-                          letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          fontFamily: '"Cairo", sans-serif',
-                          transform: "translateY(20px)",
-                          opacity: 0,
-                          transition: "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease",
-                          transitionDelay: "0.1s",
-                          "&:hover": {
-                            bgcolor: "primary.main",
-                            borderColor: "primary.main",
-                            color: "#ffffff"
-                          }
-                        }}
-                      >
-                        {t("Explore Piece")}
-                      </Button>
                     </Box>
                   </Box>
                 </Link>

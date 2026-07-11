@@ -7,10 +7,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import { Box, Button, Container, Drawer, IconButton, Stack, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { imageUrl } from "@/lib/sanity";
+import { imageUrl, getAnnouncements, getLocalizedValue } from "@/lib/sanity";
 import type { CollectionItem, MediaItem, SanityImage, Section, SiteSettings } from "@/lib/types";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
@@ -29,8 +29,8 @@ import BrandMarquee from "./storefront/BrandMarquee";
 const MotionBox = motion.create(Box);
 
 export const shopNavigation = [
-  { label: "Women", anchor: "#women" },
-  { label: "Men", anchor: "#men" },
+  // { label: "Women", anchor: "#women" },
+  // { label: "Men", anchor: "#men" },
   { label: "Beauty", anchor: "#beauty" },
   { label: "Home & Deco", anchor: "#home-deco" },
   { label: "Brand", anchor: "#brand" }
@@ -210,28 +210,51 @@ function BrandMark({ settings, light = false, lang }: { settings: SiteSettings; 
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   const [index, setIndex] = useState(0);
-
-  const announcements = useMemo(() => [
-    {
-      en: "Syria's First Luxury Department Store — On Boulevard. For the world.",
-      ar: "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
-    },
-    {
-      en: "Complimentary Worldwide Shipping on Selected Designer Collections",
-      ar: "شحن مجاني لكافة أنحاء العالم على مجموعات مصممين مختارة"
-    },
-    {
-      en: "Experience Personal Shopping & Private Viewings at Our Damascus Atelier",
-      ar: "استمتع بتجربة تسوق شخصي ومعاينات خاصة في أتيلييه دمشق"
-    }
-  ], []);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
+    getAnnouncements().then((data) => {
+      if (data && data.length > 0) {
+        setAnnouncements(
+          data.map((item: any) => ({
+            text: getLocalizedValue(item.text, lang),
+            link: item.link || ""
+          }))
+        );
+      } else {
+        setAnnouncements([
+          {
+            text: lang === "ar"
+              ? "شحن مجاني وإرجاع سهل لكافة أنحاء العالم على مجموعات مختارة"
+              : "Free Worldwide Shipping & Returns on Selected Designer Collections",
+            link: ""
+          },
+          {
+            text: lang === "ar"
+              ? "أول متجر أقسام فاخر في سوريا — على البوليفارد. للعالم."
+              : "Syria's First Luxury Department Store — On Boulevard. For the world.",
+            link: ""
+          },
+          {
+            text: lang === "ar"
+              ? "تسوق شخصي وحجز أتيلييه مجاني في صالون دمشق الخاص"
+              : "Complimentary Personal Shopping & Private Atelier Bookings",
+            link: ""
+          }
+        ]);
+      }
+    });
+  }, [lang]);
+
+  useEffect(() => {
+    if (announcements.length === 0) return;
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % announcements.length);
     }, 4500);
     return () => clearInterval(timer);
   }, [announcements.length]);
+
+  if (announcements.length === 0) return null;
 
   return (
     <Box 
@@ -258,14 +281,47 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           style={{
             fontFamily: '"Cairo", sans-serif',
-            fontSize: "13px",
+            fontSize: "12px",
             fontWeight: 600,
-            letterSpacing: "0.08em",
+            letterSpacing: "0.06em",
             textAlign: "center",
-            lineHeight: 1.4
+            lineHeight: 1.4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%"
           }}
         >
-          {announcements[index][lang]}
+          {announcements[index].link ? (
+            <Typography
+              component={Link}
+              href={announcements[index].link}
+              sx={{
+                fontSize: { xs: 11, md: 12 },
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textAlign: "center",
+                maxWidth: "90%",
+                textDecoration: "none",
+                color: "inherit",
+                "&:hover": { textDecoration: "underline" }
+              }}
+            >
+              {announcements[index].text}
+            </Typography>
+          ) : (
+            <Typography
+              sx={{
+                fontSize: { xs: 11, md: 12 },
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                textAlign: "center",
+                maxWidth: "90%"
+              }}
+            >
+              {announcements[index].text}
+            </Typography>
+          )}
         </motion.div>
       </AnimatePresence>
     </Box>
@@ -317,12 +373,12 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
               pl: lang === "ar" ? 8 : 0
             }}
           >
-            <Button href="#women" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            {/* <Button href="#women" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Women")}
             </Button>
             <Button href="#men" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Men")}
-            </Button>
+            </Button> */}
             <Button href="#beauty" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Beauty")}
             </Button>
@@ -352,7 +408,7 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
             <Button href="#brand" className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Brand")}
             </Button>
-            <Button component={Link} href={`/${lang}/blogs`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Button component={Link} href={`/blogs/${lang}`} className="luxury-link" sx={{ color: "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {t("Blogs")}
             </Button>
             
@@ -532,7 +588,7 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
             >
               <Button 
                 component={Link}
-                href={`/${lang}/blogs`} 
+                href={`/blogs/${lang}`} 
                 onClick={() => setOpen(false)} 
                 endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
                 startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
@@ -570,7 +626,7 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
             >
               <Button 
                 component={Link}
-                href={`/${lang}/contact`} 
+                href={`/contact/${lang}`} 
                 onClick={() => setOpen(false)} 
                 endIcon={lang === "en" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4 }} />} 
                 startIcon={lang === "ar" && <NorthEastIcon sx={{ fontSize: 16, opacity: 0.4, transform: "scaleX(-1)" }} />}
@@ -617,21 +673,42 @@ function SectionRenderer({
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
-  if (section.type === "hero") return <HeroSection section={section} t={t} lang={lang} />;
-  if (section.type === "manifesto") return <ManifestoSection section={section} t={t} />;
-  if (section.type === "collections") return <CollectionsSection section={section} t={t} lang={lang} />;
-  if (section.type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} />;
-  if (section.type === "boulevard-selection") return <BoulevardSelectionSection section={section} t={t} lang={lang} />;
-  if (section.type === "carousel") return <CarouselSection section={section} t={t} lang={lang} />;
-  if (section.type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;
+  const type = section.type || (section._type && section._type.replace("Section", ""));
+  
+  if (type === "hero") return <HeroSection section={section} t={t} lang={lang} />;
+  if (type === "brandMarquee") return <BrandMarquee section={section} lang={lang} />;
+  if (type === "manifesto") return <ManifestoSection section={section} t={t} lang={lang} />;
+  if (type === "collections") return <CollectionsSection section={section} t={t} lang={lang} />;
+  if (type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} />;
+  if (type === "boulevard" || type === "boulevard-selection" || type === "boulevardSelection") return <BoulevardSelectionSection section={section} t={t} lang={lang} />;
+  if (type === "carousel") return <CarouselSection section={section} t={t} lang={lang} />;
+  if (type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;
+  if (type === "atelierShowcase" || type === "atelierShowcaseSection") return <AtelierShowcaseSection section={section} t={t} lang={lang} />;
   return null;
 }
 
-export default function Storefront({ settings, sections }: { settings: SiteSettings; sections: Section[] }) {
+export default function Storefront({ 
+  settings, 
+  sections,
+  initialLang
+}: { 
+  settings: SiteSettings; 
+  sections: Section[];
+  initialLang: "ar" | "en";
+}) {
   const params = useParams();
   const router = useRouter();
-  const lang = (params?.lang === "en" ? "en" : "ar") as "ar" | "en";
+  const pathname = usePathname();
+  
+  const [lang, setLang] = useState<"ar" | "en">(initialLang);
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
+
+  useEffect(() => {
+    if (pathname) {
+      const nextLang = (pathname.endsWith("/ar") || pathname.includes("/ar/") ? "ar" : "en") as "ar" | "en";
+      setLang(nextLang);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     setIsLangTransitioning(false);
@@ -673,9 +750,6 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
 
   return (
     <ThemeProvider theme={theme}>
-
-
-
       <Box 
         dir={lang === "ar" ? "rtl" : "ltr"} 
         sx={{ 
@@ -686,18 +760,19 @@ export default function Storefront({ settings, sections }: { settings: SiteSetti
       >
         <Box>
           <SiteHeader settings={settings} onLangToggleStart={() => setIsLangTransitioning(true)} />
-          {sections.map((section, index) => (
-            <Box key={section._id || `${section.type}-${index}`}>
-              <SectionRenderer 
-                section={section} 
-                t={t} 
-                lang={lang} 
-              />
-              {section.type === "manifesto" && <BrandMarquee />}
-              {section.type === "boulevard-selection" && <CategoryProductSections t={t} lang={lang} />}
-            </Box>
-          ))}
-          <AtelierShowcaseSection t={t} lang={lang} />
+          {sections.map((section, index) => {
+            if (!section || section.enabled === false) return null;
+            const type = section.type || (section._type && section._type.replace("Section", ""));
+            return (
+              <Box key={section._id || `${type}-${index}`}>
+                <SectionRenderer 
+                  section={section} 
+                  t={t} 
+                  lang={lang} 
+                />
+              </Box>
+            );
+          })}
           <SiteFooter />
         </Box>
       </Box>
