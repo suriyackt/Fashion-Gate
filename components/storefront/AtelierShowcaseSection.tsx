@@ -1,34 +1,99 @@
 "use client";
 
 import { Box, Container, Stack, Typography } from "@mui/material";
+import { getLocalizedValue } from "@/lib/sanity";
+import { resolveImage } from "../Storefront";
 
 export default function AtelierShowcaseSection({ 
+  section,
   t, 
   lang 
 }: { 
-  t: (s?: string) => string; 
+  section?: any;
+  t?: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
+  const eyebrowText = getLocalizedValue(
+    section?.eyebrow,
+    lang,
+    lang === "ar" ? "الفضاء المعماري" : "The Atelier Space"
+  );
+
+  const headlineText = getLocalizedValue(
+    section?.headline,
+    lang,
+    lang === "ar" ? "مساحات أتيلييه البوليفارد" : "Outlet architectural spaces"
+  );
+
+  const descriptionText = getLocalizedValue(
+    section?.description,
+    lang,
+    lang === "ar" 
+      ? "عش التجربة المادية الكامنة وراء أول وجهة تسوق فاخرة في سوريا. حوار منسق بين المهارة الحرفية الحجرية ومساحات العملاء الخاصة."
+      : "Experience the physical concept behind Syria's first luxury shopping destination. A curated dialogue between stone craftsmanship and intimate client spaces."
+  );
+
+  // Left card fields
+  const leftImage = resolveImage(section?.leftCard?.image, "/brand-pages/page_08.jpg");
+  const leftEyebrow = getLocalizedValue(
+    section?.leftCard?.eyebrow,
+    lang,
+    lang === "ar" ? "المنظور الخارجي" : "Exterior concept"
+  );
+  const leftTitle = getLocalizedValue(
+    section?.leftCard?.title,
+    lang,
+    lang === "ar" ? "واجهة البوليفارد" : "The Boulevard facade"
+  );
+  const leftDesc = getLocalizedValue(
+    section?.leftCard?.description,
+    lang,
+    lang === "ar"
+      ? "دمج التفاصيل الحجرية التراثية مع خطوط التصميم العصرية، مما يخلق حضوراً لافتاً في قلب حي التسوق."
+      : "Merging heritage masonry accents with structural glass lines, framing a prominent presence on the shopping avenue."
+  );
+
+  // Right card fields
+  const rightImage = resolveImage(section?.rightCard?.image, "/brand-pages/page_18.jpg");
+  const rightEyebrow = getLocalizedValue(
+    section?.rightCard?.eyebrow,
+    lang,
+    lang === "ar" ? "المساحات الداخلية" : "Interior design"
+  );
+  const rightTitle = getLocalizedValue(
+    section?.rightCard?.title,
+    lang,
+    lang === "ar" ? "صالونات العرض الخاصة" : "The private shopping salons"
+  );
+  const rightDesc = getLocalizedValue(
+    section?.rightCard?.description,
+    lang,
+    lang === "ar"
+      ? "أجنحة مخصصة ومصممة بمواد طبيعية دافئة لاستقبال العملاء في جلسات معينة هادئة واستشارات مخصصة."
+      : "Intimate dressing suites finished in raw natural plaster, travertine and soft textiles, designed for private luxury consultations."
+  );
+
   return (
-    <Box component="section" id="boulevard" sx={{ bgcolor: "#FAF8F5", color: "#111111", py: { xs: 10, md: 14 }, borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+    <Box component="section" id={section?.anchor || "boulevard"} sx={{ bgcolor: "#FAF8F5", color: "#111111", py: { xs: 10, md: 14 }, borderTop: "1px solid rgba(0,0,0,0.06)" }}>
       <Container maxWidth="xl">
         <Stack spacing={{ xs: 6, md: 8 }}>
           
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "0.9fr 1.1fr" }, gap: { xs: 3, md: 8 }, alignItems: "end" }}>
             <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", mb: 1.5 }}>
-                {lang === "ar" ? "الفضاء المعماري" : "The Atelier Space"}
+              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+                {eyebrowText}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, md: 58 }, lineHeight: 1.05, fontWeight: 500 }}>
-                {lang === "ar" ? "مساحات أتيلييه البوليفارد" : "Outlet architectural spaces"}
+                {headlineText}
               </Typography>
             </Box>
-            <Typography sx={{ color: "rgba(0,0,0,0.62)", fontSize: 15, lineHeight: 1.8, maxWidth: 680, textAlign: lang === "ar" ? "right" : "left" }}>
-              Experience the physical concept behind Syria's first luxury shopping destination. A curated dialogue between stone craftsmanship and intimate client spaces.
+            <Typography sx={{ color: "rgba(0,0,0,0.62)", fontSize: 15, lineHeight: 1.8, maxWidth: 680, textAlign: lang === "ar" ? "right" : "left", fontFamily: '"Cairo", sans-serif' }}>
+              {descriptionText}
             </Typography>
           </Box>
 
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: { xs: 4, md: 6 } }}>
+            {/* Left Card */}
             <Box 
               sx={{ 
                 display: "flex", 
@@ -41,8 +106,8 @@ export default function AtelierShowcaseSection({
               <Box sx={{ aspectRatio: "16 / 11", overflow: "hidden" }}>
                 <Box 
                   component="img"
-                  src="/brand-pages/page_08.jpg"
-                  alt="Fashion Gate Outlet Exterior Concept"
+                  src={leftImage}
+                  alt={leftTitle}
                   sx={{ 
                     width: "100%", 
                     height: "100%", 
@@ -53,20 +118,19 @@ export default function AtelierShowcaseSection({
                 />
               </Box>
               <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, textAlign: lang === "ar" ? "right" : "left" }}>
-                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
-                  {lang === "ar" ? "المنظور الخارجي" : "Exterior concept"}
+                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
+                  {leftEyebrow}
                 </Typography>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 500 }}>
-                  {lang === "ar" ? "واجهة البوليفارد" : "The Boulevard facade"}
+                  {leftTitle}
                 </Typography>
-                <Typography sx={{ color: "rgba(0,0,0,0.58)", fontSize: 13.5, lineHeight: 1.6 }}>
-                  {lang === "ar" 
-                    ? "دمج التفاصيل الحجرية التراثية مع خطوط التصميم العصرية، مما يخلق حضوراً لافتاً في قلب حي التسوق."
-                    : "Merging heritage masonry accents with structural glass lines, framing a prominent presence on the shopping avenue."}
+                <Typography sx={{ color: "rgba(0,0,0,0.58)", fontSize: 13.5, lineHeight: 1.6, fontFamily: '"Cairo", sans-serif' }}>
+                  {leftDesc}
                 </Typography>
               </Stack>
             </Box>
 
+            {/* Right Card */}
             <Box 
               sx={{ 
                 display: "flex", 
@@ -79,8 +143,8 @@ export default function AtelierShowcaseSection({
               <Box sx={{ aspectRatio: "16 / 11", overflow: "hidden" }}>
                 <Box 
                   component="img"
-                  src="/brand-pages/page_18.jpg"
-                  alt="Fashion Gate Outlet Interior Concept"
+                  src={rightImage}
+                  alt={rightTitle}
                   sx={{ 
                     width: "100%", 
                     height: "100%", 
@@ -91,16 +155,14 @@ export default function AtelierShowcaseSection({
                 />
               </Box>
               <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, textAlign: lang === "ar" ? "right" : "left" }}>
-                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
-                  {lang === "ar" ? "المساحات الداخلية" : "Interior design"}
+                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
+                  {rightEyebrow}
                 </Typography>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 500 }}>
-                  {lang === "ar" ? "صالونات العرض الخاصة" : "The private shopping salons"}
+                  {rightTitle}
                 </Typography>
-                <Typography sx={{ color: "rgba(0,0,0,0.58)", fontSize: 13.5, lineHeight: 1.6 }}>
-                  {lang === "ar" 
-                    ? "أجنحة مخصصة ومصممة بمواد طبيعية دافئة لاستقبال العملاء في جلسات معينة هادئة واستشارات مخصصة."
-                    : "Intimate dressing suites finished in raw natural plaster, travertine and soft textiles, designed for private luxury consultations."}
+                <Typography sx={{ color: "rgba(0,0,0,0.58)", fontSize: 13.5, lineHeight: 1.6, fontFamily: '"Cairo", sans-serif' }}>
+                  {rightDesc}
                 </Typography>
               </Stack>
             </Box>

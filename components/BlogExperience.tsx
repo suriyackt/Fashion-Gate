@@ -12,16 +12,50 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
-import { blogPosts, featuredBlogPost } from "@/lib/blogData";
+import { blogPosts, featuredBlogPost, type BlogPost } from "@/lib/blogData";
 
 const MotionBox = motion.create(Box);
 
 
 
-export default function BlogExperience() {
+export default function BlogExperience({ 
+  initialPosts, 
+  settings, 
+  initialLang = "en" 
+}: { 
+  initialPosts?: BlogPost[]; 
+  settings?: any; 
+  initialLang?: "en" | "ar";
+}) {
+  const activePostsList = initialPosts || blogPosts;
+  const featured = activePostsList[0] || featuredBlogPost;
   const [activeFormat, setActiveFormat] = useState("All");
   const [mounted, setMounted] = useState(false);
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
+
+  const eyebrowText = initialLang === "ar" 
+    ? (settings?.eyebrow?.ar || "مجلة بوابة الأزياء") 
+    : (settings?.eyebrow?.en || "Fashion Gate Journal");
+
+  const headlineText = initialLang === "ar" 
+    ? (settings?.headline?.ar || "هندسة الفخامة") 
+    : (settings?.headline?.en || "The Architecture of Luxury");
+
+  const descriptionText = initialLang === "ar" 
+    ? (settings?.description?.ar || "أفكار تصميم منقحة، ورؤى مشاريع الضيافة، والتطورات المعمارية التي تشكلت في وجهة تحريرية أنيقة.") 
+    : (settings?.description?.en || "Refined design thinking, hospitality project insights, and architectural developments shaped into an elegant editorial destination.");
+
+  const stat1Text = initialLang === "ar" 
+    ? (settings?.stat1?.ar || "تركيز الفخامة") 
+    : (settings?.stat1?.en || "Luxury Focus");
+
+  const stat2Text = initialLang === "ar" 
+    ? (settings?.stat2?.ar || "تنسيقات التحرير") 
+    : (settings?.stat2?.en || "Editorial Edits");
+
+  const stat3Text = initialLang === "ar" 
+    ? (settings?.stat3?.ar || "١٢ مذكرة يومية") 
+    : (settings?.stat3?.en || "12 Journal Notes");
 
   useEffect(() => {
     setMounted(true);
@@ -29,7 +63,7 @@ export default function BlogExperience() {
 
   const theme = createTheme({
     palette: {
-      mode: "light",
+      mode: "dark",
       primary: { main: "#CB6116", dark: "#9D430C" },
       secondary: { main: "#D06010" }
     },
@@ -44,8 +78,8 @@ export default function BlogExperience() {
 
   // Filter posts based on format filter
   const filteredPosts = activeFormat === "All"
-    ? blogPosts.slice(1)
-    : blogPosts.slice(1).filter(post => post.format === activeFormat);
+    ? activePostsList.slice(1)
+    : activePostsList.slice(1).filter(post => post.format === activeFormat);
 
   return (
     <ThemeProvider theme={theme}>
@@ -63,22 +97,22 @@ export default function BlogExperience() {
           <Container maxWidth="xl">
             <Stack spacing={4} alignItems="center" textAlign="center">
               <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.26em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
-                Fashion Gate Journal
+                {eyebrowText}
               </Typography>
               <Typography component="h1" sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2.8rem", sm: "4.8rem", md: "6.5rem" }, fontWeight: 500, lineHeight: 1.1, color: "#111111", maxWidth: 960 }}>
-                The Architecture of Luxury
+                {headlineText}
               </Typography>
               <Typography sx={{ maxWidth: 620, color: "rgba(0,0,0,0.64)", fontSize: 15, lineHeight: 1.8, fontFamily: '"Cairo", sans-serif' }}>
-                Refined design thinking, hospitality project insights, and architectural developments shaped into an elegant editorial destination.
+                {descriptionText}
               </Typography>
               
               {/* Minimalist Stats Row */}
               <Stack direction="row" spacing={3} sx={{ color: "rgba(0,0,0,0.4)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none", pt: 1 }}>
-                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>Luxury Focus</Typography>
+                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>{stat1Text}</Typography>
                 <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>•</Typography>
-                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>Editorial Edits</Typography>
+                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>{stat2Text}</Typography>
                 <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>•</Typography>
-                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>12 Journal Notes</Typography>
+                <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>{stat3Text}</Typography>
               </Stack>
             </Stack>
           </Container>
@@ -100,8 +134,8 @@ export default function BlogExperience() {
               >
                 <Box 
                   component="img"
-                  src={featuredBlogPost.image}
-                  alt={featuredBlogPost.title}
+                  src={featured.image}
+                  alt={featured.title}
                   sx={{ 
                     width: "100%", 
                     height: "100%", 
@@ -120,20 +154,20 @@ export default function BlogExperience() {
                   </Typography>
                   <Typography sx={{ color: "rgba(0,0,0,0.3)", fontSize: 11.5 }}>/</Typography>
                   <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
-                    {featuredBlogPost.month}
+                    {featured.month}
                   </Typography>
                 </Stack>
 
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2.2rem", sm: "3rem", md: "4.2rem" }, lineHeight: 1.1, color: "#111111", fontWeight: 500 }}>
-                  {featuredBlogPost.title}
+                  {featured.title}
                 </Typography>
 
                 <Typography sx={{ color: "rgba(0,0,0,0.8)", fontSize: 16.5, lineHeight: 1.85, fontFamily: '"Cairo", sans-serif' }}>
-                  {featuredBlogPost.excerpt}
+                  {featured.excerpt}
                 </Typography>
 
                 <Stack spacing={2} sx={{ borderTop: "1px solid rgba(0,0,0,0.06)", pt: 3 }}>
-                  {featuredBlogPost.content?.slice(0, 2).map((paragraph) => (
+                  {featured.content?.slice(0, 2).map((paragraph) => (
                     <Typography key={paragraph} sx={{ color: "rgba(0,0,0,0.62)", fontSize: 14.5, lineHeight: 1.85, fontFamily: '"Cairo", sans-serif' }}>
                       {paragraph}
                     </Typography>
@@ -141,10 +175,13 @@ export default function BlogExperience() {
                 </Stack>
 
                 <Button 
+                  component={Link}
+                  href={`/blogs/${featured.slug}/${initialLang}`}
                   endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />} 
                   sx={{ 
-                    alignSelf: "flex-start", 
-                    color: "primary.main", 
+                    color: "primary.main",
+                    justifyContent: "flex-start",
+                    alignSelf: "flex-start",
                     p: 0,
                     fontSize: 11.5, 
                     fontWeight: 800,
@@ -157,7 +194,7 @@ export default function BlogExperience() {
                     "&:hover": { bgcolor: "transparent", color: "#111111", borderColor: "#111111" }
                   }}
                 >
-                  Read Article
+                  {initialLang === "ar" ? "اقرأ المقال" : "Read Article"}
                 </Button>
               </Stack>
             </Stack>
@@ -226,66 +263,71 @@ export default function BlogExperience() {
                 }}
               >
                 {filteredPosts.map((post, index) => (
-                  <MotionBox
+                  <Link
                     key={post.slug}
-                    initial={mounted ? { opacity: 0, y: 20 } : false}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.2), ease: "easeOut" }}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      bgcolor: "#ffffff",
-                      border: "1px solid rgba(0,0,0,0.05)",
-                      overflow: "hidden",
-                      transition: "transform 0.4s ease, box-shadow 0.4s ease",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: "0 18px 40px rgba(0,0,0,0.04)"
-                      }
-                    }}
+                    href={`/blogs/${post.slug}/${initialLang}`}
+                    style={{ textDecoration: "none" }}
                   >
-                    {/* Card Image */}
-                    <Box sx={{ aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
-                      <Box
-                        component="img"
-                        src={post.image}
-                        alt={post.title}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          transition: "transform 0.6s ease",
-                          "&:hover": { transform: "scale(1.025)" }
-                        }}
-                      />
-                    </Box>
+                    <MotionBox
+                      initial={mounted ? { opacity: 0, y: 20 } : false}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-40px" }}
+                      transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.2), ease: "easeOut" }}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        bgcolor: "#ffffff",
+                        border: "1px solid rgba(0,0,0,0.05)",
+                        overflow: "hidden",
+                        transition: "transform 0.4s ease, box-shadow 0.4s ease",
+                        "&:hover": {
+                          transform: "translateY(-4px)",
+                          boxShadow: "0 18px 40px rgba(0,0,0,0.04)"
+                        }
+                      }}
+                    >
+                      {/* Card Image */}
+                      <Box sx={{ aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
+                        <Box
+                          component="img"
+                          src={post.image}
+                          alt={post.title}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            transition: "transform 0.6s ease",
+                            "&:hover": { transform: "scale(1.025)" }
+                          }}
+                        />
+                      </Box>
 
-                    {/* Card Content (Wholly underneath the image) */}
-                    <Stack spacing={2} sx={{ p: 3, flexGrow: 1 }}>
-                      <Stack direction="row" spacing={1.2} alignItems="center">
-                        <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
-                          {post.format}
+                      {/* Card Content (Wholly underneath the image) */}
+                      <Stack spacing={2} sx={{ p: 3, flexGrow: 1 }}>
+                        <Stack direction="row" spacing={1.2} alignItems="center">
+                          <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
+                            {post.format}
+                          </Typography>
+                          <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 10 }}>•</Typography>
+                          <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "none" }}>
+                            {post.month}
+                          </Typography>
+                        </Stack>
+
+                        <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, lineHeight: 1.25, fontWeight: 500, color: "#111111" }}>
+                          {post.title}
                         </Typography>
-                        <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 10 }}>•</Typography>
-                        <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "none" }}>
-                          {post.month}
+
+                        <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 13.5, lineHeight: 1.6, fontFamily: '"Cairo", sans-serif' }}>
+                          {post.excerpt}
+                        </Typography>
+
+                        <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
+                          {post.audience}
                         </Typography>
                       </Stack>
-
-                      <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, lineHeight: 1.25, fontWeight: 500, color: "#111111" }}>
-                        {post.title}
-                      </Typography>
-
-                      <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 13.5, lineHeight: 1.6, fontFamily: '"Cairo", sans-serif' }}>
-                        {post.excerpt}
-                      </Typography>
-
-                      <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
-                        {post.audience}
-                      </Typography>
-                    </Stack>
-                  </MotionBox>
+                    </MotionBox>
+                  </Link>
                 ))}
               </Box>
             </Stack>

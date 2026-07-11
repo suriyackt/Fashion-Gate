@@ -2,6 +2,7 @@
 
 import { Box, Container, Stack, Typography } from "@mui/material";
 import type { Section } from "@/lib/types";
+import { getLocalizedValue } from "@/lib/sanity";
 
 export default function EditorialSection({ 
   section, 
@@ -12,6 +13,25 @@ export default function EditorialSection({
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
 }) {
+  // Resolve localized text dynamically with fallbacks using our helper
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    ""
+  );
+
+  const headlineText = getLocalizedValue(
+    section.headline,
+    lang,
+    ""
+  );
+
+  const descriptionText = getLocalizedValue(
+    section.description,
+    lang,
+    ""
+  );
+
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 10, md: 14 }, bgcolor: "var(--fg-stone)", color: "#111111" }}>
       <Container maxWidth="xl">
@@ -19,13 +39,13 @@ export default function EditorialSection({
           
           <Stack spacing={3.5} alignItems="flex-start" textAlign={lang === "ar" ? "right" : "left"} sx={{ px: { xs: 1, md: 4 } }}>
             <Typography sx={{ color: "#ffffff", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", bgcolor: "primary.main", px: 2, py: 0.5, fontFamily: '"Cairo", sans-serif' }}>
-              {t(section.eyebrow)}
+              {eyebrowText}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 58 }, fontWeight: 600, lineHeight: 1.1, color: "#111111" }}>
-              {t(section.headline)}
+              {headlineText}
             </Typography>
             <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.8, maxWidth: 740, fontFamily: '"Cairo", sans-serif' }}>
-              {t(section.description)}
+              {descriptionText}
             </Typography>
           </Stack>
 

@@ -1,60 +1,92 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { Box, Button, Container, IconButton, InputBase, Stack, Typography } from "@mui/material";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-
-const footerTranslations = {
-  en: {
-    description: "Syria's first luxury department destination. Integrating fine apparel, curated beauty, and bespoke boutique shopping under a modern architectural vision.",
-    explore: "Explore",
-    updates: "Bespoke Updates",
-    subscribeText: "Subscribe to receive private invitations, seasonal collection launches, and atelier journal notes.",
-    emailPlaceholder: "Email address",
-    copyright: "All rights reserved.",
-    links: [
-      { label: "Home", href: "" },
-      { label: "Women", href: "#women" },
-      { label: "Men", href: "#men" },
-      { label: "Beauty", href: "#beauty" },
-      { label: "Home & Deco", href: "#home-deco" },
-      { label: "The Boulevard", href: "#boulevard" },
-      { label: "Brand", href: "#brand" },
-      { label: "Journal", href: "blogs" },
-      { label: "Contact", href: "contact" },
-      { label: "Atelier", href: "#brand" }
-    ]
-  },
-  ar: {
-    description: "أول وجهة للمتاجر الكبرى الفاخرة في سوريا. دمج الملابس الراقية، الجمال المنسق، والتسوق الحصري تحت رؤية معمارية حديثة.",
-    explore: "استكشف",
-    updates: "تحديثات مخصصة",
-    subscribeText: "اشترك لتلقي الدعوات الخاصة، وإطلاق المجموعات الموسمية، وملاحظات مجلة الأتيلييه.",
-    emailPlaceholder: "البريد الإلكتروني",
-    copyright: "جميع الحقوق محفوظة.",
-    links: [
-      { label: "الرئيسية", href: "" },
-      { label: "سيدات", href: "#women" },
-      { label: "رجال", href: "#men" },
-      { label: "جمال", href: "#beauty" },
-      { label: "منزل وديكور", href: "#home-deco" },
-      { label: "البوليفارد", href: "#boulevard" },
-      { label: "العلامة", href: "#brand" },
-      { label: "المدونة", href: "blogs" },
-      { label: "اتصل بنا", href: "contact" },
-      { label: "الأتيلييه", href: "#brand" }
-    ]
-  }
-};
+import { useParams, usePathname } from "next/navigation";
+import { getFooterSettings, getLocalizedValue } from "@/lib/sanity";
 
 export default function SiteFooter() {
-  const params = useParams();
-  const lang = (params?.lang === "en" ? "en" : "ar") as "en" | "ar";
-  const t = footerTranslations[lang];
+  const pathname = usePathname();
+  const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
+  
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    getFooterSettings().then((data) => {
+      if (data) {
+        setSettings(data);
+      }
+    });
+  }, []);
+
+  const description = getLocalizedValue(
+    settings?.description,
+    lang,
+    lang === "ar"
+      ? "أول وجهة للمتاجر الكبرى الفاخرة في سوريا. دمج الملابس الراقية، الجمال المنسق، والتسوق الحصري تحت رؤية معمارية حديثة."
+      : "Syria's first luxury department destination. Integrating fine apparel, curated beauty, and bespoke boutique shopping under a modern architectural vision."
+  );
+
+  const exploreTitle = getLocalizedValue(
+    settings?.exploreTitle,
+    lang,
+    lang === "ar" ? "استكشف" : "Explore"
+  );
+
+  const updatesTitle = getLocalizedValue(
+    settings?.updatesTitle,
+    lang,
+    lang === "ar" ? "تحديثات مخصصة" : "Bespoke Updates"
+  );
+
+  const subscribeText = getLocalizedValue(
+    settings?.subscribeText,
+    lang,
+    lang === "ar"
+      ? "اشترك لتلقي الدعوات الخاصة، وإطلاق المجموعات الموسمية، وملاحظات مجلة الأتيلييه."
+      : "Subscribe to receive private invitations, seasonal collection launches, and atelier journal notes."
+  );
+
+  const emailPlaceholder = getLocalizedValue(
+    settings?.emailPlaceholder,
+    lang,
+    lang === "ar" ? "البريد الإلكتروني" : "Email address"
+  );
+
+  const copyrightText = getLocalizedValue(
+    settings?.copyright,
+    lang,
+    lang === "ar" ? "جميع الحقوق محفوظة." : "All rights reserved."
+  );
+
+  const facebookUrl = settings?.facebookUrl || "#";
+  const instagramUrl = settings?.instagramUrl || "#";
+  const whatsAppUrl = settings?.whatsAppUrl || "#";
+  const floatingWhatsAppUrl = settings?.floatingWhatsAppUrl || "#";
+
+  // Resolve Quick Links
+  const rawLinks = settings?.links || [
+    { label: { en: "Home", ar: "الرئيسية" }, href: "" },
+    { label: { en: "Women", ar: "سيدات" }, href: "#women" },
+    { label: { en: "Men", ar: "رجال" }, href: "#men" },
+    { label: { en: "Beauty", ar: "جمال" }, href: "#beauty" },
+    { label: { en: "Home & Deco", ar: "منزل وديكور" }, href: "#home-deco" },
+    { label: { en: "The Boulevard", ar: "البوليفارد" }, href: "#boulevard" },
+    { label: { en: "Brand", ar: "العلامة" }, href: "about" },
+    { label: { en: "Journal", ar: "المدونة" }, href: "blogs" },
+    { label: { en: "Contact", ar: "اتصل بنا" }, href: "contact" },
+    { label: { en: "Atelier", ar: "الأتيلييه" }, href: "about" }
+  ];
+
+  const links = rawLinks.map((link: any) => ({
+    label: getLocalizedValue(link.label, lang),
+    href: link.href || ""
+  }));
 
   return (
     <Box
@@ -68,7 +100,7 @@ export default function SiteFooter() {
         overflow: "hidden"
       }}
     >
-      <Container maxWidth="xl" sx={{ py: { xs: 8, md: 10 } }}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 8, md: 10 }, pb: 2 }}>
         <Box
           sx={{
             display: "grid",
@@ -81,7 +113,7 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifyContent: lang === "ar" ? "flex-start" : "flex-start" }}>
+            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
               <Box
                 sx={{
                   width: 48,
@@ -104,15 +136,15 @@ export default function SiteFooter() {
               </Stack>
             </Stack>
 
-            <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14.5, lineHeight: 1.8, maxWidth: 360 }}>
-              {t.description}
+            <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14.5, lineHeight: 1.8, maxWidth: 360, fontFamily: '"Cairo", sans-serif' }}>
+              {description}
             </Typography>
           </Stack>
 
           {/* Quick Links Column */}
           <Stack spacing={2.5} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              {t.explore}
+            <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+              {exploreTitle}
             </Typography>
             <Box
               sx={{
@@ -121,12 +153,12 @@ export default function SiteFooter() {
                 gap: 1.5
               }}
             >
-              {t.links.map((link, index) => {
+              {links.map((link: any, index: number) => {
                 const destination = link.href.startsWith("#") 
                   ? `/${lang}${link.href}` 
                   : link.href === "" 
                     ? `/${lang}` 
-                    : `/${lang}/${link.href}`;
+                    : `/${link.href}/${lang}`;
 
                 return (
                   <Typography
@@ -139,6 +171,7 @@ export default function SiteFooter() {
                       textDecoration: "none",
                       fontWeight: 500,
                       transition: "color 0.3s ease",
+                      fontFamily: '"Cairo", sans-serif',
                       "&:hover": { color: "primary.main" }
                     }}
                   >
@@ -151,11 +184,11 @@ export default function SiteFooter() {
 
           {/* Newsletter Column */}
           <Stack spacing={2.5} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              {t.updates}
+            <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+              {updatesTitle}
             </Typography>
-            <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14, lineHeight: 1.6 }}>
-              {t.subscribeText}
+            <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: 14, lineHeight: 1.6, fontFamily: '"Cairo", sans-serif' }}>
+              {subscribeText}
             </Typography>
             <Box
               sx={{
@@ -167,12 +200,13 @@ export default function SiteFooter() {
               }}
             >
               <InputBase
-                placeholder={t.emailPlaceholder}
+                placeholder={emailPlaceholder}
                 sx={{
                   flex: 1,
                   px: 0.5,
                   fontSize: 14,
                   color: "#111111",
+                  fontFamily: '"Cairo", sans-serif',
                   "& input::placeholder": { color: "rgba(0,0,0,0.42)", opacity: 1 }
                 }}
               />
@@ -185,41 +219,64 @@ export default function SiteFooter() {
 
         {/* Bottom Bar */}
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction={{ xs: "column", sm: lang === "ar" ? "row-reverse" : "row" }}
           spacing={3}
           justifyContent="space-between"
           alignItems="center"
-          sx={{ pt: 4 }}
+          sx={{ pt: 4, pb: 2 }}
         >
-          <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12.5 }}>
-            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت" : "Fashion Gate"}. {t.copyright}
+          <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12.5, fontFamily: '"Cairo", sans-serif' }}>
+            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت مول" : "Fashion Gate Mall"}. {copyrightText}
           </Typography>
 
           {/* Social Links */}
-          <Stack direction="row" spacing={1.5}>
-            {[InstagramIcon, FacebookIcon, WhatsAppIcon].map((Icon, idx) => (
-              <IconButton
-                key={idx}
-                href="#"
-                sx={{
-                  width: 36,
-                  height: 36,
-                  color: "rgba(0,0,0,0.54)",
-                  border: "1px solid rgba(0,0,0,0.08)",
-                  transition: "all 0.3s ease",
-                  "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
-                }}
-              >
-                <Icon sx={{ fontSize: 17 }} />
-              </IconButton>
-            ))}
-          </Stack>
+          <Box sx={{ display: "flex", gap: 1.5 }}>
+            <IconButton
+              href={instagramUrl}
+              sx={{
+                width: 36,
+                height: 36,
+                color: "rgba(0,0,0,0.54)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                transition: "all 0.3s ease",
+                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
+              }}
+            >
+              <InstagramIcon sx={{ fontSize: 17 }} />
+            </IconButton>
+            <IconButton
+              href={facebookUrl}
+              sx={{
+                width: 36,
+                height: 36,
+                color: "rgba(0,0,0,0.54)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                transition: "all 0.3s ease",
+                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
+              }}
+            >
+              <FacebookIcon sx={{ fontSize: 17 }} />
+            </IconButton>
+            <IconButton
+              href={whatsAppUrl}
+              sx={{
+                width: 36,
+                height: 36,
+                color: "rgba(0,0,0,0.54)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                transition: "all 0.3s ease",
+                "&:hover": { color: "#ffffff", bgcolor: "primary.main", borderColor: "primary.main" }
+              }}
+            >
+              <WhatsAppIcon sx={{ fontSize: 17 }} />
+            </IconButton>
+          </Box>
         </Stack>
       </Container>
 
       {/* Sleek Floating WhatsApp Button */}
       <IconButton
-        href="#"
+        href={floatingWhatsAppUrl}
         aria-label="WhatsApp"
         sx={{
           position: "fixed",

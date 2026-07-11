@@ -3,6 +3,8 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import type { Section } from "@/lib/types";
+import { imageUrl, getLocalizedValue } from "@/lib/sanity";
+import Link from "next/link";
 
 export default function HeroSection({
   section,
@@ -13,11 +15,84 @@ export default function HeroSection({
   t: (s?: string) => string;
   lang: "ar" | "en";
 }) {
-  const image = "/brand/hero-woman-wide.png";
+  // Resolve background video or image URL dynamically
+  const isVideoBg = section.bgType === "video" && (section.bgVideo?.asset?.url || section.video?.asset?.url);
+
+  let bgImageUrl = "/brand/hero-woman-wide.png";
+  if (section.bgImage?.asset) {
+    try {
+      bgImageUrl = imageUrl(section.bgImage).url() || bgImageUrl;
+    } catch (e) {
+      console.error("Failed to parse section.bgImage url", e);
+    }
+  } else if (section.image?.asset) {
+    try {
+      bgImageUrl = imageUrl(section.image).url() || bgImageUrl;
+    } catch (e) {
+      console.error("Failed to parse section.image url", e);
+    }
+  } else if (section.imageUrl) {
+    bgImageUrl = section.imageUrl;
+  }
+
+  // Resolve Headline dynamically
+  const headlineText = getLocalizedValue(
+    section.headline,
+    lang,
+    lang === "ar"
+      ? (section.headlineAr || "بوابة الأزياء")
+      : (section.headlineEn || "Fashion Gate")
+  );
+
+  // Resolve Subheadlines dynamically
+  const subHeadlineLine1 = getLocalizedValue(
+    section.subHeadlineLine1,
+    lang,
+    lang === "ar"
+      ? (section.subHeadlineArLine1 || "أول متجر أقسام")
+      : (section.subHeadlineEnLine1 || "Syria's first international")
+  );
+
+  const subHeadlineLine2 = getLocalizedValue(
+    section.subHeadlineLine2,
+    lang,
+    lang === "ar"
+      ? (section.subHeadlineArLine2 || "دولي فاخر في سوريا")
+      : (section.subHeadlineEnLine2 || "luxury department store")
+  );
+
+  // Resolve Eyebrow dynamically
+  const eyebrowText = getLocalizedValue(
+    section.eyebrow,
+    lang,
+    lang === "ar"
+      ? (section.eyebrowAr || "فاشن جيت بوليفارد")
+      : (section.eyebrowEn || "Fashion Gate Boulevard")
+  );
+
+  // Resolve CTA Button dynamically
+  const ctaLabel = getLocalizedValue(
+    section.cta?.label,
+    lang,
+    lang === "ar"
+      ? (section.cta?.labelAr || "من نحن")
+      : (section.cta?.labelEn || section.ctaLabel || "About Us")
+  );
+
+  let ctaHref = section.ctaHref || `/about/${lang}`;
+  if (section.cta) {
+    if (section.cta.linkType === "internal") {
+      const path = section.cta.internalLink || "/";
+      ctaHref = path === "/" ? `/${lang}` : `${path}/${lang}`;
+    } else {
+      ctaHref = section.cta.externalLink || section.cta.href || `/about/${lang}`;
+    }
+  }
+  const ctaType = section.cta?.type || "primary";
 
   return (
     <Box
-      id={section.anchor}
+      id={section.anchor || "arrival"}
       component="section"
       sx={{
         height: { xs: "calc(100svh - 100px)", md: "calc(100svh - 112px)" },
@@ -25,19 +100,42 @@ export default function HeroSection({
         position: "relative",
         overflow: "hidden",
         color: "#fff",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${image})`,
-          backgroundSize: "cover",
-          backgroundPosition: "right top",
-          transform: "none",
-          filter: "brightness(0.86)",
-          zIndex: 1,
-        },
       }}
     >
+      {/* Background Media Render */}
+      {isVideoBg ? (
+        <Box
+          component="video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          src={section.bgVideo?.asset?.url || section.video?.asset?.url}
+          sx={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(0.86)",
+            zIndex: 1,
+          }}
+        />
+      ) : (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${bgImageUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "right top",
+            filter: "brightness(0.86)",
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* Typography Overlay Area */}
       <Box
         sx={{
           position: "absolute",
@@ -57,6 +155,7 @@ export default function HeroSection({
           alignItems="flex-end"
           sx={{ maxWidth: "100%", width: "fit-content" }}
         >
+          {/* Headline */}
           <Typography
             component="h1"
             className="animate-tracking"
@@ -77,21 +176,18 @@ export default function HeroSection({
               textAlign: "center",
             }}
           >
-            {lang === "ar"
-              ? "بوابة الأزياء"
-              : section.headline || "Fashion Gate"}
+            {headlineText}
           </Typography>
 
+          {/* Subheadline (Double Line) */}
           <Typography
             sx={{
-              fontFamily:
-                '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
+              fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
               fontSize: { xs: "1.1rem", sm: "1.7rem", md: "2.3rem" },
-              color: "#ffffff",
+              color: "#ffffffb5",
               textTransform: "none",
               fontWeight: 400,
               alignSelf: lang === "ar" ? "flex-start" : "flex-end",
-              textShadow: "0 4px 15px rgba(0,0,0,0.5)",
               mr: lang === "ar" ? 0 : { xs: 1, md: 3 },
               ml: lang === "ar" ? { xs: 1, md: 3 } : 0,
               mt: -0.5,
@@ -101,22 +197,22 @@ export default function HeroSection({
           >
             {lang === "ar" ? (
               <>
-                أول متجر أقسام
+                <span style={{ marginLeft: "60px" }}>{subHeadlineLine1}</span>
                 <br />
-                دولي فاخر في سوريا
+                <span>{subHeadlineLine2}</span>
               </>
             ) : (
               <>
-                {" "}
-                <span>Syria's first international </span>
+                <span style={{ marginRight: "50px" }}>{subHeadlineLine1}</span>
                 <br />
-                <span>luxury department store</span>
+                <span>{subHeadlineLine2}</span>
               </>
             )}
           </Typography>
         </Stack>
       </Box>
 
+      {/* Footer Info & CTA */}
       <Container
         maxWidth="xl"
         sx={{
@@ -134,6 +230,7 @@ export default function HeroSection({
           alignItems={{ xs: "flex-start", md: "center" }}
           sx={{ width: "100%", justifyContent: "space-between" }}
         >
+          {/* Eyebrow Label */}
           <Typography
             className="animate-fade-in"
             sx={{
@@ -146,12 +243,14 @@ export default function HeroSection({
               fontFamily: '"Cairo", sans-serif',
             }}
           >
-            {t(section.eyebrow) ||
-              t("Syria's first international luxury department store")}
+            {eyebrowText}
           </Typography>
-          {section.ctaLabel && (
+
+          {/* CTA Link Button */}
+          {ctaLabel && (
             <Button
-              href={section.ctaHref || "#manifesto"}
+              component={Link}
+              href={ctaHref}
               endIcon={
                 <ArrowForwardIcon
                   sx={{
@@ -163,25 +262,25 @@ export default function HeroSection({
               }
               sx={{
                 color: "#fff",
-                border: "1px solid rgba(255,255,255,.28)",
-                px: 4,
-                py: 1.4,
+                border: ctaType === "link" ? "none" : "1px solid rgba(255,255,255,.28)",
+                px: ctaType === "link" ? 1 : 4,
+                py: ctaType === "link" ? 0.5 : 1.4,
                 borderRadius: 0,
-                textTransform: "uppercase",
-                fontSize: 10,
+                textTransform: "none",
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.15em",
                 pointerEvents: "auto",
                 fontFamily: '"Cairo", sans-serif',
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  bgcolor: "#fff",
-                  color: "#050505",
-                  borderColor: "#fff",
+                  bgcolor: ctaType === "link" ? "transparent" : "#fff",
+                  color: ctaType === "link" ? "primary.main" : "#050505",
+                  borderColor: ctaType === "link" ? "none" : "#fff",
                 },
               }}
             >
-              {t(section.ctaLabel)}
+              {ctaLabel}
             </Button>
           )}
         </Stack>
