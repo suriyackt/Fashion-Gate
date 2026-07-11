@@ -34,7 +34,7 @@ export async function getHomepageData() {
       socialUrl,
       navigation[]->{label, anchor, order}
     },
-    "page": *[_type == "page" && slug.current == "home"][0]{
+    "page": *[_type == "page" && (slug.current == "homepage" || slug.current == "home" || _id == "home")][0]{
       title,
       seoTitle,
       seoDescription,
@@ -51,6 +51,8 @@ export async function getHomepageData() {
         subHeadlineLine1 { en, ar },
         subHeadlineLine2 { en, ar },
         bgType,
+        bgImage,
+        bgVideo { asset->{ url } },
         image,
         video { asset->{ url } },
         cta { 
@@ -64,7 +66,7 @@ export async function getHomepageData() {
         brands[]->{
           title,
           slug,
-          logo
+          image
         },
         slides[]{
           title { en, ar },
@@ -171,7 +173,12 @@ export async function getFooterSettings() {
       facebookUrl,
       instagramUrl,
       whatsAppUrl,
-      floatingWhatsAppUrl
+      floatingWhatsAppUrl,
+      tiktokUrl,
+      youtubeUrl,
+      pinterestUrl,
+      snapchatUrl,
+      xUrl
     }`);
   } catch (err) {
     console.error("Error fetching footer settings:", err);

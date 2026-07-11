@@ -9,11 +9,9 @@ export default async function Home() {
   let data: { settings?: SiteSettings; page?: { sections?: Section[] } } = {};
 
   try {
-    data = await Promise.race([
-      getHomepageData(),
-      new Promise<{}>((resolve) => setTimeout(() => resolve({}), 2500))
-    ]);
-  } catch {
+    data = await getHomepageData();
+  } catch (err) {
+    console.error("Failed to load homepage data:", err);
     data = {};
   }
 

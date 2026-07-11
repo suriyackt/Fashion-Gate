@@ -32,7 +32,12 @@ export const footerSettings = defineType({
     defineField({ name: "facebookUrl", title: "Facebook URL", type: "string", initialValue: "#" }),
     defineField({ name: "instagramUrl", title: "Instagram URL", type: "string", initialValue: "#" }),
     defineField({ name: "whatsAppUrl", title: "WhatsApp URL", type: "string", initialValue: "#" }),
-    defineField({ name: "floatingWhatsAppUrl", title: "Floating WhatsApp Button URL", type: "string", initialValue: "#" })
+    defineField({ name: "floatingWhatsAppUrl", title: "Floating WhatsApp Button URL", type: "string", initialValue: "#" }),
+    defineField({ name: "tiktokUrl", title: "TikTok URL", type: "string", initialValue: "#" }),
+    defineField({ name: "youtubeUrl", title: "YouTube URL", type: "string", initialValue: "#" }),
+    defineField({ name: "pinterestUrl", title: "Pinterest URL", type: "string", initialValue: "#" }),
+    defineField({ name: "snapchatUrl", title: "Snapchat URL", type: "string", initialValue: "#" }),
+    defineField({ name: "xUrl", title: "X (Twitter) URL", type: "string", initialValue: "#" })
   ],
   preview: {
     prepare() {
