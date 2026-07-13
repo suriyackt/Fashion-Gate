@@ -21,6 +21,14 @@ const SyriaFlag = () => (
   />
 );
 
+const UnitedKingdomFlag = () => (
+  <img 
+    src="/assets/United-Kingdom-flag.svg" 
+    alt="United Kingdom Flag" 
+    style={{ display: "inline-block", verticalAlign: "middle", width: 26, height: 20 }}
+  />
+);
+
 interface LanguageSwitcherProps {
   currentLang: "en" | "ar";
   onToggleStart?: () => void;
@@ -63,7 +71,7 @@ export default function LanguageSwitcher({
   return (
     <Button 
       onClick={handleLangToggle}
-      startIcon={currentLang === "ar" ? <EnglandFlag /> : <SyriaFlag />}
+      startIcon={currentLang === "ar" ? <UnitedKingdomFlag /> : <SyriaFlag />}
       sx={{ 
         color: color, 
         textTransform: "uppercase", 

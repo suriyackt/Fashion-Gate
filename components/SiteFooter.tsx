@@ -16,61 +16,7 @@ import { Box, Button, Container, IconButton, InputBase, Stack, Typography } from
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { getFooterSettings, getLocalizedValue } from "@/lib/sanity";
-
-interface SiteTooltipProps {
-  title: string;
-  children: React.ReactElement;
-}
-
-function SiteTooltip({ title, children }: SiteTooltipProps) {
-  const [active, setActive] = useState(false);
-
-  return (
-    <Box 
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
-      sx={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-    >
-      {children}
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: "135%", // Float above the icon
-          left: "50%",
-          transform: `translateX(-50%) translateY(${active ? "0px" : "8px"})`,
-          bgcolor: "#111111",
-          color: "#ffffff",
-          px: 1.5,
-          py: 0.6,
-          borderRadius: "2px",
-          fontSize: 11,
-          fontWeight: 600,
-          fontFamily: '"Cairo", sans-serif',
-          letterSpacing: "0.06em",
-          whiteSpace: "nowrap",
-          opacity: active ? 1 : 0,
-          visibility: active ? "visible" : "hidden",
-          pointerEvents: "none",
-          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
-          zIndex: 100,
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            top: "100%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            borderWidth: "5px",
-            borderStyle: "solid",
-            borderColor: "#111111 transparent transparent transparent"
-          }
-        }}
-      >
-        {title}
-      </Box>
-    </Box>
-  );
-}
+import Tooltip from "./Tooltip";
 
 export default function SiteFooter() {
   const pathname = usePathname();
@@ -299,7 +245,7 @@ export default function SiteFooter() {
           {/* Social Links */}
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", justifyContent: "center" }}>
             {instagramUrl && instagramUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "إنستغرام" : "Instagram"}>
+              <Tooltip title={lang === "ar" ? "إنستغرام" : "Instagram"}>
                 <IconButton
                   href={instagramUrl}
                   target="_blank"
@@ -319,10 +265,10 @@ export default function SiteFooter() {
                 >
                   <SiInstagram style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {facebookUrl && facebookUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "فيسبوك" : "Facebook"}>
+              <Tooltip title={lang === "ar" ? "فيسبوك" : "Facebook"}>
                 <IconButton
                   href={facebookUrl}
                   target="_blank"
@@ -342,10 +288,10 @@ export default function SiteFooter() {
                 >
                   <SiFacebook style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {whatsAppUrl && whatsAppUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "واتساب" : "WhatsApp"}>
+              <Tooltip title={lang === "ar" ? "واتساب" : "WhatsApp"}>
                 <IconButton
                   href={whatsAppUrl}
                   target="_blank"
@@ -365,10 +311,10 @@ export default function SiteFooter() {
                 >
                   <SiWhatsapp style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {tiktokUrl && tiktokUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "تيك توك" : "TikTok"}>
+              <Tooltip title={lang === "ar" ? "تيك توك" : "TikTok"}>
                 <IconButton
                   href={tiktokUrl}
                   target="_blank"
@@ -388,10 +334,10 @@ export default function SiteFooter() {
                 >
                   <SiTiktok style={{ fontSize: 17 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {youtubeUrl && youtubeUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "يوتيوب" : "YouTube"}>
+              <Tooltip title={lang === "ar" ? "يوتيوب" : "YouTube"}>
                 <IconButton
                   href={youtubeUrl}
                   target="_blank"
@@ -411,10 +357,10 @@ export default function SiteFooter() {
                 >
                   <SiYoutube style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {pinterestUrl && pinterestUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "بينتيريست" : "Pinterest"}>
+              <Tooltip title={lang === "ar" ? "بينتيريست" : "Pinterest"}>
                 <IconButton
                   href={pinterestUrl}
                   target="_blank"
@@ -434,10 +380,10 @@ export default function SiteFooter() {
                 >
                   <SiPinterest style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {snapchatUrl && snapchatUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "سناب شات" : "Snapchat"}>
+              <Tooltip title={lang === "ar" ? "سناب شات" : "Snapchat"}>
                 <IconButton
                   href={snapchatUrl}
                   target="_blank"
@@ -457,10 +403,10 @@ export default function SiteFooter() {
                 >
                   <SiSnapchat style={{ fontSize: 18 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
             {xUrl && xUrl !== "#" && (
-              <SiteTooltip title={lang === "ar" ? "إكس (تويتر)" : "X (Twitter)"}>
+              <Tooltip title={lang === "ar" ? "إكس (تويتر)" : "X (Twitter)"}>
                 <IconButton
                   href={xUrl}
                   target="_blank"
@@ -480,7 +426,7 @@ export default function SiteFooter() {
                 >
                   <SiX style={{ fontSize: 15 }} />
                 </IconButton>
-              </SiteTooltip>
+              </Tooltip>
             )}
           </Box>
         </Stack>

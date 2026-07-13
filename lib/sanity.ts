@@ -63,10 +63,11 @@ export async function getHomepageData() {
           internalLink,
           externalLink
         },
-        brands[]->{
+        brands[@->isActive != false]->{
           title,
           slug,
-          image
+          image,
+          isActive
         },
         slides[]{
           title { en, ar },
@@ -101,14 +102,16 @@ export async function getHomepageData() {
         }
       }
     },
-    "brands": *[_type == "brand"] | order(title asc) {
+    "brands": *[_type == "brand" && isActive == true] | order(title asc) {
       _id,
       title,
       slug,
       image { asset->{ url } },
-      headline { en, ar },
-      description { en, ar },
-      bgImage { asset->{ url } }
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
     }
   }`);
 }
@@ -193,14 +196,16 @@ export async function getAnnouncements() {
 
 export async function getSanityBrands() {
   try {
-    return await sanityClient.fetch(`*[_type == "brand"] | order(title asc) {
+    return await sanityClient.fetch(`*[_type == "brand" && isActive == true] | order(title asc) {
       _id,
       title,
       slug,
       image { asset->{ url } },
-      headline { en, ar },
-      description { en, ar },
-      bgImage { asset->{ url } }
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
     }`);
   } catch (err) {
     console.error("Error fetching sanity brands:", err);
@@ -210,14 +215,16 @@ export async function getSanityBrands() {
 
 export async function getSanityBrand(slug: string) {
   try {
-    return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug][0] {
+    return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug && isActive == true][0] {
       _id,
       title,
       slug,
       image { asset->{ url } },
-      headline { en, ar },
-      description { en, ar },
-      bgImage { asset->{ url } }
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
     }`, { slug });
   } catch (err) {
     console.error("Error fetching single sanity brand:", err);
@@ -476,4 +483,16 @@ export function getLocalizedValue(value: any, lang: "en" | "ar", fallback?: any)
     return value[lang] !== undefined ? value[lang] : (fallback !== undefined ? fallback : value.en);
   }
   return value;
+}
+
+export async function getHeaderSettings() {
+  return sanityClient.fetch(`*[_type == "header"][0] {
+    _id,
+    title,
+    menuItems[] {
+      label { en, ar },
+      href,
+      dropdownType
+    }
+  }`);
 }

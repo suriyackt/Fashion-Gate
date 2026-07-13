@@ -8,6 +8,13 @@ export default defineType({
   icon: Award,
   fields: [
     defineField({
+      name: "isActive",
+      title: "Is Active / Show in UI",
+      type: "boolean",
+      description: "If enabled, this brand will be shown in the UI. If disabled, it will be hidden.",
+      initialValue: true,
+    }),
+    defineField({
       name: "title",
       title: "Brand Title",
       type: "string",

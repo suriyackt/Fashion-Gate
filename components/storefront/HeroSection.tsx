@@ -171,7 +171,7 @@ export default function HeroSection({
               fontWeight: 500,
               lineHeight: 0.9,
               textTransform: "uppercase",
-              color: "#ffffffb5",
+              color: "#ffffff",
               letterSpacing: lang === "ar" ? "0.02em" : "0.06em",
               textShadow: "0 4px 25px rgba(0,0,0,0.5)",
               textAlign: "center",
@@ -185,7 +185,7 @@ export default function HeroSection({
             sx={{
               fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
               fontSize: { xs: "1.1rem", sm: "1.7rem", md: "2.3rem" },
-              color: "#ffffffb5",
+              color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
               alignSelf: lang === "ar" ? "flex-start" : "flex-end",

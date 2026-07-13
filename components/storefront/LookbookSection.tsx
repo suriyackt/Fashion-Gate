@@ -28,16 +28,20 @@ export default function LookbookSection({
   const isHoveredRef = useRef(false);
   const x = useMotionValue(0);
   const dragStartPos = useRef({ x: 0, y: 0 });
+  const hasDraggedRef = useRef(false);
 
   const unifiedBrands = useMemo(() => {
-    const list = brands && brands.length > 0 ? brands : fallbackBrands;
+    const list = (brands && brands.length > 0 ? brands : fallbackBrands).filter(
+      (b: any) => b.isActive !== false && (b.slug?.current || b.id) !== "sandro-moje"
+    );
     return list.map((b) => {
       const id = b.slug?.current || b.id || "";
       const name = b.title || b.name || "";
       const nameAr = b.nameAr || b.title || "";
       const headline = b.headline?.[lang] || b.headline || "";
       const bgUrl = b.bgImage?.asset?.url || b.backdropUrl || "/assets/headerbg.png";
-      return { id, name, nameAr, headline, bgUrl };
+      const logoUrl = b.image?.asset?.url || null;
+      return { id, name, nameAr, headline, bgUrl, logoUrl };
     });
   }, [brands, lang]);
 
@@ -199,11 +203,13 @@ export default function LookbookSection({
             dragTransition={{ power: 0.2, timeConstant: 300 }}
             onDragStart={() => {
               isDraggingRef.current = true;
+              hasDraggedRef.current = true;
             }}
             onDragEnd={() => {
+              isDraggingRef.current = false;
               setTimeout(() => {
-                isDraggingRef.current = false;
-              }, 250);
+                hasDraggedRef.current = false;
+              }, 150);
             }}
             onMouseEnter={() => {
               isHoveredRef.current = true;
@@ -257,7 +263,7 @@ export default function LookbookSection({
                         return;
                       }
                     }
-                    if (isDraggingRef.current) {
+                    if (isDraggingRef.current || hasDraggedRef.current) {
                       e.preventDefault();
                       e.stopPropagation();
                     }
@@ -268,12 +274,15 @@ export default function LookbookSection({
                     sx={{
                       width: { xs: 280, md: 440 }, 
                       aspectRatio: "4 / 5",
+                      isolation: "isolate",
                       position: "relative",
                       overflow: "hidden",
+                      bgcolor: "#000000",
                       border: "1px solid rgba(255,255,255,0.06)",
                       flex: "0 0 auto",
                       userSelect: "none",
                       pointerEvents: "auto",
+                      transition: "border-color 0.4s ease",
                       "&::after": {
                         content: '""',
                         position: "absolute",
@@ -281,14 +290,17 @@ export default function LookbookSection({
                         left: 0,
                         width: "250%",
                         height: "100%",
-                        background: "linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0) 70%)",
+                        background: "linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 70%)",
                         transform: "translateX(-110%) translateY(110%) skewX(-15deg)",
                         transition: "transform 1.1s cubic-bezier(0.25, 1, 0.5, 1)",
                         pointerEvents: "none",
-                        zIndex: 3
+                        zIndex: 4
                       },
                       "&:hover::after": {
                         transform: "translateX(110%) translateY(-110%) skewX(-15deg)"
+                      },
+                      "&:hover": {
+                        borderColor: "rgba(255,255,255,0.2)"
                       },
                       "&:hover .hover-overlay": {
                         opacity: 1
@@ -300,36 +312,77 @@ export default function LookbookSection({
                       "&:hover .brand-headline": {
                         transform: "translateY(0)",
                         opacity: 1
+                      },
+                      "&:hover .center-logo-container": {
+                        transform: "translate(-50%, -64%) scale(1.05)"
                       }
                     }}
                   >
-                    <motion.img 
-                      src={brand.bgUrl} 
-                      alt={name} 
-                      whileHover={{ scale: 1.04 }}
-                      transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        pointerEvents: "none"
+                    {/* Centered Brand Logo Badge */}
+                    <Box
+                      className="center-logo-container"
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        zIndex: 2,
+                        width: "85%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        pointerEvents: "none",
+                        transition: "all 0.5s cubic-bezier(0.25, 1, 0.5, 1)"
                       }}
-                      draggable="false"
-                    />
+                    >
+                      {brand.logoUrl ? (
+                        <Box
+                          component="img"
+                          src={brand.logoUrl}
+                          alt={name}
+                          sx={{
+                            width: "auto",
+                            maxWidth: "95%",
+                            height: { xs: 110, md: 165 },
+                            objectFit: "contain",
+                            filter: "invert(1) drop-shadow(0px 4px 12px rgba(0,0,0,0.15))",
+                            mixBlendMode: "screen"
+                          }}
+                        />
+                      ) : (
+                        <Typography
+                          sx={{
+                            color: "#fff",
+                            fontFamily: "var(--heading-font)",
+                            fontSize: { xs: 32, md: 46 },
+                            fontWeight: 600,
+                            letterSpacing: "0.18em",
+                            textTransform: "uppercase",
+                            textAlign: "center"
+                          }}
+                        >
+                          {name}
+                        </Typography>
+                      )}
+                    </Box>
 
                     <Box 
                       className="hover-overlay"
                       sx={{
                         position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.15) 100%)",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "35%",
+                        background: "transparent",
                         opacity: 0,
                         transition: "opacity 0.4s ease",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "flex-end",
-                        p: 3,
-                        zIndex: 2,
+                        p: 3.5,
+                        pb: 4,
+                        zIndex: 3,
                         textAlign: lang === "ar" ? "right" : "left"
                       }}
                     >
