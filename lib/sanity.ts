@@ -63,10 +63,11 @@ export async function getHomepageData() {
           internalLink,
           externalLink
         },
-        brands[]->{
+        brands[@->isActive != false]->{
           title,
           slug,
-          image
+          image,
+          isActive
         },
         slides[]{
           title { en, ar },
@@ -100,6 +101,17 @@ export async function getHomepageData() {
           image
         }
       }
+    },
+    "brands": *[_type == "brand" && isActive == true] | order(title asc) {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
     }
   }`);
 }
@@ -115,6 +127,31 @@ export async function getAboutPageData() {
     commitmentText,
     heroImage { asset->{ url } }
   }`);
+}
+
+export async function getLoginPageData() {
+  try {
+    return await sanityClient.fetch(`*[_type == "loginPage"][0] {
+      loginTitle { en, ar },
+      signupTitle { en, ar },
+      welcomeBack { en, ar },
+      welcomeNew { en, ar },
+      emailLabel { en, ar },
+      passwordLabel { en, ar },
+      confirmPasswordLabel { en, ar },
+      nameLabel { en, ar },
+      loginBtn { en, ar },
+      signupBtn { en, ar },
+      haveAccount { en, ar },
+      noAccount { en, ar },
+      backHome { en, ar },
+      successMsg { en, ar },
+      bgImage { asset->{ url } }
+    }`);
+  } catch (err) {
+    console.error("Error fetching login page data:", err);
+    return null;
+  }
 }
 
 export async function getContactPageData() {
@@ -154,6 +191,44 @@ export async function getAnnouncements() {
   } catch (err) {
     console.error("Error fetching announcements:", err);
     return [];
+  }
+}
+
+export async function getSanityBrands() {
+  try {
+    return await sanityClient.fetch(`*[_type == "brand" && isActive == true] | order(title asc) {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
+    }`);
+  } catch (err) {
+    console.error("Error fetching sanity brands:", err);
+    return [];
+  }
+}
+
+export async function getSanityBrand(slug: string) {
+  try {
+    return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug && isActive == true][0] {
+      _id,
+      title,
+      slug,
+      image { asset->{ url } },
+      "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
+      "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
+      "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
+      "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
+    }`, { slug });
+  } catch (err) {
+    console.error("Error fetching single sanity brand:", err);
+    return null;
   }
 }
 
@@ -408,4 +483,16 @@ export function getLocalizedValue(value: any, lang: "en" | "ar", fallback?: any)
     return value[lang] !== undefined ? value[lang] : (fallback !== undefined ? fallback : value.en);
   }
   return value;
+}
+
+export async function getHeaderSettings() {
+  return sanityClient.fetch(`*[_type == "header"][0] {
+    _id,
+    title,
+    menuItems[] {
+      label { en, ar },
+      href,
+      dropdownType
+    }
+  }`);
 }

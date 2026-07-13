@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button, Container, Drawer, IconButton, Stack, Typography, Tooltip, Divider, Link as MuiLink } from "@mui/material";
+import { Box, Button, Container, Drawer, IconButton, Stack, Typography, Divider, Link as MuiLink } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -13,25 +13,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useLoader } from "@/components/LoaderProvider";
 import type { Product } from "@/lib/productData";
 import { getAnnouncements, getLocalizedValue } from "@/lib/sanity";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Tooltip from "./Tooltip";
 
 const MotionBox = motion.create(Box);
 
 // Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
-const EnglandFlag = () => (
-  <svg width="24" height="16" viewBox="0 0 18 13" style={{ display: "inline-block", verticalAlign: "middle" }}>
-    <rect width="18" height="13" fill="#ffffff" />
-    <rect x="8.2" width="1.6" height="13" fill="#cf142b" />
-    <rect y="5.7" width="18" height="1.6" fill="#cf142b" />
-  </svg>
-);
 
-const SyriaFlag = () => (
-  <img 
-    src="/assets/Syrian-flag.svg" 
-    alt="Syria Flag" 
-    style={{ display: "inline-block", verticalAlign: "middle", width: 26, height: 20 }}
-  />
-);
 
 interface SiteSettings {
   title?: string;
@@ -84,13 +72,78 @@ const headerTranslations = {
 };
 
 const brandSuggestions = [
-  { id: "adidas", label: "adidas" },
-  { id: "calvin-klein", label: "CALVIN KLEIN" },
-  { id: "skechers", label: "SKECHERS" },
+  { id: "elie-saab", label: "Elie Saab" },
+  { id: "gucci", label: "Gucci" },
   { id: "maxmara", label: "MaxMara" },
-  { id: "editorial", label: "EDITORIAL" },
+  { id: "prada", label: "Prada" },
+  { id: "valentino", label: "Valentino" },
+  { id: "ysl", label: "Saint Laurent" },
+  { id: "calvin-klein", label: "CALVIN KLEIN" },
+  { id: "hugo-boss", label: "Hugo Boss" },
+  { id: "giorgio-armani", label: "Giorgio Armani" },
   { id: "paul-shark", label: "PAUL & SHARK" },
-  { id: "sandro-moje", label: "SANDRO moje" }
+  { id: "sandro", label: "SANDRO" },
+  { id: "editorial", label: "EDITORIAL" },
+  { id: "moje", label: "moje" },
+  { id: "adidas", label: "adidas" },
+  { id: "skechers", label: "SKECHERS" },
+  { id: "cartier", label: "Cartier" },
+  { id: "lancome", label: "Lancôme" },
+  { id: "jimmy-choo", label: "Jimmy Choo" },
+  { id: "coach", label: "Coach" }
+];
+
+const brandLabels: Record<string, { en: string; ar: string }> = {
+  "elie-saab": { en: "Elie Saab", ar: "إيلي صعب" },
+  "gucci": { en: "Gucci", ar: "غوتشي" },
+  "maxmara": { en: "MaxMara", ar: "ماكس مارا" },
+  "prada": { en: "Prada", ar: "برادا" },
+  "valentino": { en: "Valentino", ar: "فالنتينو" },
+  "ysl": { en: "Saint Laurent", ar: "سان لوران" },
+  "calvin-klein": { en: "CALVIN KLEIN", ar: "كالفين كلاين" },
+  "hugo-boss": { en: "Hugo Boss", ar: "هوغو بوس" },
+  "giorgio-armani": { en: "Giorgio Armani", ar: "جورجيو أرماني" },
+  "paul-shark": { en: "PAUL & SHARK", ar: "بول آند شارك" },
+  "sandro": { en: "SANDRO", ar: "ساندرو" },
+  "editorial": { en: "EDITORIAL", ar: "إيديتوريال" },
+  "moje": { en: "moje", ar: "موهي" },
+  "adidas": { en: "Adidas", ar: "أديداس" },
+  "skechers": { en: "SKECHERS", ar: "سكيتشرز" },
+  "cartier": { en: "Cartier", ar: "كارتييه" },
+  "lancome": { en: "Lancôme", ar: "لانكوم" },
+  "jimmy-choo": { en: "Jimmy Choo", ar: "جيمي تشو" },
+  "coach": { en: "Coach", ar: "كوتش" }
+};
+
+const categoriesConfig = [
+  {
+    title: { en: "Luxury Fashion & Haute Couture", ar: "الأزياء الفاخرة والراقية" },
+    brandIds: ["elie-saab", "gucci", "maxmara", "prada", "valentino", "ysl"]
+  },
+  {
+    title: { en: "Contemporary & Premium Apparel", ar: "الملابس المعاصرة والمميزة" },
+    brandIds: ["calvin-klein", "hugo-boss", "giorgio-armani", "paul-shark", "sandro", "editorial"]
+  },
+  {
+    title: { en: "Independent & Creative Design", ar: "التصميم المستقل والإبداعي" },
+    brandIds: ["moje"]
+  },
+  {
+    title: { en: "Footwear & Athletic Lifestyle", ar: "الأحذية والأنشطة الرياضية" },
+    brandIds: ["adidas", "skechers"]
+  },
+  {
+    title: { en: "Fine Jewelry & Luxury Timepieces", ar: "المجوهرات الراقية والساعات الفاخرة" },
+    brandIds: ["cartier"]
+  },
+  {
+    title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+    brandIds: ["lancome"]
+  },
+  {
+    title: { en: "Luxury Accessories & Leather Goods", ar: "الإكسسوارات الفاخرة والمنتجات الجلدية" },
+    brandIds: ["jimmy-choo", "coach"]
+  }
 ];
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
@@ -222,9 +275,29 @@ interface SearchOptionProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   products: Product[];
+  placeholderText?: string;
+  departmentsHeading?: string;
+  suggestedBrandsHeading?: string;
+  matchingHeading?: string;
+  departmentsList?: any[] | null;
+  suggestedBrandsList?: any[] | null;
 }
 
-function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, searchQuery, setSearchQuery, products }: SearchOptionProps) {
+function SearchOption({
+  lang,
+  isMobile = false,
+  searchActive,
+  setSearchActive,
+  searchQuery,
+  setSearchQuery,
+  products,
+  placeholderText,
+  departmentsHeading,
+  suggestedBrandsHeading,
+  matchingHeading,
+  departmentsList,
+  suggestedBrandsList
+}: SearchOptionProps) {
   const router = useRouter();
 
   const matchingProducts = useMemo(() => {
@@ -242,6 +315,43 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
     setSearchActive(false);
     setSearchQuery("");
   };
+
+  const resolvedPlaceholder = placeholderText || (lang === "ar" ? "ابحث في البوليفارد..." : "Search...");
+  const resolvedDepsHeading = departmentsHeading || (lang === "ar" ? "الأقسام المقتارة" : "Departments");
+  const resolvedSuggestedHeading = suggestedBrandsHeading || (lang === "ar" ? "دور الفخامة" : "Suggested Brands");
+  const resolvedMatchingHeading = matchingHeading || (lang === "ar" ? "النتائج المطابقة" : "Matching Pieces");
+
+  const resolvedDeps = useMemo(() => {
+    if (departmentsList && departmentsList.length > 0) {
+      return departmentsList.map(item => {
+        const lbl = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
+        let hr = item.href || "/";
+        if (hr !== "/" && !hr.startsWith("#")) {
+          const parts = hr.split("/").filter(Boolean);
+          if (parts[parts.length - 1] !== "ar" && parts[parts.length - 1] !== "en") {
+            hr = `/${parts.join("/")}/${lang}`;
+          }
+        } else if (hr === "/") {
+          hr = `/${lang}`;
+        }
+        return { label: lbl || "", href: hr };
+      });
+    }
+    return [
+      { label: lang === "ar" ? "العطور" : "Perfumes", href: `/category/perfumes/${lang}` },
+      { label: lang === "ar" ? "العناية بالبشرة" : "Skincare", href: `/category/skincare/${lang}` }
+    ];
+  }, [departmentsList, lang]);
+
+  const resolvedBrands = useMemo(() => {
+    if (suggestedBrandsList && suggestedBrandsList.length > 0) {
+      return suggestedBrandsList.map(item => ({
+        id: item.slug?.current || item._id,
+        label: item.title
+      }));
+    }
+    return brandSuggestions;
+  }, [suggestedBrandsList]);
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -265,7 +375,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
         <Box
           component="input"
           type="text"
-          placeholder={lang === "ar" ? "ابحث في البوليفارد..." : "Search..."}
+          placeholder={resolvedPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setSearchActive(true)}
@@ -348,21 +458,28 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
               <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
                 <Box>
                   <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
-                    {lang === "ar" ? "الأقسام المقتارة" : "Departments"}
+                    {resolvedDepsHeading}
                   </Typography>
                   <Stack spacing={1} alignItems="flex-start">
-                    <Button component={Link} href={`/category/women/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "النساء" : "Women"}</Button>
-                    <Button component={Link} href={`/category/men/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "الرجال" : "Men"}</Button>
-                    <Button component={Link} href={`/category/perfumes/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "العطور" : "Perfumes"}</Button>
-                    <Button component={Link} href={`/category/skincare/${lang}`} onClick={handleLinkClick} sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}>{lang === "ar" ? "العناية بالبشرة" : "Skincare"}</Button>
+                    {resolvedDeps.map((item, idx) => (
+                      <Button
+                        key={idx}
+                        component={Link}
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        sx={{ color: "#111111", fontSize: 12, p: 0, minWidth: 0, fontFamily: '"Cairo", sans-serif', textTransform: "none", "&:hover": { color: "#CB6116" } }}
+                      >
+                        {item.label}
+                      </Button>
+                    ))}
                   </Stack>
                 </Box>
                 <Box>
                   <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
-                    {lang === "ar" ? "دور الفخامة" : "Suggested Brands"}
+                    {resolvedSuggestedHeading}
                   </Typography>
                   <Stack spacing={1} alignItems="flex-start">
-                    {brandSuggestions.map((item) => (
+                    {resolvedBrands.map((item) => (
                       <Button
                         key={item.id}
                         component={Link}
@@ -379,7 +496,7 @@ function SearchOption({ lang, isMobile = false, searchActive, setSearchActive, s
             ) : (
               <Box>
                 <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
-                  {lang === "ar" ? "النتائج المطابقة" : "Matching Pieces"}
+                  {resolvedMatchingHeading}
                 </Typography>
                 {matchingProducts.length === 0 ? (
                   <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12, py: 1, fontFamily: '"Cairo", sans-serif' }}>
@@ -454,8 +571,98 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const { setLoading } = useLoader();
 
   // Dropdown states for mega-menus
-  const [activeDropdown, setActiveDropdown] = useState<"women" | "men" | "designers" | "fashion" | "perfumes" | "skincare" | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [hoveredFashionCategory, setHoveredFashionCategory] = useState<"women-fashion" | "men-fashion" | null>(null);
+  const [sanityBrands, setSanityBrands] = useState<any[]>([]);
+  const [headerMenuItems, setHeaderMenuItems] = useState<any[]>([]);
+
+  // Sanity header settings states
+  const [logoTitle, setLogoTitle] = useState<{ en?: string; ar?: string } | null>(null);
+  const [logoImageUrl, setLogoImageUrl] = useState<string | null>(null);
+  const [showSearch, setShowSearch] = useState<boolean>(true);
+  const [searchPlaceholder, setSearchPlaceholder] = useState<{ en?: string; ar?: string } | null>(null);
+  const [showLanguageSwitcher, setShowLanguageSwitcher] = useState<boolean>(true);
+  const [showUserProfile, setShowUserProfile] = useState<boolean>(true);
+  const [searchDepartmentsHeading, setSearchDepartmentsHeading] = useState<{ en?: string; ar?: string } | null>(null);
+  const [searchSuggestedBrandsHeading, setSearchSuggestedBrandsHeading] = useState<{ en?: string; ar?: string } | null>(null);
+  const [searchMatchingHeading, setSearchMatchingHeading] = useState<{ en?: string; ar?: string } | null>(null);
+  const [searchDepartments, setSearchDepartments] = useState<any[] | null>(null);
+  const [searchSuggestedBrands, setSearchSuggestedBrands] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+      try {
+        const { sanityClient } = await import("@/lib/sanity");
+        
+        // Fetch brands
+        const brandsData = await sanityClient.fetch(`*[_type == "brand" && isActive == true] {
+          _id,
+          slug
+        }`);
+        if (brandsData) {
+          setSanityBrands(brandsData);
+        }
+
+        // Fetch header settings
+        const headerData = await sanityClient.fetch(`*[_type == "header"][0] {
+          logoTitle { en, ar },
+          logoImage {
+            asset-> {
+              _id,
+              url
+            }
+          },
+          showSearch,
+          searchPlaceholder { en, ar },
+          showLanguageSwitcher,
+          showUserProfile,
+          searchDepartmentsHeading { en, ar },
+          searchSuggestedBrandsHeading { en, ar },
+          searchMatchingHeading { en, ar },
+          searchDepartments[] {
+            label { en, ar },
+            href
+          },
+          searchSuggestedBrands[]-> {
+            _id,
+            title,
+            slug
+          },
+          menuItems[] {
+            label { en, ar },
+            href,
+            designerCategories[]-> {
+              _id,
+              title { en, ar },
+              brands[]-> {
+                _id,
+                title,
+                slug,
+                isActive
+              }
+            }
+          }
+        }`);
+        if (headerData) {
+          if (headerData.logoTitle) setLogoTitle(headerData.logoTitle);
+          if (headerData.logoImage?.asset?.url) setLogoImageUrl(headerData.logoImage.asset.url);
+          if (headerData.showSearch !== undefined) setShowSearch(headerData.showSearch);
+          if (headerData.searchPlaceholder) setSearchPlaceholder(headerData.searchPlaceholder);
+          if (headerData.showLanguageSwitcher !== undefined) setShowLanguageSwitcher(headerData.showLanguageSwitcher);
+          if (headerData.showUserProfile !== undefined) setShowUserProfile(headerData.showUserProfile);
+          if (headerData.searchDepartmentsHeading) setSearchDepartmentsHeading(headerData.searchDepartmentsHeading);
+          if (headerData.searchSuggestedBrandsHeading) setSearchSuggestedBrandsHeading(headerData.searchSuggestedBrandsHeading);
+          if (headerData.searchMatchingHeading) setSearchMatchingHeading(headerData.searchMatchingHeading);
+          if (headerData.searchDepartments) setSearchDepartments(headerData.searchDepartments);
+          if (headerData.searchSuggestedBrands) setSearchSuggestedBrands(headerData.searchSuggestedBrands);
+          if (headerData.menuItems) setHeaderMenuItems(headerData.menuItems);
+        }
+      } catch (e) {
+        console.error("Failed to fetch header data for navigation:", e);
+      }
+    };
+    fetchHeaderData();
+  }, []);
 
   const isLinkActive = (pathSegment: string) => {
     if (!pathname) return false;
@@ -475,35 +682,91 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
     return headerTranslations[lang][strKey] || strKey;
   };
 
-  const handleLangToggle = () => {
-    if (typeof window === "undefined") return;
-    setLoading(true);
-    if (onLangToggleStart) {
-      onLangToggleStart();
-    }
-    setTimeout(() => {
-      const nextLang = lang === "ar" ? "en" : "ar";
-      let nextPath = pathname;
-      if (pathname.endsWith("/en")) {
-        nextPath = pathname.substring(0, pathname.length - 3) + "/ar";
-      } else if (pathname.endsWith("/ar")) {
-        nextPath = pathname.substring(0, pathname.length - 3) + "/en";
-      } else if (pathname === "/en" || pathname === "/ar" || pathname === "/") {
-        nextPath = `/${nextLang}`;
-      } else {
-        nextPath = pathname.replace(/\/(ar|en)$/, `/${nextLang}`);
-      }
-      router.push(nextPath);
-    }, 180);
+
+
+  const handleMenuHover = (idx: number | null) => {
+    setActiveDropdown(idx);
   };
 
-  const handleMenuHover = (menu: "women" | "men" | "designers" | "fashion" | "perfumes" | "skincare" | null) => {
-    setActiveDropdown(menu);
-    if (menu === "women") {
-      setHoveredFashionCategory("women-fashion");
-    } else if (menu === "men") {
-      setHoveredFashionCategory("men-fashion");
-    }
+  const getColumnCategories = (designerCats: any[]) => {
+    const cols: any[][] = [[], [], []];
+    if (!designerCats) return cols;
+
+    const activeCats = designerCats.map(cat => ({
+      title: {
+        en: cat.title?.en || "",
+        ar: cat.title?.ar || cat.title?.en || ""
+      },
+      brands: (cat.brands || [])
+        .filter((b: any) => b.isActive !== false)
+        .map((b: any) => ({
+          id: b.slug?.current || b._id,
+          label: b.title
+        }))
+    })).filter(cat => cat.brands.length > 0);
+
+    activeCats.forEach(cat => {
+      let minColIdx = 0;
+      let minWeight = cols[0].reduce((sum, c) => sum + c.brands.length + 3, 0);
+      
+      for (let i = 1; i < 3; i++) {
+        const weight = cols[i].reduce((sum, c) => sum + c.brands.length + 3, 0);
+        if (weight < minWeight) {
+          minWeight = weight;
+          minColIdx = i;
+        }
+      }
+      cols[minColIdx].push(cat);
+    });
+
+    return cols;
+  };
+
+  const renderColumnCategories = (cats: any[]) => {
+    if (!cats) return [];
+    const activeBlocks: React.ReactNode[] = [];
+    cats.forEach(cat => {
+      const activeBrands = cat.brands;
+      if (activeBrands.length > 0) {
+        const catTitle = lang === "ar" ? cat.title.ar : cat.title.en;
+        activeBlocks.push(
+          <Box key={catTitle}>
+            <Typography sx={{ fontSize: 10, fontWeight: 800, color: "#CB6116", textTransform: "uppercase", letterSpacing: "0.15em", mb: 2, fontFamily: '"Cairo", sans-serif' }}>
+              {catTitle}
+            </Typography>
+            <Stack spacing={1.2} alignItems="flex-start">
+              {activeBrands.map((b: any) => (
+                <Typography
+                  key={b.id}
+                  component={Link}
+                  href={`/brand/${b.id}/${lang}`}
+                  onClick={() => setActiveDropdown(null)}
+                  sx={{
+                    color: "#333333",
+                    textDecoration: "none",
+                    fontSize: 12.5,
+                    fontWeight: 500,
+                    fontFamily: '"Cairo", sans-serif',
+                    "&:hover": { color: "#CB6116", transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)" },
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  {b.label}
+                </Typography>
+              ))}
+            </Stack>
+          </Box>
+        );
+      }
+    });
+
+    return activeBlocks.reduce((acc: React.ReactNode[], block, i) => {
+      if (i > 0) {
+        acc.push(<Divider key={`div-${i}`} sx={{ borderColor: "rgba(0,0,0,0.06)" }} />);
+      }
+      acc.push(block);
+      return acc;
+    }, []);
   };
 
   return (
@@ -546,7 +809,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             <Stack direction="row" gap={1.5} alignItems="center">
               <Box 
                 component="img" 
-                src="/brand/logo.png" 
+                src={logoImageUrl || "/brand/logo.png"} 
                 alt="Fashion Gate" 
                 sx={{ 
                   height: 36, 
@@ -567,7 +830,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   display: { xs: "none", sm: "block" }
                 }}
               >
-                FASHION GATE
+                {lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE"}
               </Typography>
             </Stack>
           </Box>
@@ -575,63 +838,48 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           {/* Search, Language Selector, User Profile Icon on the right */}
           <Stack direction="row" spacing={{ xs: 1, sm: 1.5, md: 2 }} alignItems="center">
             {/* Search Option */}
-            <SearchOption 
-              lang={lang} 
-              searchActive={searchActive} 
-              setSearchActive={setSearchActive} 
-              searchQuery={searchQuery} 
-              setSearchQuery={setSearchQuery} 
-              products={headerProducts}
-            />
+            {showSearch && (
+              <SearchOption 
+                lang={lang} 
+                searchActive={searchActive} 
+                setSearchActive={setSearchActive} 
+                searchQuery={searchQuery} 
+                setSearchQuery={setSearchQuery} 
+                products={headerProducts}
+                placeholderText={lang === "ar" ? searchPlaceholder?.ar : searchPlaceholder?.en}
+                departmentsHeading={lang === "ar" ? searchDepartmentsHeading?.ar : searchDepartmentsHeading?.en}
+                suggestedBrandsHeading={lang === "ar" ? searchSuggestedBrandsHeading?.ar : searchSuggestedBrandsHeading?.en}
+                matchingHeading={lang === "ar" ? searchMatchingHeading?.ar : searchMatchingHeading?.en}
+                departmentsList={searchDepartments}
+                suggestedBrandsList={searchSuggestedBrands}
+              />
+            )}
 
-            <Button 
-              onClick={handleLangToggle}
-              startIcon={lang === "ar" ? <EnglandFlag /> : <SyriaFlag />}
-              sx={{ 
-                color: "#ffffff", 
-                textTransform: "uppercase", 
-                fontSize: 12, 
-                fontWeight: 600, 
-                letterSpacing: "0.1em",
-                px: 1.5,
-                py: 0.5,
-                border: "none",
-                borderRadius: 0,
-                fontFamily: '"Cairo", sans-serif',
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 1,
-                minWidth: 0,
-                "& .MuiButton-startIcon": {
-                  margin: 0,
-                  display: "flex",
-                  alignItems: "center"
-                },
-                "&:hover": {
-                  color: "#CB6116",
-                  bgcolor: "transparent"
-                }
-              }}
-            >
-              {lang === "ar" ? "EN" : "AR"}
-            </Button>
+            {showLanguageSwitcher && (
+              <LanguageSwitcher 
+                currentLang={lang} 
+                onToggleStart={onLangToggleStart} 
+              />
+            )}
 
             {/* Profile Button */}
-            <Tooltip title={t("Sign In / Register")}>
-              <IconButton 
-                component={Link} 
-                href={`/login/${lang}`} 
-                sx={{ 
-                  color: "#CB6116", 
-                  p: 0.5,
-                  display: { xs: "none", sm: "inline-flex" },
-                  transition: "transform 0.2s, color 0.2s",
-                  "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
-                }}
-              >
-                <PersonOutlineIcon sx={{ fontSize: 22 }} />
-              </IconButton>
-            </Tooltip>
+            {showUserProfile && (
+              <Tooltip title={t("Sign In / Register")}>
+                <IconButton 
+                  component={Link} 
+                  href={`/login/${lang}`} 
+                  sx={{ 
+                    color: "#CB6116", 
+                    p: 0.5,
+                    display: { xs: "none", sm: "inline-flex" },
+                    transition: "transform 0.2s, color 0.2s",
+                    "&:hover": { color: "#ffffff", transform: "scale(1.08)" }
+                  }}
+                >
+                  <PersonOutlineIcon sx={{ fontSize: 22 }} />
+                </IconButton>
+              </Tooltip>
+            )}
 
             {/* Mobile menu trigger */}
             <IconButton 
@@ -663,494 +911,308 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             position: "relative"
           }}
         >
-          <Button component={Link} href={`/${lang}`} className="luxury-link" sx={{ color: isLinkActive("home") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("Home")}
-          </Button>
+          {(() => {
+            const fallbackMenuItems = [
+              { label: { en: "Home", ar: "الرئيسية" }, href: "/" },
+              { 
+                label: { en: "Designers", ar: "المصممون" }, 
+                href: "/brand/elie-saab",
+                designerCategories: [
+                  {
+                    title: { en: "Luxury Fashion & Haute Couture", ar: "الأزياء الفاخرة والراقية" },
+                    brands: [
+                      { slug: { current: "elie-saab" }, title: "Elie Saab" },
+                      { slug: { current: "gucci" }, title: "Gucci" },
+                      { slug: { current: "maxmara" }, title: "MaxMara" },
+                      { slug: { current: "prada" }, title: "Prada" },
+                      { slug: { current: "valentino" }, title: "Valentino" },
+                      { slug: { current: "ysl" }, title: "YSL" }
+                    ]
+                  },
+                  {
+                    title: { en: "Contemporary & Premium Apparel", ar: "الملابس المعاصرة والمميزة" },
+                    brands: [
+                      { slug: { current: "calvin-klein" }, title: "CALVIN KLEIN" },
+                      { slug: { current: "hugo-boss" }, title: "Hugo Boss" },
+                      { slug: { current: "giorgio-armani" }, title: "Giorgio Armani" },
+                      { slug: { current: "paul-shark" }, title: "PAUL & SHARK" },
+                      { slug: { current: "sandro" }, title: "SANDRO" },
+                      { slug: { current: "editorial" }, title: "EDITORIAL" }
+                    ]
+                  },
+                  {
+                    title: { en: "Independent & Creative Design", ar: "التصميم المستقل والإبداعي" },
+                    brands: [{ slug: { current: "moje" }, title: "moje" }]
+                  },
+                  {
+                    title: { en: "Footwear & Athletic Lifestyle", ar: "الأحذية والأنشطة الرياضية" },
+                    brands: [
+                      { slug: { current: "adidas" }, title: "Adidas" },
+                      { slug: { current: "skechers" }, title: "SKECHERS" }
+                    ]
+                  },
+                  {
+                    title: { en: "Fine Jewelry & Luxury Timepieces", ar: "المجوهرات الراقية والساعات الفاخرة" },
+                    brands: [{ slug: { current: "cartier" }, title: "Cartier" }]
+                  },
+                  {
+                    title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                    brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                  },
+                  {
+                    title: { en: "Luxury Accessories & Leather Goods", ar: "الإكسسوارات الفاخرة والمنتجات الجلدية" },
+                    brands: [
+                      { slug: { current: "jimmy-choo" }, title: "Jimmy Choo" },
+                      { slug: { current: "coach" }, title: "Coach" }
+                    ]
+                  }
+                ]
+              },
+              { 
+                label: { en: "Fashion", ar: "الأزياء" }, 
+                href: "/category/fashion",
+                designerCategories: [
+                  {
+                    title: { en: "Contemporary & Premium Apparel", ar: "الملابس المعاصرة والمميزة" },
+                    brands: [
+                      { slug: { current: "calvin-klein" }, title: "CALVIN KLEIN" },
+                      { slug: { current: "hugo-boss" }, title: "Hugo Boss" },
+                      { slug: { current: "giorgio-armani" }, title: "Giorgio Armani" },
+                      { slug: { current: "paul-shark" }, title: "PAUL & SHARK" },
+                      { slug: { current: "sandro" }, title: "SANDRO" },
+                      { slug: { current: "editorial" }, title: "EDITORIAL" }
+                    ]
+                  }
+                ]
+              },
+              { 
+                label: { en: "Perfumes", ar: "العطور" }, 
+                href: "/category/perfumes",
+                designerCategories: [
+                  {
+                    title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                    brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                  }
+                ]
+              },
+              { 
+                label: { en: "Skincare", ar: "العناية بالبشرة" }, 
+                href: "/category/skincare",
+                designerCategories: [
+                  {
+                    title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                    brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                  }
+                ]
+              },
+              { label: { en: "Dining", ar: "المطاعم" }, href: "/category/dining" },
+              { label: { en: "About Us", ar: "من نحن" }, href: "/about" },
+              { label: { en: "Contact Us", ar: "اتصل بنا" }, href: "/contact" }
+            ];
 
-          {/* Women trigger - Commented out for now */}
-          {/* 
-          <Box 
-            onMouseEnter={() => handleMenuHover("women")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/women/${lang}`} className="luxury-link" sx={{ color: activeDropdown === "women" ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Women")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "women" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("women")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    width: "600px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 0,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left",
-                    display: "flex",
-                    flexDirection: "row"
-                  }}
+            const activeMenuItems = headerMenuItems && headerMenuItems.length > 0 ? headerMenuItems : fallbackMenuItems;
+
+            return activeMenuItems.map((item, idx) => {
+              const isFashion = item.href?.includes("/category/fashion");
+              const isPerfumes = item.href?.includes("/category/perfumes");
+              const isSkincare = item.href?.includes("/category/skincare");
+              const isCategoryDropdown = isFashion || isPerfumes || isSkincare;
+              const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
+              const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
+              
+              let finalHref = item.href || "/";
+              if (finalHref === "/") {
+                finalHref = `/${lang}`;
+              } else if (finalHref && !finalHref.startsWith("#")) {
+                const parts = finalHref.split("/").filter(Boolean);
+                if (parts[parts.length - 1] !== "ar" && parts[parts.length - 1] !== "en") {
+                  finalHref = `/${parts.join("/")}/${lang}`;
+                }
+              }
+
+              const isCurrentActive = (() => {
+                if (!pathname) return false;
+                const cleanPath = pathname.replace(/\/(en|ar)(\/|$)/, "") || "/";
+                const cleanHref = item.href ? item.href.replace(/\/(en|ar)(\/|$)/, "") || "/" : "/";
+                if (cleanHref === "/") return cleanPath === "/";
+                if (cleanHref.startsWith("/category/")) return cleanPath.startsWith(cleanHref);
+                if (cleanHref.startsWith("/brand/")) return cleanPath.startsWith("/brand/");
+                return cleanPath === cleanHref || cleanPath.startsWith(cleanHref);
+              })();
+
+              return (
+                <Box
+                  key={idx}
+                  onMouseEnter={() => hasDropdown && handleMenuHover(idx)}
+                  onMouseLeave={() => hasDropdown && handleMenuHover(null)}
+                  sx={{ display: "inline-block", height: "100%", position: "relative" }}
                 >
-                  <Stack sx={{ width: "40%", bgcolor: "#1a1a1a", borderRight: lang === "en" ? "1px solid rgba(255,255,255,0.04)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
-                    <Box 
-                      onMouseEnter={() => setHoveredFashionCategory("women-fashion")}
-                      sx={{ 
-                        p: 2, 
-                        cursor: "pointer", 
-                        bgcolor: hoveredFashionCategory === "women-fashion" ? "#222" : "transparent",
-                        color: hoveredFashionCategory === "women-fashion" ? "#CB6116" : "#fff",
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        fontFamily: '"Cairo", sans-serif',
-                        fontSize: 12,
-                        fontWeight: 700
-                      }}
-                    >
-                      {lang === "ar" ? "أزياء النساء >" : "WOMEN FASHION ❯"}
-                    </Box>
-                    {["women-bags", "women-accessories", "women-jewellery"].map((sub) => (
-                      <Box 
-                        key={sub}
-                        component={Link}
-                        href={`/category/women/${lang}?sub=${sub}`}
-                        onClick={() => setActiveDropdown(null)}
-                        sx={{ 
-                          p: 2, 
-                          color: "#fff",
-                          textDecoration: "none",
-                          borderBottom: "1px solid rgba(255,255,255,0.04)",
-                          fontFamily: '"Cairo", sans-serif',
-                          fontSize: 12,
-                          fontWeight: 600,
-                          "&:hover": { bgcolor: "#222", color: "#CB6116" }
-                        }}
-                      >
-                        {sub === "women-bags" ? (lang === "ar" ? "حقائب النساء" : "WOMEN BAGS") : 
-                         sub === "women-accessories" ? (lang === "ar" ? "إكسسوارات النساء" : "WOMEN ACCESSORIES") : 
-                         (lang === "ar" ? "مجوهرات النساء" : "WOMEN JEWELLERY")}
-                      </Box>
-                    ))}
-                  </Stack>
-                  <Box sx={{ width: "60%", p: 2.5, maxHeight: "360px", overflowY: "auto" }}>
-                    {hoveredFashionCategory === "women-fashion" && (
-                      <Stack spacing={1.2}>
-                        {[
-                          { id: "dresses", label: lang === "ar" ? "فساتين" : "DRESSES" },
-                          { id: "abayas-kaftans", label: lang === "ar" ? "عبايات وقفاطين" : "ABAYAS / KAFTANS" },
-                          { id: "tops-blouses", label: lang === "ar" ? "بلوزات وقمصان علوية" : "TOPS & BLOUSES" },
-                          { id: "t-shirts", label: lang === "ar" ? "تي شيرت" : "WOMEN T-SHIRTS" },
-                          { id: "pants-trousers", label: lang === "ar" ? "سراويل وبناطيل" : "PANTS & TROUSERS" },
-                          { id: "jeans", label: lang === "ar" ? "جينز" : "WOMEN JEANS" },
-                          { id: "skirts", label: lang === "ar" ? "تنانير" : "SKIRTS" },
-                          { id: "coords-sets", label: lang === "ar" ? "أطقم متطابقة" : "CO-ORDS & SETS" },
-                          { id: "outerwear-women", label: lang === "ar" ? "ملابس خارجية" : "OUTERWEAR WOMEN" },
-                          { id: "women-activewear", label: lang === "ar" ? "ملابس رياضية" : "WOMEN ACTIVEWEAR" },
-                          { id: "sleepwear-innerwear", label: lang === "ar" ? "ملابس نوم وداخلية" : "SLEEPWEAR & INNERWEAR" }
-                        ].map((item) => (
-                          <Typography
-                            key={item.id}
-                            component={Link}
-                            href={`/category/women/${lang}?sub=${item.id}`}
-                            onClick={() => setActiveDropdown(null)}
-                            sx={{
-                              color: "rgba(255,255,255,0.7)",
-                              textDecoration: "none",
-                              fontSize: "11.5px",
-                              fontWeight: 500,
-                              fontFamily: '"Cairo", sans-serif',
-                              cursor: "pointer",
-                              "&:hover": { color: "#CB6116" }
-                            }}
-                          >
-                            {item.label}
-                          </Typography>
-                        ))}
-                      </Stack>
-                    )}
-                  </Box>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-          */}
+                  <Button
+                    component={Link}
+                    href={finalHref}
+                    className="luxury-link"
+                    onClick={(e) => {
+                      if (hasDropdown && !isCategoryDropdown) {
+                        e.preventDefault();
+                      }
+                    }}
+                    sx={{
+                      color: (activeDropdown === idx || isCurrentActive) ? "#CB6116" : "rgba(255,255,255,.76)",
+                      px: 0,
+                      minWidth: 0,
+                      textTransform: "uppercase",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.18em",
+                      fontFamily: '"Cairo", sans-serif'
+                    }}
+                  >
+                    {labelStr}
+                  </Button>
 
-          {/* Men trigger - Commented out for now */}
-          {/* 
-          <Box 
-            onMouseEnter={() => handleMenuHover("men")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/men/${lang}`} className="luxury-link" sx={{ color: activeDropdown === "men" ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Men")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "men" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("men")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    width: "600px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 0,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left",
-                    display: "flex",
-                    flexDirection: "row"
-                  }}
-                >
-                  <Stack sx={{ width: "40%", bgcolor: "#1a1a1a", borderRight: lang === "en" ? "1px solid rgba(255,255,255,0.04)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
-                    <Box 
-                      onMouseEnter={() => setHoveredFashionCategory("men-fashion")}
-                      sx={{ 
-                        p: 2, 
-                        cursor: "pointer", 
-                        bgcolor: hoveredFashionCategory === "men-fashion" ? "#222" : "transparent",
-                        color: hoveredFashionCategory === "men-fashion" ? "#CB6116" : "#fff",
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        fontFamily: '"Cairo", sans-serif',
-                        fontSize: 12,
-                        fontWeight: 700
-                      }}
-                    >
-                      {lang === "ar" ? "أزياء الرجال >" : "MEN FASHION ❯"}
-                    </Box>
-                    <Box 
-                      component={Link}
-                      href={`/category/men/${lang}?sub=men-accessories`}
-                      onClick={() => setActiveDropdown(null)}
-                      sx={{ 
-                        p: 2, 
-                        color: "#fff",
-                        textDecoration: "none",
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        fontFamily: '"Cairo", sans-serif',
-                        fontSize: 12,
-                        fontWeight: 600,
-                        "&:hover": { bgcolor: "#222", color: "#CB6116" }
-                      }}
-                    >
-                      {lang === "ar" ? "إكسسوارات الرجال" : "MEN ACCESSORIES"}
-                    </Box>
-                  </Stack>
-                  <Box sx={{ width: "60%", p: 2.5, maxHeight: "360px", overflowY: "auto" }}>
-                    {hoveredFashionCategory === "men-fashion" && (
-                      <Stack spacing={1.2}>
-                        {[
-                          { id: "men-formal-suits", label: lang === "ar" ? "بدل رسمية" : "MEN FORMAL SUITS" },
-                          { id: "t-shirts-polos", label: lang === "ar" ? "تي شيرت وبولو" : "T-SHIRTS & POLOS" },
-                          { id: "men-shirts", label: lang === "ar" ? "قمصان" : "MEN SHIRTS" },
-                          { id: "men-outerwear", label: lang === "ar" ? "ملابس خارجية" : "MEN OUTERWEAR" },
-                          { id: "men-shoes", label: lang === "ar" ? "أحذية" : "MEN SHOES" },
-                          { id: "innerwear-sleepwear", label: lang === "ar" ? "ملابس داخلية ونوم" : "INNERWEAR & SLEEPWEAR" }
-                        ].map((item) => (
-                          <Typography
-                            key={item.id}
-                            component={Link}
-                            href={`/category/men/${lang}?sub=${item.id}`}
-                            onClick={() => setActiveDropdown(null)}
-                            sx={{
-                              color: "rgba(255,255,255,0.7)",
-                              textDecoration: "none",
-                              fontSize: "11.5px",
-                              fontWeight: 500,
-                              fontFamily: '"Cairo", sans-serif',
-                              cursor: "pointer",
-                              "&:hover": { color: "#CB6116" }
-                            }}
-                          >
-                            {item.label}
-                          </Typography>
-                        ))}
-                      </Stack>
-                    )}
-                  </Box>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-          */}
-
-          {/* Designers trigger */}
-          <Box 
-            onMouseEnter={() => handleMenuHover("designers")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/designers/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "designers" || isLinkActive("designers")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Designers")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "designers" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("designers")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    transform: "none",
-                    width: "360px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 2,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left"
-                  }}
-                >
-                  <Stack spacing={1.5} sx={{ width: "100%" }}>
-                    {brandSuggestions.map((brand) => (
-                      <Typography
-                        key={brand.id}
-                        component={Link}
-                        href={`/brand/${brand.id}/${lang}`}
-                        onClick={() => setActiveDropdown(null)}
-                        sx={{
-                          color: "rgba(255,255,255,0.8)",
-                          textDecoration: "none",
-                          fontSize: 12,
-                          fontWeight: 600,
-                          fontFamily: '"Cairo", sans-serif',
-                          "&:hover": { color: "#CB6116" }
-                        }}
-                      >
-                        {brand.label}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-
-          {/* Fashion trigger */}
-          <Box 
-            onMouseEnter={() => handleMenuHover("fashion")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/fashion/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "fashion" || isLinkActive("fashion")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Fashion")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "fashion" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("fashion")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    width: "180px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 2,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left"
-                  }}
-                >
-                  <Stack spacing={1.5} sx={{ width: "100%" }}>
-                    {[
-                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/fashion/${lang}?sub=women` },
-                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/fashion/${lang}?sub=men` }
-                    ].map((opt) => (
-                      <Typography
-                        key={opt.label}
-                        component={Link}
-                        href={opt.href}
-                        onClick={() => setActiveDropdown(null)}
-                        sx={{
-                          color: "rgba(255,255,255,0.8)",
-                          textDecoration: "none",
-                          fontSize: 12,
-                          fontWeight: 600,
-                          fontFamily: '"Cairo", sans-serif',
-                          "&:hover": { color: "#CB6116" }
-                        }}
-                      >
-                        {opt.label}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-
-          {/* Perfumes trigger */}
-          <Box 
-            onMouseEnter={() => handleMenuHover("perfumes")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/perfumes/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "perfumes" || isLinkActive("perfumes")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Perfumes")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "perfumes" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("perfumes")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    width: "180px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 2,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left"
-                  }}
-                >
-                  <Stack spacing={1.5} sx={{ width: "100%" }}>
-                    {[
-                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/perfumes/${lang}?sub=women` },
-                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/perfumes/${lang}?sub=men` },
-                      { label: lang === "ar" ? "للجنسين" : "UNISEX", href: `/category/perfumes/${lang}?sub=unisex` }
-                    ].map((opt) => (
-                      <Typography
-                        key={opt.label}
-                        component={Link}
-                        href={opt.href}
-                        onClick={() => setActiveDropdown(null)}
-                        sx={{
-                          color: "rgba(255,255,255,0.8)",
-                          textDecoration: "none",
-                          fontSize: 12,
-                          fontWeight: 600,
-                          fontFamily: '"Cairo", sans-serif',
-                          "&:hover": { color: "#CB6116" }
-                        }}
-                      >
-                        {opt.label}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-
-          {/* Skincare trigger */}
-          <Box 
-            onMouseEnter={() => handleMenuHover("skincare")}
-            onMouseLeave={() => handleMenuHover(null)}
-            sx={{ display: "inline-block", height: "100%", position: "relative" }}
-          >
-            <Button component={Link} href={`/category/skincare/${lang}`} className="luxury-link" sx={{ color: (activeDropdown === "skincare" || isLinkActive("skincare")) ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-              {t("Skincare")}
-            </Button>
-            <AnimatePresence>
-              {activeDropdown === "skincare" && (
-                <MotionBox
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setActiveDropdown("skincare")}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                  sx={{
-                    position: "absolute",
-                    top: "100%",
-                    left: lang === "ar" ? "auto" : 0,
-                    right: lang === "ar" ? 0 : "auto",
-                    width: "180px",
-                    bgcolor: "#111111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderTop: "none",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.6)",
-                    p: 2,
-                    zIndex: 99,
-                    textAlign: lang === "ar" ? "right" : "left"
-                  }}
-                >
-                  <Stack spacing={1.5} sx={{ width: "100%" }}>
-                    {[
-                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/skincare/${lang}?sub=women` },
-                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/skincare/${lang}?sub=men` }
-                    ].map((opt) => (
-                      <Typography
-                        key={opt.label}
-                        component={Link}
-                        href={opt.href}
-                        onClick={() => setActiveDropdown(null)}
-                        sx={{
-                          color: "rgba(255,255,255,0.8)",
-                          textDecoration: "none",
-                          fontSize: 12,
-                          fontWeight: 600,
-                          fontFamily: '"Cairo", sans-serif',
-                          "&:hover": { color: "#CB6116" }
-                        }}
-                      >
-                        {opt.label}
-                      </Typography>
-                    ))}
-                  </Stack>
-                </MotionBox>
-              )}
-            </AnimatePresence>
-          </Box>
-
-          <Button component={Link} href={`/category/dining/${lang}`} className="luxury-link" sx={{ color: isLinkActive("dining") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("Dining")}
-          </Button>
-
-          <Button component={Link} href={`/blogs/${lang}`} className="luxury-link" sx={{ color: isLinkActive("blogs") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("Blogs")}
-          </Button>
-
-          <Button component={Link} href={`/about/${lang}`} className="luxury-link" sx={{ color: isLinkActive("about") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("About Us")}
-          </Button>
-
-          <Button component={Link} href={`/contact/${lang}`} className="luxury-link" sx={{ color: isLinkActive("contact") ? "#CB6116" : "rgba(255,255,255,.76)", px: 0, minWidth: 0, textTransform: "uppercase", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
-            {t("Contact Us")}
-          </Button>
+                  {hasDropdown && (
+                    <AnimatePresence>
+                      {activeDropdown === idx && (
+                        <MotionBox
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.18 }}
+                          onMouseEnter={() => setActiveDropdown(idx)}
+                          onMouseLeave={() => setActiveDropdown(null)}
+                          sx={
+                            (!isCategoryDropdown && item.designerCategories.length > 2)
+                              ? {
+                                  position: "absolute",
+                                  top: "100%",
+                                  left: lang === "ar" ? "auto" : { xs: "-100px", md: "-320px" },
+                                  right: lang === "ar" ? { xs: "-100px", md: "-320px" } : "auto",
+                                  width: { xs: "90vw", sm: "650px", md: "860px" },
+                                  bgcolor: "#ffffff",
+                                  border: "1px solid rgba(0,0,0,0.08)",
+                                  borderTop: "3px solid #CB6116",
+                                  boxShadow: "0 25px 50px rgba(0,0,0,0.12)",
+                                  p: 4,
+                                  zIndex: 99,
+                                  textAlign: lang === "ar" ? "right" : "left",
+                                  color: "#111111"
+                                }
+                              : {
+                                  position: "absolute",
+                                  top: "100%",
+                                  left: lang === "ar" ? "auto" : 0,
+                                  right: lang === "ar" ? 0 : "auto",
+                                  width: "220px",
+                                  bgcolor: "#ffffff",
+                                  border: "1px solid rgba(0,0,0,0.08)",
+                                  borderTop: "3px solid #CB6116",
+                                  boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
+                                  p: 2.5,
+                                  zIndex: 99,
+                                  textAlign: lang === "ar" ? "right" : "left"
+                                }
+                          }
+                        >
+                          {isCategoryDropdown ? (
+                            <Stack spacing={2} sx={{ width: "100%" }}>
+                              {(isFashion || isSkincare) ? (
+                                [
+                                  { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=women` },
+                                  { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=men` }
+                                ].map((opt) => (
+                                  <Typography
+                                    key={opt.label}
+                                    component={Link}
+                                    href={opt.href}
+                                    onClick={() => setActiveDropdown(null)}
+                                    sx={{
+                                      color: "#333333",
+                                      textDecoration: "none",
+                                      fontSize: 12.5,
+                                      fontWeight: 600,
+                                      fontFamily: '"Cairo", sans-serif',
+                                      "&:hover": { color: "#CB6116", transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)" },
+                                      transition: "all 0.2s ease"
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </Typography>
+                                ))
+                              ) : (
+                                [
+                                  { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/perfumes/${lang}?sub=women` },
+                                  { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/perfumes/${lang}?sub=men` },
+                                  { label: lang === "ar" ? "للجنسين" : "UNISEX", href: `/category/perfumes/${lang}?sub=unisex` }
+                                ].map((opt) => (
+                                  <Typography
+                                    key={opt.label}
+                                    component={Link}
+                                    href={opt.href}
+                                    onClick={() => setActiveDropdown(null)}
+                                    sx={{
+                                      color: "#333333",
+                                      textDecoration: "none",
+                                      fontSize: 12.5,
+                                      fontWeight: 600,
+                                      fontFamily: '"Cairo", sans-serif',
+                                      "&:hover": { color: "#CB6116", transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)" },
+                                      transition: "all 0.2s ease"
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </Typography>
+                                ))
+                              )}
+                            </Stack>
+                          ) : item.designerCategories.length > 2 ? (
+                            (() => {
+                              const cols = getColumnCategories(item.designerCategories);
+                              return (
+                                <Box
+                                  sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr" },
+                                    gap: 4
+                                  }}
+                                >
+                                  <Stack spacing={3}>
+                                    {renderColumnCategories(cols[0])}
+                                  </Stack>
+                                  <Stack spacing={3}>
+                                    {renderColumnCategories(cols[1])}
+                                  </Stack>
+                                  <Stack spacing={3}>
+                                    {renderColumnCategories(cols[2])}
+                                  </Stack>
+                                </Box>
+                              );
+                            })()
+                          ) : (
+                            <Stack spacing={2.5} sx={{ width: "100%" }}>
+                              {renderColumnCategories(
+                                item.designerCategories.map((cat: any) => ({
+                                  title: {
+                                    en: cat.title?.en || "",
+                                    ar: cat.title?.ar || cat.title?.en || ""
+                                  },
+                                  brands: (cat.brands || [])
+                                    .filter((b: any) => b.isActive !== false)
+                                    .map((b: any) => ({
+                                      id: b.slug?.current || b._id,
+                                      label: b.title
+                                    }))
+                                }))
+                              )}
+                            </Stack>
+                          )}
+                        </MotionBox>
+                      )}
+                    </AnimatePresence>
+                  )}
+                </Box>
+              );
+            });
+          })()}
         </Stack>
       </Box>
 
@@ -1177,8 +1239,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           {/* Header Row */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" gap={1.2} alignItems="center">
-              <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ height: 26, width: "auto" }} />
-              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, color: "#fff", fontWeight: 700, letterSpacing: "0.05em" }}>FASHION GATE</Typography>
+              <Box component="img" src={logoImageUrl || "/brand/logo.png"} alt="Fashion Gate" sx={{ height: 26, width: "auto" }} />
+              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, color: "#fff", fontWeight: 700, letterSpacing: "0.05em" }}>
+                {lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE"}
+              </Typography>
             </Stack>
             <IconButton onClick={() => setOpen(false)} sx={{ color: "#fff", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 0 }}>
               <CloseIcon sx={{ fontSize: 16 }} />
@@ -1187,43 +1251,153 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           
           {/* Navigation Links */}
           <Stack spacing={3.2} sx={{ overflowY: "auto", py: 4, alignItems: "center" }}>
-            {[
-              { label: t("Home"), href: `/${lang}` },
-              { label: t("Women"), href: `/category/women/${lang}` },
-              { label: t("Men"), href: `/category/men/${lang}` },
-              { label: t("Designers"), href: `/category/designers/${lang}` },
-              { label: t("Fashion"), href: `/category/fashion/${lang}` },
-              { label: t("Perfumes"), href: `/category/perfumes/${lang}` },
-              { label: t("Skincare"), href: `/category/skincare/${lang}` },
-              { label: t("Dining"), href: `/category/dining/${lang}` },
-              { label: t("Blogs"), href: `/blogs/${lang}` },
-              { label: t("About Us"), href: `/about/${lang}` },
-              { label: t("Contact Us"), href: `/contact/${lang}` }
-            ].map((item) => (
-              <MuiLink
-                key={item.label}
-                component={Link}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                sx={{
-                  color: "rgba(255,255,255,0.85)",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                  textDecoration: "none",
-                  fontFamily: '"Cairo", sans-serif',
-                  transition: "all 0.25s ease",
-                  textAlign: "center",
-                  "&:hover": { 
-                    color: "#CB6116",
-                    transform: "scale(1.05)"
+            {(() => {
+              const fallbackMenuItems = [
+                { label: { en: "Home", ar: "الرئيسية" }, href: "/" },
+                { 
+                  label: { en: "Designers", ar: "المصممون" }, 
+                  href: "/brand/elie-saab",
+                  designerCategories: [
+                    {
+                      title: { en: "Luxury Fashion & Haute Couture", ar: "الأزياء الفاخرة والراقية" },
+                      brands: [
+                        { slug: { current: "elie-saab" }, title: "Elie Saab" },
+                        { slug: { current: "gucci" }, title: "Gucci" },
+                        { slug: { current: "maxmara" }, title: "MaxMara" },
+                        { slug: { current: "prada" }, title: "Prada" },
+                        { slug: { current: "valentino" }, title: "Valentino" },
+                        { slug: { current: "ysl" }, title: "YSL" }
+                      ]
+                    },
+                    {
+                      title: { en: "Contemporary & Premium Apparel", ar: "الملابس المعاصرة والمميزة" },
+                      brands: [
+                        { slug: { current: "calvin-klein" }, title: "CALVIN KLEIN" },
+                        { slug: { current: "hugo-boss" }, title: "Hugo Boss" },
+                        { slug: { current: "giorgio-armani" }, title: "Giorgio Armani" },
+                        { slug: { current: "paul-shark" }, title: "PAUL & SHARK" },
+                        { slug: { current: "sandro" }, title: "SANDRO" },
+                        { slug: { current: "editorial" }, title: "EDITORIAL" }
+                      ]
+                    },
+                    {
+                      title: { en: "Independent & Creative Design", ar: "التصميم المستقل والإبداعي" },
+                      brands: [{ slug: { current: "moje" }, title: "moje" }]
+                    },
+                    {
+                      title: { en: "Footwear & Athletic Lifestyle", ar: "الأحذية والأنشطة الرياضية" },
+                      brands: [
+                        { slug: { current: "adidas" }, title: "Adidas" },
+                        { slug: { current: "skechers" }, title: "SKECHERS" }
+                      ]
+                    },
+                    {
+                      title: { en: "Fine Jewelry & Luxury Timepieces", ar: "المجوهرات الراقية والساعات الفاخرة" },
+                      brands: [{ slug: { current: "cartier" }, title: "Cartier" }]
+                    },
+                    {
+                      title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                      brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                    },
+                    {
+                      title: { en: "Luxury Accessories & Leather Goods", ar: "الإكسسوارات الفاخرة والمنتجات الجلدية" },
+                      brands: [
+                        { slug: { current: "jimmy-choo" }, title: "Jimmy Choo" },
+                        { slug: { current: "coach" }, title: "Coach" }
+                      ]
+                    }
+                  ]
+                },
+                { 
+                  label: { en: "Fashion", ar: "الأزياء" }, 
+                  href: "/category/fashion",
+                  designerCategories: [
+                    {
+                      title: { en: "Contemporary & Premium Apparel", ar: "الملابس المعاصرة والمميزة" },
+                      brands: [
+                        { slug: { current: "calvin-klein" }, title: "CALVIN KLEIN" },
+                        { slug: { current: "hugo-boss" }, title: "Hugo Boss" },
+                        { slug: { current: "giorgio-armani" }, title: "Giorgio Armani" },
+                        { slug: { current: "paul-shark" }, title: "PAUL & SHARK" },
+                        { slug: { current: "sandro" }, title: "SANDRO" },
+                        { slug: { current: "editorial" }, title: "EDITORIAL" }
+                      ]
+                    }
+                  ]
+                },
+                { 
+                  label: { en: "Perfumes", ar: "العطور" }, 
+                  href: "/category/perfumes",
+                  designerCategories: [
+                    {
+                      title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                      brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                    }
+                  ]
+                },
+                { 
+                  label: { en: "Skincare", ar: "العناية بالبشرة" }, 
+                  href: "/category/skincare",
+                  designerCategories: [
+                    {
+                      title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
+                      brands: [{ slug: { current: "lancome" }, title: "Lancôme" }]
+                    }
+                  ]
+                },
+                { label: { en: "Dining", ar: "المطاعم" }, href: "/category/dining" },
+                { label: { en: "About Us", ar: "من نحن" }, href: "/about" },
+                { label: { en: "Contact Us", ar: "اتصل بنا" }, href: "/contact" }
+              ];
+              const activeMenuItems = headerMenuItems && headerMenuItems.length > 0 ? headerMenuItems : fallbackMenuItems;
+
+              return activeMenuItems.map((item, idx) => {
+                const hasDropdown = item.designerCategories && item.designerCategories.length > 2;
+                const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
+                
+                let finalHref = item.href || "/";
+                if (finalHref === "/") {
+                  finalHref = `/${lang}`;
+                } else if (finalHref && !finalHref.startsWith("#")) {
+                  const parts = finalHref.split("/").filter(Boolean);
+                  if (parts[parts.length - 1] !== "ar" && parts[parts.length - 1] !== "en") {
+                    finalHref = `/${parts.join("/")}/${lang}`;
                   }
-                }}
-              >
-                {item.label}
-              </MuiLink>
-            ))}
+                }
+
+                return (
+                  <MuiLink
+                    key={idx}
+                    component={hasDropdown ? "span" : Link}
+                    href={hasDropdown ? undefined : finalHref}
+                    onClick={(e: React.MouseEvent) => {
+                      if (hasDropdown) {
+                        e.preventDefault();
+                      } else {
+                        setOpen(false);
+                      }
+                    }}
+                    sx={{
+                      color: "rgba(255,255,255,0.85)",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.15em",
+                      textDecoration: "none",
+                      fontFamily: '"Cairo", sans-serif',
+                      transition: "all 0.25s ease",
+                      textAlign: "center",
+                      "&:hover": { 
+                        color: "#CB6116",
+                        transform: "scale(1.05)"
+                      }
+                    }}
+                  >
+                    {labelStr}
+                  </MuiLink>
+                );
+              });
+            })()}
           </Stack>
 
           {/* Bottom Drawer Section (Sign In & Socials) */}

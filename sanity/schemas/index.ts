@@ -28,11 +28,15 @@ import testimonial from "./testimonial";
 import faq from "./faq";
 import { announcement } from "./announcement";
 import { footerSettings } from "./footerSettings";
+import { header } from "./header";
+import { designerCategory } from "./designerCategory";
 
 // New dynamic pages
 import { aboutPage } from "./aboutPage";
 import { contactPage } from "./contactPage";
 import { blogsPage } from "./blogsPage";
+import { loginPage } from "./loginPage";
+import { brandPage } from "./brandPage";
 
 export const schemaTypes = [
   // E-commerce & Base
@@ -41,6 +45,8 @@ export const schemaTypes = [
   collection,
   mediaAsset,
   menuItem,
+  header,
+  designerCategory,
   page,
   section,
   brand,
@@ -72,4 +78,7 @@ export const schemaTypes = [
   aboutPage,
   contactPage,
   blogsPage,
+  loginPage,
+  brandPage,
 ];
+

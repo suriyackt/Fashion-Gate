@@ -1,5 +1,16 @@
 import AuthClient from "@/components/AuthClient";
+import { getLoginPageData } from "@/lib/sanity";
 
-export default function LoginPage() {
-  return <AuthClient initialLang="ar" />;
+export const revalidate = 0;
+
+export default async function LoginPage() {
+  let sanityData = null;
+  try {
+    sanityData = await getLoginPageData();
+  } catch (err) {
+    console.error("Failed to load login page data:", err);
+  }
+
+  return <AuthClient initialLang="ar" sanityData={sanityData} />;
 }
+

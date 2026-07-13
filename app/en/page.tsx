@@ -6,7 +6,7 @@ import type { Section, SiteSettings } from "@/lib/types";
 export const revalidate = 0;
 
 export default async function Home() {
-  let data: { settings?: SiteSettings; page?: { sections?: Section[] } } = {};
+  let data: { settings?: SiteSettings; page?: { sections?: Section[] }; brands?: any[] } = {};
 
   try {
     data = await getHomepageData();
@@ -21,5 +21,5 @@ export default async function Home() {
 
 
 
-  return <Storefront settings={settings} sections={sections} initialLang="en" />;
+  return <Storefront settings={settings} sections={sections} brands={data.brands} initialLang="en" />;
 }

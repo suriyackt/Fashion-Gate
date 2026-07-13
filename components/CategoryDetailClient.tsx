@@ -306,79 +306,11 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.4 }}
                 >
-                  {filteredProducts.length === 0 ? (
-                    <Box sx={{ py: 10, textAlign: "center" }}>
-                      <Typography sx={{ color: "rgba(0,0,0,0.5)", fontFamily: '"Cairo", sans-serif' }}>
-                        {t.noProducts}
-                      </Typography>
-                    </Box>
-                  ) : (
-                    <Grid container spacing={3.5}>
-                      {filteredProducts.map((product) => {
-                        const title = lang === "ar" ? product.titleAr : product.title;
-                        const desc = lang === "ar" ? product.descriptionAr : product.description;
-                        const catLabel = lang === "ar" ? product.categoryAr : product.category;
-                        
-                        return (
-                          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                            <Link href={`/product/${product.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                                  "&:hover": { transform: "translateY(-6px)" },
-                                  "&:hover .category-product-image": { transform: "scale(1.03)" }
-                                }}
-                              >
-                                {/* Image Box */}
-                                <Box sx={{ aspectRatio: "3 / 4", overflow: "hidden", bgcolor: "#FAF8F5", position: "relative", border: "1px solid rgba(0,0,0,0.03)" }}>
-                                  <Box
-                                    component="img"
-                                    className="category-product-image"
-                                    src={product.imageUrl}
-                                    alt={title}
-                                    sx={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)" }}
-                                  />
-                                </Box>
-                                
-                                {/* Info Box */}
-                                <Stack spacing={0.8} sx={{ pt: 2, textAlign: lang === "ar" ? "right" : "left" }}>
-                                  <Typography sx={{ color: "#CB6116", fontSize: 9.5, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
-                                    {product.brandId.toUpperCase()} — {catLabel}
-                                  </Typography>
-                                  <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: 500, lineHeight: 1.15 }}>
-                                    {title}
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      color: "rgba(0,0,0,0.52)",
-                                      fontSize: 13,
-                                      lineHeight: 1.5,
-                                      display: "-webkit-box",
-                                      WebkitLineClamp: 2,
-                                      WebkitBoxOrient: "vertical",
-                                      overflow: "hidden",
-                                      fontFamily: '"Cairo", sans-serif'
-                                    }}
-                                  >
-                                    {desc}
-                                  </Typography>
-                                  
-                                  <Stack direction="row" spacing={0.8} alignItems="center" sx={{ color: "#111111", pt: 0.5 }}>
-                                    <Typography sx={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
-                                      {t.viewDetails}
-                                    </Typography>
-                                    <NorthEastIcon sx={{ fontSize: 12, color: "#CB6116", transform: lang === "ar" ? "scaleX(-1)" : "none" }} />
-                                  </Stack>
-                                </Stack>
-                              </Box>
-                            </Link>
-                          </Grid>
-                        );
-                      })}
-                    </Grid>
-                  )}
+                  <Box sx={{ py: 12, textAlign: "center", border: "1px dashed rgba(0,0,0,0.06)", bgcolor: "rgba(0,0,0,0.01)" }}>
+                    <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 15, fontWeight: 500, fontFamily: '"Cairo", sans-serif' }}>
+                      {lang === "ar" ? "لا يوجد المزيد من المنتجات" : "No more products"}
+                    </Typography>
+                  </Box>
                 </MotionBox>
               </AnimatePresence>
             </Grid>

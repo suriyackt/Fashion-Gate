@@ -4,7 +4,7 @@ import { useMemo, useRef, useEffect, useState } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
-import { products } from "@/lib/productData";
+import { brands as fallbackBrands } from "@/lib/brandData";
 import type { Section } from "@/lib/types";
 import { getLocalizedValue } from "@/lib/sanity";
 
@@ -13,11 +13,13 @@ const MotionBox = motion.create(Box);
 export default function LookbookSection({ 
   section, 
   t, 
-  lang 
+  lang,
+  brands
 }: { 
   section: Section; 
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
+  brands?: any[];
 }) {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -25,6 +27,23 @@ export default function LookbookSection({
   const isDraggingRef = useRef(false);
   const isHoveredRef = useRef(false);
   const x = useMotionValue(0);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+  const hasDraggedRef = useRef(false);
+
+  const unifiedBrands = useMemo(() => {
+    const list = (brands && brands.length > 0 ? brands : fallbackBrands).filter(
+      (b: any) => b.isActive !== false && (b.slug?.current || b.id) !== "sandro-moje"
+    );
+    return list.map((b) => {
+      const id = b.slug?.current || b.id || "";
+      const name = b.title || b.name || "";
+      const nameAr = b.nameAr || b.title || "";
+      const headline = b.headline?.[lang] || b.headline || "";
+      const bgUrl = b.bgImage?.asset?.url || b.backdropUrl || "/assets/headerbg.png";
+      const logoUrl = b.image?.asset?.url || null;
+      return { id, name, nameAr, headline, bgUrl, logoUrl };
+    });
+  }, [brands, lang]);
 
   useEffect(() => {
     const updateConstraints = () => {
@@ -184,11 +203,13 @@ export default function LookbookSection({
             dragTransition={{ power: 0.2, timeConstant: 300 }}
             onDragStart={() => {
               isDraggingRef.current = true;
+              hasDraggedRef.current = true;
             }}
             onDragEnd={() => {
+              isDraggingRef.current = false;
               setTimeout(() => {
-                isDraggingRef.current = false;
-              }, 250);
+                hasDraggedRef.current = false;
+              }, 150);
             }}
             onMouseEnter={() => {
               isHoveredRef.current = true;
@@ -212,18 +233,37 @@ export default function LookbookSection({
               touchAction: "pan-y"
             }}
           >
-            {products.map((product, idx) => {
-              const title = lang === "ar" ? product.titleAr : product.title;
-              const category = lang === "ar" ? product.categoryAr : product.category;
-
+            {unifiedBrands.map((brand, idx) => {
+              const name = lang === "ar" ? brand.nameAr : brand.name;
               return (
                 <Link 
-                  key={`${product.id}-${idx}`}
-                  href={`/product/${product.id}/${lang}`}
+                  key={`${brand.id}-${idx}`}
+                  href={`/brand/${brand.id}/${lang}`}
                   style={{ textDecoration: "none" }}
                   draggable="false"
+                  onMouseDown={(e) => {
+                    dragStartPos.current = { x: e.clientX, y: e.clientY };
+                  }}
+                  onTouchStart={(e) => {
+                    if (e.touches && e.touches[0]) {
+                      dragStartPos.current = {
+                        x: e.touches[0].clientX,
+                        y: e.touches[0].clientY,
+                      };
+                    }
+                  }}
                   onClick={(e) => {
-                    if (isDraggingRef.current) {
+                    const isKeyboardClick = e.clientX === 0 && e.clientY === 0;
+                    if (!isKeyboardClick) {
+                      const diffX = Math.abs(e.clientX - dragStartPos.current.x);
+                      const diffY = Math.abs(e.clientY - dragStartPos.current.y);
+                      if (diffX > 10 || diffY > 10) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                    }
+                    if (isDraggingRef.current || hasDraggedRef.current) {
                       e.preventDefault();
                       e.stopPropagation();
                     }
@@ -234,12 +274,15 @@ export default function LookbookSection({
                     sx={{
                       width: { xs: 280, md: 440 }, 
                       aspectRatio: "4 / 5",
+                      isolation: "isolate",
                       position: "relative",
                       overflow: "hidden",
+                      bgcolor: "#000000",
                       border: "1px solid rgba(255,255,255,0.06)",
                       flex: "0 0 auto",
                       userSelect: "none",
                       pointerEvents: "auto",
+                      transition: "border-color 0.4s ease",
                       "&::after": {
                         content: '""',
                         position: "absolute",
@@ -247,77 +290,136 @@ export default function LookbookSection({
                         left: 0,
                         width: "250%",
                         height: "100%",
-                        background: "linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0) 70%)",
+                        background: "linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 70%)",
                         transform: "translateX(-110%) translateY(110%) skewX(-15deg)",
                         transition: "transform 1.1s cubic-bezier(0.25, 1, 0.5, 1)",
                         pointerEvents: "none",
-                        zIndex: 3
+                        zIndex: 4
                       },
                       "&:hover::after": {
                         transform: "translateX(110%) translateY(-110%) skewX(-15deg)"
                       },
+                      "&:hover": {
+                        borderColor: "rgba(255,255,255,0.2)"
+                      },
                       "&:hover .hover-overlay": {
                         opacity: 1
                       },
-                      "&:hover .product-title": {
+                      "&:hover .brand-name": {
                         transform: "translateY(0)",
                         opacity: 1
                       },
-                      "&:hover .product-btn": {
+                      "&:hover .brand-headline": {
                         transform: "translateY(0)",
                         opacity: 1
+                      },
+                      "&:hover .center-logo-container": {
+                        transform: "translate(-50%, -64%) scale(1.05)"
                       }
                     }}
                   >
-                    <motion.img 
-                      src={product.imageUrl} 
-                      alt={title} 
-                      whileHover={{ scale: 1.04 }}
-                      transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        pointerEvents: "none"
+                    {/* Centered Brand Logo Badge */}
+                    <Box
+                      className="center-logo-container"
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        zIndex: 2,
+                        width: "85%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        pointerEvents: "none",
+                        transition: "all 0.5s cubic-bezier(0.25, 1, 0.5, 1)"
                       }}
-                      draggable="false"
-                    />
+                    >
+                      {brand.logoUrl ? (
+                        <Box
+                          component="img"
+                          src={brand.logoUrl}
+                          alt={name}
+                          sx={{
+                            width: "auto",
+                            maxWidth: "95%",
+                            height: { xs: 110, md: 165 },
+                            objectFit: "contain",
+                            filter: "invert(1) drop-shadow(0px 4px 12px rgba(0,0,0,0.15))",
+                            mixBlendMode: "screen"
+                          }}
+                        />
+                      ) : (
+                        <Typography
+                          sx={{
+                            color: "#fff",
+                            fontFamily: "var(--heading-font)",
+                            fontSize: { xs: 32, md: 46 },
+                            fontWeight: 600,
+                            letterSpacing: "0.18em",
+                            textTransform: "uppercase",
+                            textAlign: "center"
+                          }}
+                        >
+                          {name}
+                        </Typography>
+                      )}
+                    </Box>
 
                     <Box 
                       className="hover-overlay"
                       sx={{
                         position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.15) 100%)",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "35%",
+                        background: "transparent",
                         opacity: 0,
                         transition: "opacity 0.4s ease",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "flex-end",
-                        p: 3,
-                        zIndex: 2,
+                        p: 3.5,
+                        pb: 4,
+                        zIndex: 3,
                         textAlign: lang === "ar" ? "right" : "left"
                       }}
                     >
-                      <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", mb: 0.5, fontFamily: '"Cairo", sans-serif' }}>
-                        {category}
-                      </Typography>
-                      
                       <Typography 
-                        className="product-title"
+                        className="brand-name"
                         sx={{ 
                           color: "#ffffff", 
                           fontFamily: "var(--heading-font)", 
-                          fontSize: 20, 
+                          fontSize: { xs: 22, md: 28 }, 
                           fontWeight: 500, 
-                          mb: 1,
-                          transform: "translateY(15px)",
+                          mb: 0.8,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
                           opacity: 0,
+                          transform: "translateY(15px)",
+                          transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease"
+                        }}
+                      >
+                        {name}
+                      </Typography>
+
+                      <Typography 
+                        className="brand-headline"
+                        sx={{ 
+                          color: "primary.main", 
+                          fontSize: 11, 
+                          fontWeight: 700, 
+                          textTransform: "uppercase", 
+                          letterSpacing: "0.15em", 
+                          fontFamily: '"Cairo", sans-serif',
+                          opacity: 0,
+                          transform: "translateY(15px)",
                           transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease",
                           transitionDelay: "0.05s"
                         }}
                       >
-                        {title}
+                        {brand.headline}
                       </Typography>
                     </Box>
                   </Box>

@@ -281,7 +281,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           style={{
             fontFamily: '"Cairo", sans-serif',
-            fontSize: "12px",
+            fontSize: "13px",
             fontWeight: 600,
             letterSpacing: "0.06em",
             textAlign: "center",
@@ -667,11 +667,13 @@ function FloatingMenu({ settings, lang, setLang, t, isLangTransitioning }: { set
 function SectionRenderer({ 
   section, 
   t, 
-  lang 
+  lang,
+  brands
 }: { 
   section: Section; 
   t: (s?: string) => string; 
   lang: "ar" | "en"; 
+  brands?: any[];
 }) {
   const type = section.type || (section._type && section._type.replace("Section", ""));
   
@@ -679,7 +681,7 @@ function SectionRenderer({
   if (type === "brandMarquee") return <BrandMarquee section={section} lang={lang} />;
   if (type === "manifesto") return <ManifestoSection section={section} t={t} lang={lang} />;
   if (type === "collections") return <CollectionsSection section={section} t={t} lang={lang} />;
-  if (type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} />;
+  if (type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} brands={brands} />;
   if (type === "boulevard" || type === "boulevard-selection" || type === "boulevardSelection") return <BoulevardSelectionSection section={section} t={t} lang={lang} />;
   if (type === "carousel") return <CarouselSection section={section} t={t} lang={lang} />;
   if (type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;
@@ -690,10 +692,12 @@ function SectionRenderer({
 export default function Storefront({ 
   settings, 
   sections,
+  brands,
   initialLang
 }: { 
   settings: SiteSettings; 
   sections: Section[];
+  brands?: any[];
   initialLang: "ar" | "en";
 }) {
   const params = useParams();
@@ -769,6 +773,7 @@ export default function Storefront({
                   section={section} 
                   t={t} 
                   lang={lang} 
+                  brands={brands}
                 />
               </Box>
             );

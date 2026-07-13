@@ -8,6 +8,13 @@ export default defineType({
   icon: Award,
   fields: [
     defineField({
+      name: "isActive",
+      title: "Is Active / Show in UI",
+      type: "boolean",
+      description: "If enabled, this brand will be shown in the UI. If disabled, it will be hidden.",
+      initialValue: true,
+    }),
+    defineField({
       name: "title",
       title: "Brand Title",
       type: "string",
@@ -37,6 +44,22 @@ export default defineType({
         ],
       },
       initialValue: "medium",
+    }),
+    defineField({
+      name: "headline",
+      title: "Headline",
+      type: "localizedString",
+    }),
+    defineField({
+      name: "description",
+      title: "Description",
+      type: "localizedText",
+    }),
+    defineField({
+      name: "bgImage",
+      title: "Background Image",
+      type: "image",
+      options: { hotspot: true },
     }),
   ],
   preview: {
