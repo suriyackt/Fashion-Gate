@@ -12,6 +12,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useLoader } from "@/components/LoaderProvider";
 import type { Product } from "@/lib/productData";
+import { getBrandById } from "@/lib/brandData";
 import { getAnnouncements, getLocalizedValue } from "@/lib/sanity";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Tooltip from "./Tooltip";
@@ -345,13 +346,35 @@ function SearchOption({
 
   const resolvedBrands = useMemo(() => {
     if (suggestedBrandsList && suggestedBrandsList.length > 0) {
-      return suggestedBrandsList.map(item => ({
-        id: item.slug?.current || item._id,
-        label: item.title
-      }));
+      return suggestedBrandsList.map(item => {
+        const brandId = item.slug?.current || item._id || "";
+        let label = item.title;
+        if (lang === "ar") {
+          if (item.titleAr) {
+            label = item.titleAr;
+          } else {
+            const local = getBrandById(brandId);
+            if (local?.nameAr) {
+              label = local.nameAr;
+            }
+          }
+        }
+        return {
+          id: brandId,
+          label: label
+        };
+      });
     }
-    return brandSuggestions;
-  }, [suggestedBrandsList]);
+    return brandSuggestions.map(item => {
+      if (lang === "ar") {
+        const local = getBrandById(item.id);
+        if (local?.nameAr) {
+          return { id: item.id, label: local.nameAr };
+        }
+      }
+      return item;
+    });
+  }, [suggestedBrandsList, lang]);
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -507,6 +530,8 @@ function SearchOption({
                     {matchingProducts.map((p) => {
                       const title = lang === "ar" ? p.titleAr : p.title;
                       const cat = lang === "ar" ? p.categoryAr : p.category;
+                      const brandObj = getBrandById(p.brandId);
+                      const brandName = brandObj ? (lang === "ar" ? brandObj.nameAr : brandObj.name) : p.brandId.toUpperCase();
                       return (
                         <Link
                           key={p.id}
@@ -540,7 +565,7 @@ function SearchOption({
                                 {title}
                               </Typography>
                               <Typography sx={{ fontSize: 9, color: "#CB6116", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.1em", mt: 0.3 }}>
-                                {p.brandId.toUpperCase()} — {cat}
+                                {brandName} — {cat}
                               </Typography>
                             </Box>
                           </Stack>
@@ -626,6 +651,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           searchSuggestedBrands[]-> {
             _id,
             title,
+            titleAr,
             slug
           },
           menuItems[] {
@@ -637,6 +663,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               brands[]-> {
                 _id,
                 title,
+                titleAr,
                 slug,
                 isActive
               }
@@ -699,10 +726,24 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
       },
       brands: (cat.brands || [])
         .filter((b: any) => b.isActive !== false)
-        .map((b: any) => ({
-          id: b.slug?.current || b._id,
-          label: b.title
-        }))
+        .map((b: any) => {
+          const brandId = b.slug?.current || b._id || "";
+          let label = b.title;
+          if (lang === "ar") {
+            if (b.titleAr) {
+              label = b.titleAr;
+            } else {
+              const local = getBrandById(brandId);
+              if (local?.nameAr) {
+                label = local.nameAr;
+              }
+            }
+          }
+          return {
+            id: brandId,
+            label: label
+          };
+        })
     })).filter(cat => cat.brands.length > 0);
 
     activeCats.forEach(cat => {
@@ -1197,10 +1238,24 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                                   },
                                   brands: (cat.brands || [])
                                     .filter((b: any) => b.isActive !== false)
-                                    .map((b: any) => ({
-                                      id: b.slug?.current || b._id,
-                                      label: b.title
-                                    }))
+                                    .map((b: any) => {
+                                      const brandId = b.slug?.current || b._id || "";
+                                      let label = b.title;
+                                      if (lang === "ar") {
+                                        if (b.titleAr) {
+                                          label = b.titleAr;
+                                        } else {
+                                          const local = getBrandById(brandId);
+                                          if (local?.nameAr) {
+                                            label = local.nameAr;
+                                          }
+                                        }
+                                      }
+                                      return {
+                                        id: brandId,
+                                        label: label
+                                      };
+                                    })
                                 }))
                               )}
                             </Stack>

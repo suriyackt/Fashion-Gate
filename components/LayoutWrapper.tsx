@@ -1,0 +1,48 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import { useEffect, useState, useMemo } from "react";
+import { getHomepageData } from "@/lib/sanity";
+import { fallbackSettings } from "@/lib/fallbackData";
+import { ThemeProvider, createTheme } from "@mui/material";
+
+export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [settings, setSettings] = useState<any>(fallbackSettings);
+
+  useEffect(() => {
+    getHomepageData().then(data => {
+      if (data?.settings) {
+        setSettings({ ...fallbackSettings, ...data.settings });
+      }
+    }).catch(err => console.error("Error loading header settings:", err));
+  }, []);
+
+  const theme = useMemo(() => createTheme({
+    palette: {
+      primary: { main: settings.primaryColor || "#CB6116", dark: "#9D430C" },
+      secondary: { main: settings.accentColor || "#D06010" }
+    },
+    typography: {
+      fontFamily: `"Cairo", sans-serif`,
+      button: { fontWeight: 800 }
+    },
+    shape: { borderRadius: 0 }
+  }), [settings.accentColor, settings.primaryColor]);
+
+  const isAuthOrStudio = pathname?.includes("/login") || pathname?.includes("/studio");
+
+  if (isAuthOrStudio) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
+      <SiteHeader settings={settings} />
+      {children}
+      <SiteFooter />
+    </ThemeProvider>
+  );
+}

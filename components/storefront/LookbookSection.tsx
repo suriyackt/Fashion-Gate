@@ -37,10 +37,10 @@ export default function LookbookSection({
     return list.map((b) => {
       const id = b.slug?.current || b.id || "";
       const name = b.title || b.name || "";
-      const nameAr = b.nameAr || b.title || "";
+      const nameAr = b.titleAr || b.nameAr || b.title || "";
       const headline = b.headline?.[lang] || b.headline || "";
       const bgUrl = b.bgImage?.asset?.url || b.backdropUrl || "/assets/headerbg.png";
-      const logoUrl = b.image?.asset?.url || null;
+      const logoUrl = ((lang === "ar" && b.imageAr?.asset?.url) ? b.imageAr.asset.url : b.image?.asset?.url) || null;
       return { id, name, nameAr, headline, bgUrl, logoUrl };
     });
   }, [brands, lang]);

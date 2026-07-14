@@ -8,17 +8,22 @@ export default defineType({
   icon: Award,
   fields: [
     defineField({
+      name: "title",
+      title: "Brand Title",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "titleAr",
+      title: "Brand Title (Arabic)",
+      type: "string",
+    }),
+    defineField({
       name: "isActive",
       title: "Is Active / Show in UI",
       type: "boolean",
       description: "If enabled, this brand will be shown in the UI. If disabled, it will be hidden.",
       initialValue: true,
-    }),
-    defineField({
-      name: "title",
-      title: "Brand Title",
-      type: "string",
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
@@ -29,6 +34,12 @@ export default defineType({
     defineField({
       name: "image",
       title: "Brand Logo Image",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "imageAr",
+      title: "Brand Logo Image (Arabic)",
       type: "image",
       options: { hotspot: true },
     }),

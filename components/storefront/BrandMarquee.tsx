@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useMemo } from "react";
 import { getLocalizedValue, imageUrl } from "@/lib/sanity";
+import { getBrandById } from "@/lib/brandData";
 
 const brandsList = [
   { 
@@ -82,7 +83,7 @@ const brandsList = [
   { 
     id: "paul-shark", 
     logo: (
-      <svg width="240" height="48" viewBox="0 0 160 30" fill="currentColor">
+      <svg width="240" height="88" viewBox="0 0 160 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Futura', sans-serif" fontSize="15" fontWeight="900" letterSpacing="0.18em" textAnchor="middle">PAUL & SHARK</text>
       </svg>
     )
@@ -169,6 +170,26 @@ const brandsList = [
   }
 ];
 
+const brandTweaks: Record<string, { scale?: number; yOffset?: number }> = {
+  "skechers": { scale: 0.65 },        // Scale down bold/italic Skechers
+  "valentino": { scale: 1.25, yOffset: 2 }, // Scale up Valentino and shift down
+  "adidas": { scale: 1.2 },           // Scale up Adidas text logo
+  "ysl": { scale: 0.85 },            // Modern Saint Laurent Paris logo
+  "gucci": { scale: 0.9 },
+  "prada": { scale: 0.9 },
+  "calvin-klein": { scale: 1.05 },
+  "cartier": { scale: 0.9 },          // Reduced size as requested
+  "elie-saab": { scale: 1.25 },       // Increased size as requested
+  "chloe": { scale: 1.25 },           // Increased size as requested
+  "editorial": { scale: 1.25 },       // Increased size as requested
+  "moje": { scale: 1.25 },            // Increased size as requested
+  "paul-shark": { scale: 1.4 },       // Scaled up for original shark logo PNG visibility
+  "hugo-boss": { scale: 0.8 },        // Scale down bold BOSS
+  "giorgio-armani": { scale: 0.9 },
+  "sandro": { scale: 0.85 },
+  "maxmara": { scale: 0.9 }
+};
+
 export default function BrandMarquee({
   section,
   lang: propLang
@@ -185,25 +206,29 @@ export default function BrandMarquee({
       return activeBrands.map((b: any, index: number) => {
         const slugStr = b.slug?.current || b.id || "";
         const staticMatch = brandsList.find(s => s.id === slugStr);
+        const localizedTitle = (lang === "ar" && b.titleAr) ? b.titleAr : b.title;
 
         let brandLogoNode: React.ReactNode = null;
 
-        if (b.image) {
+        const logoImage = (lang === "ar" && b.imageAr) ? b.imageAr : b.image;
+        if (logoImage) {
           try {
-            // Fetch at higher resolution to ensure sharp text rendering
-            const url = imageUrl(b.image).width(600).quality(100).url();
+            const url = logoImage.asset?.url || imageUrl(logoImage).width(600).quality(100).url();
+
             if (url) {
               brandLogoNode = (
                 <Box 
                   component="img" 
                   src={url} 
-                  alt={b.title} 
+                  alt={localizedTitle} 
                   sx={{ 
-                    height: { xs: 80, md: 120 }, 
-                    width: "auto", 
+                    height: "100% !important", 
+                    width: "auto !important", 
                     objectFit: "contain",
                     opacity: 0.8,
                     mixBlendMode: "multiply",
+                    transform: "scale(1.0) translateZ(0)",
+                    transformOrigin: "center center",
                     transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
                     willChange: "transform, opacity",
                     "&:hover": {
@@ -221,19 +246,59 @@ export default function BrandMarquee({
 
         return {
           id: slugStr || `brand-${index}`,
-          title: b.title,
-          logo: brandLogoNode || (staticMatch ? (
+          title: localizedTitle,
+          size: b.size,
+          logo: brandLogoNode || (lang === "ar" ? (
+            <svg width="220" height="50" viewBox="0 0 120 30" fill="currentColor">
+              <text 
+                x="50%" 
+                y="22" 
+                fontFamily="'Cairo', 'Didot', serif" 
+                fontSize="13" 
+                fontWeight="bold" 
+                letterSpacing="0.05em" 
+                textAnchor="middle"
+              >
+                {localizedTitle}
+              </text>
+            </svg>
+          ) : staticMatch ? (
             staticMatch.logo
           ) : (
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase" }}>
-              {b.title}
+              {localizedTitle}
             </Typography>
           ))
         };
       });
     }
-    return brandsList;
-  }, [section?.brands]);
+    
+    // Fallback: use static brandsList but localize the logos if lang === "ar"
+    return brandsList.map(item => {
+      const local = getBrandById(item.id);
+      const title = local ? (lang === "ar" ? local.nameAr : local.name) : item.id;
+      return {
+        id: item.id,
+        title: title,
+        size: (local as any)?.size || "medium",
+        logo: lang === "ar" ? (
+          <svg width="220" height="50" viewBox="0 0 120 30" fill="currentColor">
+            <text 
+              x="50%" 
+              y="22" 
+              fontFamily="'Cairo', 'Didot', serif" 
+              fontSize="13" 
+              fontWeight="bold" 
+              letterSpacing="0.05em" 
+              textAnchor="middle"
+            >
+              {title}
+            </text>
+          </svg>
+        ) : item.logo
+      };
+    });
+  }, [section?.brands, lang]);
 
   // Double/Triple the array to make the infinite loop seamless
   const scrollingItems = [...unifiedBrands, ...unifiedBrands, ...unifiedBrands];
@@ -345,7 +410,7 @@ export default function BrandMarquee({
             display: "flex",
             width: "max-content",
             alignItems: "center",
-            gap: { xs: 8, md: 12 },
+            gap: { xs: 16, md: 25 },
             animation: "scrollMarquee 64s linear infinite",
             "&:hover": {
               animationPlayState: "paused" // Pauses scroll on hover
@@ -356,32 +421,71 @@ export default function BrandMarquee({
             }
           }}
         >
-          {scrollingItems.map((item: any, index: number) => (
-            <Link
-              key={`${item.id}-${index}`}
-              href={`/brand/${item.id}/${lang}`}
-              style={{ textDecoration: "none", display: "inline-block" }}
-            >
-              <Box
-                sx={{
-                  color: "#222222",
-                  opacity: 0.75,
-                  cursor: "pointer",
-                  transition: "all 0.35s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  "&:hover": {
-                    color: "#000000",
-                    opacity: 1,
-                    transform: "scale(1.05)"
-                  }
-                }}
+          {scrollingItems.map((item: any, index: number) => {
+            const tweak = brandTweaks[item.id] || {};
+            
+            // Resolve custom size scale multiplier based on Sanity size field
+            let sizeMultiplier = 1.0;
+            if (item.size === "small") {
+              sizeMultiplier = 0.75;
+            } else if (item.size === "large") {
+              sizeMultiplier = 1.5;
+            }
+
+            const finalScale = (tweak.scale || 1.0) * sizeMultiplier;
+            const finalY = tweak.yOffset || 0;
+
+            return (
+              <Link
+                key={`${item.id}-${index}`}
+                href={`/brand/${item.id}/${lang}`}
+                style={{ textDecoration: "none", display: "inline-block" }}
               >
-                {item.logo}
-              </Box>
-            </Link>
-          ))}
+                <Box
+                  sx={{
+                    height: { xs: 35, md: 54 },
+                    maxWidth: { xs: 110, md: 170 },
+                    width: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#222222",
+                    opacity: 0.75,
+                    cursor: "pointer",
+                    transition: "all 0.35s ease",
+                    "& svg": {
+                      height: "100% !important",
+                      width: "auto !important",
+                      maxHeight: "100%",
+                      maxWidth: "100%",
+                      transform: `scale(${finalScale}) translateY(${finalY}px) translateZ(0)`,
+                      transformOrigin: "center center",
+                      transition: "transform 0.3s ease"
+                    },
+                    "& img": {
+                      height: "100% !important",
+                      width: "auto !important",
+                      maxHeight: "100%",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                      transform: `scale(${finalScale}) translateY(${finalY}px) translateZ(0)`,
+                      transformOrigin: "center center",
+                      transition: "transform 0.3s ease"
+                    },
+                    "&:hover": {
+                      color: "#000000",
+                      opacity: 1,
+                      "& svg, & img": {
+                        transform: `scale(${finalScale * 1.06}) translateY(${finalY}px) translateZ(0)`
+                      }
+                    }
+                  }}
+                >
+                  {item.logo}
+                </Box>
+              </Link>
+            );
+          })}
         </Box>
       </Box>
     </Box>

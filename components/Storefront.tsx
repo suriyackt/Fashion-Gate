@@ -12,8 +12,7 @@ import type { CollectionItem, MediaItem, SanityImage, Section, SiteSettings } fr
 import Link from "next/link";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
-import SiteFooter from "@/components/SiteFooter";
-import SiteHeader from "@/components/SiteHeader";
+import FaqSection from "./storefront/FaqSection";
 import HeroSection from "./storefront/HeroSection";
 import ManifestoSection from "./storefront/ManifestoSection";
 import CarouselSection from "./storefront/CarouselSection";
@@ -297,7 +296,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
               component={Link}
               href={announcements[index].link}
               sx={{
-                fontSize: { xs: 11, md: 12 },
+                fontSize: { xs: 12, md: 13 },
                 fontWeight: 600,
                 letterSpacing: "0.06em",
                 textAlign: "center",
@@ -312,7 +311,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           ) : (
             <Typography
               sx={{
-                fontSize: { xs: 11, md: 12 },
+                fontSize: { xs: 12, md: 13 },
                 fontWeight: 600,
                 letterSpacing: "0.06em",
                 textAlign: "center",
@@ -763,7 +762,6 @@ export default function Storefront({
         }}
       >
         <Box>
-          <SiteHeader settings={settings} onLangToggleStart={() => setIsLangTransitioning(true)} />
           {sections.map((section, index) => {
             if (!section || section.enabled === false) return null;
             const type = section.type || (section._type && section._type.replace("Section", ""));
@@ -778,7 +776,7 @@ export default function Storefront({
               </Box>
             );
           })}
-          <SiteFooter />
+          <FaqSection lang={lang} />
         </Box>
       </Box>
     </ThemeProvider>

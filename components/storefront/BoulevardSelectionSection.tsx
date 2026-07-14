@@ -6,7 +6,7 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import { products } from "@/lib/productData";
 import type { Section } from "@/lib/types";
-import { getLocalizedValue } from "@/lib/sanity";
+import { getLocalizedValue, imageUrl } from "@/lib/sanity";
 
 export default function BoulevardSelectionSection({ 
   section, 
@@ -47,12 +47,28 @@ export default function BoulevardSelectionSection({
     lang,
     lang === "ar" ? "بوابة الموضة بوليفارد — العتبة إلى عالم الاستثناء" : "Fashion Gate Boulevard — The Threshold to the Exceptional"
   );
+    const quote  = getLocalizedValue(
+    section.quote,
+    lang,
+    lang === "ar" ? "«أنت لا تتسوق في بوابة الموضة بوليفارد، بل تمشي فيها.»" : "\"You do not shop Fashion Gate Boulevard. You walk it.\""
+  );
 
   const customDescription = getLocalizedValue(
     section.description,
     lang,
     ""
   );
+
+  const signatureImageUrl = useMemo(() => {
+    if (section.image) {
+      try {
+        return imageUrl(section.image).url();
+      } catch (e) {
+        console.error("Error resolving signature image url:", e);
+      }
+    }
+    return "/assets/baglight.png";
+  }, [section.image]);
 
   return (
     <Box id={section.anchor} component="section" sx={{ py: { xs: 12, md: 18 }, bgcolor: "#ffffff", color: "#111111", position: "relative", overflow: "hidden" }}>
@@ -72,7 +88,7 @@ export default function BoulevardSelectionSection({
             <Box sx={{ mt: { xs: 4, md: 0 }, display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center", gap: 3.5 }}>
               <Box 
                 component="img"
-                src="/assets/baglight.png"
+                src={signatureImageUrl}
                 alt="Fashion Gate Boulevard Carrier Bag"
                 sx={{ 
                   width: { xs: 100, md: 120 }, 
@@ -94,11 +110,7 @@ export default function BoulevardSelectionSection({
                 fontStyle: "italic",
                 lineHeight: 1.3
               }}>
-                {lang === "ar" ? (
-                  "«أنت لا تتسوق في بوابة الموضة بوليفارد، بل تمشي فيها.»"
-                ) : (
-                  "\"You do not shop Fashion Gate Boulevard. You walk it.\""
-                )}
+               {quote}
               </Typography>
             </Box>
           </Box>

@@ -47,6 +47,7 @@ export const fallbackSections = [
     anchor: "boulevard",
     eyebrow: "Signature Spaces",
     headline: "The Boulevard Selection",
+    quote: "“You do not shop Fashion Gate Boulevard. You walk it.”",
     description: "Fashion Gate Boulevard is Syria's first luxury department store — a single address containing multiple worlds under one unified architectural vision."
   },
   

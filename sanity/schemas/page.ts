@@ -68,6 +68,7 @@ export const page = defineType({
         anchor: "boulevard",
         eyebrow: { en: "Signature Spaces", ar: "مساحات التوقيع" },
         headline: { en: "The Boulevard Selection", ar: "مجموعة البوليفارد" },
+        quote: { en: "“You do not shop Fashion Gate Boulevard. You walk it.”", ar: "«أنت لا تتسوق في بوابة الموضة بوليفارد، بل تمشي فيها.»" },
         description: {
           en: "Fashion Gate Boulevard is Syria's first luxury department store — a single address containing multiple worlds under one unified architectural vision.",
           ar: "فاشن جيت بوليفارد هو أول متجر سوري فاخر - عنوان واحد يضم عوالم متعددة تحت رؤية معمارية موحدة."
