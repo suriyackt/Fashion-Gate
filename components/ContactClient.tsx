@@ -24,8 +24,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+
 import { getLocalizedValue } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
@@ -180,11 +179,7 @@ export default function ContactClient({ initialLang, initialData }: ContactClien
           flexDirection: "column"
         }}
       >
-        {/* Site Header */}
-        <SiteHeader
-          settings={{ title: "Fashion Gate" }}
-          onLangToggleStart={handleLangToggle}
-        />
+
 
         {/* SECTION 1: Futuristic Parallax Banner */}
         <Box 
@@ -627,8 +622,6 @@ export default function ContactClient({ initialLang, initialData }: ContactClien
           />
         </Box>
 
-        {/* Site Footer */}
-        <SiteFooter />
       </Box>
     </ThemeProvider>
   );

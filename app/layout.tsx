@@ -44,6 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import LayoutWrapper from "@/components/LayoutWrapper";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -52,7 +54,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <CssBaseline />
           <LoaderProvider>
             <SmoothScroll />
-            {children}
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
           </LoaderProvider>
         </AppRouterCacheProvider>
       </body>

@@ -7,8 +7,7 @@ import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { Brand } from "@/lib/brandData";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+
 
 const brandVectorLogos: Record<string, React.ReactNode> = {
   adidas: (
@@ -97,7 +96,7 @@ export default function BrandDetailClient({
   const bgUrl = brand.bgImage?.asset?.url || brand.backdropUrl || "/assets/headerbg.png";
   const headlineText = brand.headline?.[lang] || brand.headline || "";
   const descriptionText = brand.description?.[lang] || brand.description || "";
-  const logoUrl = brand.image?.asset?.url;
+  const logoUrl = (lang === "ar" && brand.imageAr?.asset?.url) ? brand.imageAr.asset.url : brand.image?.asset?.url;
   const buttonText = brand.buttonText?.[lang] || brand.buttonText || "";
   const buttonLink = brand.buttonLink || "";
 
@@ -113,11 +112,7 @@ export default function BrandDetailClient({
           flexDirection: "column" 
         }}
       >
-        {/* Site Header */}
-        <SiteHeader
-          settings={{ title: "Fashion Gate" }}
-          onLangToggleStart={handleLangToggle}
-        />
+
         
         {/* Immersive Brand Hero Container */}
         <Box 
@@ -274,7 +269,7 @@ export default function BrandDetailClient({
                 <Box 
                   component="img" 
                   src={logoUrl} 
-                  alt={brand.title} 
+                  alt={(lang === "ar" && brand.titleAr) ? brand.titleAr : brand.title} 
                   sx={{ 
                     height: { xs: 140, md: 140 }, 
                     width: "auto", 
@@ -286,7 +281,7 @@ export default function BrandDetailClient({
               ) : (
                 brandVectorLogos[brand.id] || (
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                    {lang === "ar" ? brand.nameAr || brand.title : brand.name || brand.title}
+                    {lang === "ar" ? brand.titleAr || brand.nameAr || brand.title : brand.title || brand.name}
                   </Typography>
                 )
               )}
@@ -359,8 +354,6 @@ export default function BrandDetailClient({
           </Box>
         </Box>
 
-        {/* Site Footer */}
-        <SiteFooter />
       </Box>
     </ThemeProvider>
   );

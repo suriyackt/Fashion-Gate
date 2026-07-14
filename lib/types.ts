@@ -58,6 +58,9 @@ export type Section = {
   video?: { asset?: { url?: string } };
   
   // New localized and background fields
+  quote?: string | { en?: string; ar?: string };
+  quoteEn?: string;
+  quoteAr?: string;
   eyebrowEn?: string;
   eyebrowAr?: string;
   headlineEn?: string;

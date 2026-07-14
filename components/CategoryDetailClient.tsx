@@ -2,11 +2,11 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
+import { getBrandById } from "@/lib/brandData";
 import { Box, Container, Stack, Typography, Grid, Button, Divider, Link as MuiLink, ThemeProvider, createTheme } from "@mui/material";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -140,15 +140,22 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
         { id: "men-accessories", label: t.subcategories["men-accessories"] }
       ];
     } else if (categoryId === "perfumes" || categoryId === "skincare" || categoryId === "designers") {
+      const getBrandName = (id: string, defaultName: string) => {
+        if (lang === "ar") {
+          const b = getBrandById(id);
+          if (b?.nameAr) return b.nameAr;
+        }
+        return defaultName;
+      };
       return [
         { id: "all", label: lang === "ar" ? "الكل" : "All Brands" },
-        { id: "adidas", label: "adidas" },
-        { id: "calvin-klein", label: "CALVIN KLEIN" },
-        { id: "skechers", label: "SKECHERS" },
-        { id: "maxmara", label: "MaxMara" },
-        { id: "editorial", label: "EDITORIAL" },
-        { id: "paul-shark", label: "PAUL & SHARK" },
-        { id: "sandro-moje", label: "SANDRO moje" }
+        { id: "adidas", label: getBrandName("adidas", "adidas") },
+        { id: "calvin-klein", label: getBrandName("calvin-klein", "CALVIN KLEIN") },
+        { id: "skechers", label: getBrandName("skechers", "SKECHERS") },
+        { id: "maxmara", label: getBrandName("maxmara", "MaxMara") },
+        { id: "editorial", label: getBrandName("editorial", "EDITORIAL") },
+        { id: "paul-shark", label: getBrandName("paul-shark", "PAUL & SHARK") },
+        { id: "sandro-moje", label: getBrandName("sandro-moje", "SANDRO moje") }
       ];
     } else if (categoryId === "fashion") {
       return [
@@ -237,7 +244,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ bgcolor: "#fbfaf8", color: "#111111", minHeight: "100vh", display: "flex", flexDirection: "column" }} dir={lang === "ar" ? "rtl" : "ltr"}>
-      <SiteHeader onLangToggleStart={() => setIsLangTransitioning(true)} />
+
       
       <Box sx={{ flexGrow: 1, py: { xs: 6, md: 10 }, opacity: isLangTransitioning ? 0 : 1, transition: "opacity 0.25s ease" }}>
         <Container maxWidth="xl">
@@ -318,7 +325,6 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
         </Container>
       </Box>
       
-      <SiteFooter />
       </Box>
     </ThemeProvider>
   );

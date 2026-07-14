@@ -7,8 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+
 import { PortableText } from "@portabletext/react";
 
 interface BlogDetailClientProps {
@@ -114,10 +113,7 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
           flexDirection: "column" 
         }}
       >
-        {/* Site Header */}
-        <SiteHeader
-          onLangToggleStart={handleLangToggle}
-        />
+
         
         {/* Header Cover Info */}
         <Box component="section" sx={{ pt: { xs: 8, md: 12 }, pb: 6 }}>
@@ -254,8 +250,6 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
           </Container>
         </Box>
 
-        {/* Footer */}
-        <SiteFooter />
       </Box>
     </ThemeProvider>
   );

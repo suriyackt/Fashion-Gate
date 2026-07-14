@@ -45,6 +45,7 @@ export async function getHomepageData() {
         type,
         anchor,
         title,
+        quote { en, ar },
         eyebrow { en, ar },
         headline { en, ar },
         description { en, ar },
@@ -65,9 +66,12 @@ export async function getHomepageData() {
         },
         brands[@->isActive != false]->{
           title,
+          titleAr,
           slug,
-          image,
-          isActive
+          image { asset->{ url, metadata { dimensions { aspectRatio } } } },
+          imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
+          isActive,
+          size
         },
         slides[]{
           title { en, ar },
@@ -105,8 +109,11 @@ export async function getHomepageData() {
     "brands": *[_type == "brand" && isActive == true] | order(title asc) {
       _id,
       title,
+      titleAr,
       slug,
-      image { asset->{ url } },
+      image { asset->{ url, metadata { dimensions { aspectRatio } } } },
+      imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
+      size,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -199,8 +206,11 @@ export async function getSanityBrands() {
     return await sanityClient.fetch(`*[_type == "brand" && isActive == true] | order(title asc) {
       _id,
       title,
+      titleAr,
       slug,
-      image { asset->{ url } },
+      image { asset->{ url, metadata { dimensions { aspectRatio } } } },
+      imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
+      size,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -213,13 +223,25 @@ export async function getSanityBrands() {
   }
 }
 
+export async function getTermsPageData() {
+  try {
+    return await sanityClient.fetch(`*[_type == "termsPage"][0]`);
+  } catch (err) {
+    console.error("Error fetching terms page data:", err);
+    return null;
+  }
+}
+
 export async function getSanityBrand(slug: string) {
   try {
     return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug && isActive == true][0] {
       _id,
       title,
+      titleAr,
       slug,
       image { asset->{ url } },
+      imageAr { asset->{ url } },
+      size,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -282,7 +304,7 @@ export async function getSanityProduct(slug: string): Promise<any> {
       price,
       image { asset->{ url } },
       badge { en, ar },
-      brand->{ slug, title },
+      brand->{ slug, title, titleAr },
       category->{ slug, titleEn, titleAr },
       detailsList[]{ en, ar }
     }`, { slug });
@@ -322,7 +344,7 @@ export async function getAllSanityProducts(): Promise<any[]> {
       price,
       image { asset->{ url } },
       badge { en, ar },
-      brand->{ slug, title },
+      brand->{ slug, title, titleAr },
       category->{ slug, titleEn, titleAr },
       detailsList[]{ en, ar }
     }`);
@@ -351,19 +373,75 @@ export async function getAllSanityProducts(): Promise<any[]> {
 
 export async function getSanityBlogPosts(): Promise<any[]> {
   try {
-    const rawList = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
-      _id,
-      title { en, ar },
-      slug,
-      excerpt { en, ar },
-      format,
-      category,
-      mainImage { asset->{ url } },
-      content,
-      publishedAt
+    const pageData = await sanityClient.fetch(`*[_type == "blogsPage" && _id == "blogsPage"][0] {
+      blogs[] {
+        label { en, ar },
+        href
+      }
     }`);
 
+    let rawList = pageData?.blogs;
+
+    if (rawList && rawList.length > 0) {
+      const slugMappings = rawList.map((item: any) => {
+        const href = item.href || "";
+        const parts = href.split("/").filter(Boolean);
+        const slug = parts[parts.length - 1] || "";
+        return { slug, customLabel: item.label };
+      }).filter((m: any) => m.slug);
+
+      const slugs = slugMappings.map((m: any) => m.slug);
+
+      const posts = await sanityClient.fetch(`*[_type == "post" && slug.current in $slugs] {
+        _id,
+        title { en, ar },
+        slug,
+        excerpt { en, ar },
+        format,
+        category,
+        mainImage { asset->{ url } },
+        content,
+        publishedAt
+      }`, { slugs });
+
+      const orderedPosts = slugMappings.map((mapping: any) => {
+        const post = posts.find((p: any) => p.slug?.current === mapping.slug);
+        if (!post) return null;
+
+        const finalTitle = {
+          en: mapping.customLabel?.en || post.title?.en || "",
+          ar: mapping.customLabel?.ar || post.title?.ar || ""
+        };
+
+        return {
+          ...post,
+          title: finalTitle
+        };
+      }).filter(Boolean);
+
+      if (orderedPosts.length > 0) {
+        rawList = orderedPosts;
+      } else {
+        rawList = null;
+      }
+    }
+
+    if (!rawList || rawList.length === 0) {
+      rawList = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
+        _id,
+        title { en, ar },
+        slug,
+        excerpt { en, ar },
+        format,
+        category,
+        mainImage { asset->{ url } },
+        content,
+        publishedAt
+      }`);
+    }
+
     return rawList.map((raw: any) => {
+      if (!raw) return null;
       const contentArray = Array.isArray(raw.content)
         ? raw.content
             .filter((block: any) => block._type === "block" && block.children)
@@ -389,7 +467,7 @@ export async function getSanityBlogPosts(): Promise<any[]> {
         content: contentArray,
         image: raw.mainImage?.asset?.url || "/brand-pages/page_01.jpg"
       };
-    });
+    }).filter(Boolean);
   } catch (err) {
     console.error("Error fetching sanity blog posts:", err);
     return [];

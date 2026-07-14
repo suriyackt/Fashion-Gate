@@ -1,94 +1,51 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType } from "sanity";
+import { HelpCircle } from "lucide-react";
 
 export default defineType({
-  name: 'faq',
-  title: 'FAQ',
-  type: 'document',
+  name: "faq",
+  title: "FAQ",
+  type: "document",
+  icon: HelpCircle,
   fields: [
     defineField({
-      name: 'question',
-      title: 'Question',
-      type: 'string',
+      name: "question",
+      title: "Question (Bilingual)",
+      type: "localizedString",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'answer',
-      title: 'Answer',
-      type: 'array',
-      of: [{ type: 'block' }],
+      name: "answer",
+      title: "Answer (Bilingual)",
+      type: "localizedText",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'shortAnswer',
-      title: 'Short Answer',
-      type: 'text',
-      rows: 3,
-      description: 'Plain text answer for SEO and snippets',
-    }),
-    defineField({
-      name: 'category',
-      title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'General', value: 'general' },
-          { title: 'Services', value: 'services' },
-          { title: 'Process', value: 'process' },
-          { title: 'Pricing', value: 'pricing' },
-          { title: 'Timeline', value: 'timeline' },
-          { title: 'Materials', value: 'materials' },
-          { title: 'Warranty', value: 'warranty' },
-          { title: 'Contact', value: 'contact' },
-        ],
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'relatedProduct',
-      title: 'Related Product',
-      type: 'reference',
-      to: { type: 'product' },
-      description: 'Link to relevant product page',
-    }),
-    defineField({
-      name: 'featured',
-      title: 'Featured',
-      type: 'boolean',
-      initialValue: false,
-      description: 'Show on homepage FAQ section',
-    }),
-    defineField({
-      name: 'order',
-      title: 'Display Order',
-      type: 'number',
+      name: "order",
+      title: "Display Order",
+      type: "number",
       initialValue: 100,
-      description: 'Lower numbers appear first',
+      description: "Lower numbers appear first",
     }),
   ],
   preview: {
     select: {
-      title: 'question',
-      subtitle: 'category',
-      featured: 'featured',
+      questionEn: "question.en",
+      questionAr: "question.ar",
+      order: "order",
     },
     prepare(selection) {
-      const { title, subtitle, featured } = selection
+      const { questionEn, questionAr, order } = selection;
       return {
-        title: `${featured ? '⭐ ' : ''}${title}`,
-        subtitle: subtitle,
-      }
+        title: `${questionEn || ""} / ${questionAr || ""}`,
+        subtitle: `Order: ${order !== undefined ? order : 100}`,
+      };
     },
   },
   orderings: [
     {
-      title: 'Display Order',
-      name: 'orderAsc',
-      by: [{ field: 'order', direction: 'asc' }],
-    },
-    {
-      title: 'Category',
-      name: 'categoryAsc',
-      by: [{ field: 'category', direction: 'asc' }],
+      title: "Display Order",
+      name: "orderAsc",
+      by: [{ field: "order", direction: "asc" }],
     },
   ],
-})
+});

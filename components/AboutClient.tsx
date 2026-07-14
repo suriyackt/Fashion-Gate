@@ -7,8 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CloseIcon from "@mui/icons-material/Close";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+
 import { getLocalizedValue } from "@/lib/sanity";
 
 export default function AboutClient({ initialLang, initialData }: { initialLang: "en" | "ar"; initialData?: any }) {
@@ -127,11 +126,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
           flexDirection: "column" 
         }}
       >
-        {/* Site Header */}
-        <SiteHeader
-          settings={{ title: "Fashion Gate" }}
-          onLangToggleStart={handleLangToggle}
-        />
+
 
         {/* SECTION 1: Pretty Light Mode Parallax Banner */}
         <Box 
@@ -412,8 +407,6 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
           </Box>
         )}
 
-        {/* Site Footer */}
-        <SiteFooter />
       </Box>
     </ThemeProvider>
   );

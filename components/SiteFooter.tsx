@@ -101,6 +101,12 @@ export default function SiteFooter() {
     href: link.href || ""
   }));
 
+  // Append Terms and Conditions link
+  links.push({
+    label: lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions",
+    href: "terms"
+  });
+
   return (
     <Box
       component="footer"
@@ -113,7 +119,7 @@ export default function SiteFooter() {
         overflow: "hidden"
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: { xs: 8, md: 10 }, pb: 2 }}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 8, md: 10 }, pb: { xs: 10, sm: 3 } }}>
         <Box
           sx={{
             display: "grid",
@@ -232,18 +238,34 @@ export default function SiteFooter() {
 
         {/* Bottom Bar */}
         <Stack
-          direction={{ xs: "column", sm: lang === "ar" ? "row-reverse" : "row" }}
+          direction={{ xs: "column", sm: "row" }}
           spacing={3}
           justifyContent="space-between"
           alignItems="center"
           sx={{ pt: 4, pb: 2 }}
         >
-          <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 12.5, fontFamily: '"Cairo", sans-serif' }}>
+          <Typography
+            sx={{
+              color: "rgba(0,0,0,0.48)",
+              fontSize: 12.5,
+              fontFamily: '"Cairo", sans-serif'
+            }}
+          >
             © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت مول" : "Fashion Gate Mall"}. {copyrightText}
           </Typography>
 
           {/* Social Links */}
-          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", justifyContent: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 0,
+              flexWrap: "wrap",
+              justifyContent: "center",
+              // Shift social icons inward to prevent overlap with the floating WhatsApp button
+              pr: lang === "en" ? { xs: 0, sm: 10 } : 0,
+              pl: lang === "ar" ? { xs: 0, sm: 10 } : 0
+            }}
+          >
             {instagramUrl && instagramUrl !== "#" && (
               <Tooltip title={lang === "ar" ? "إنستغرام" : "Instagram"}>
                 <IconButton

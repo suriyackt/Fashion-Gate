@@ -7,8 +7,8 @@ import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { Product } from "@/lib/productData";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+import { getBrandById } from "@/lib/brandData";
+
 
 interface ProductDetailClientProps {
   product: Product;
@@ -31,6 +31,11 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
     }, 50);
     return () => clearTimeout(timer);
   }, [product.id]);
+
+  const resolvedBrandName = useMemo(() => {
+    const brandObj = getBrandById(product.brandId);
+    return brandObj ? (lang === "ar" ? brandObj.nameAr : brandObj.name) : product.brandId.toUpperCase();
+  }, [product.brandId, lang]);
 
   const theme = useMemo(() => createTheme({
     palette: {
@@ -66,11 +71,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           flexDirection: "column" 
         }}
       >
-        {/* Site Header */}
-        <SiteHeader
-          settings={{ title: "Fashion Gate" }}
-          onLangToggleStart={handleLangToggle}
-        />
+
         
         {/* Main Content Area */}
         <Box 
@@ -179,7 +180,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
                     </Button>
 
                     <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", mb: 1 }}>
-                      {product.brandId.toUpperCase()} — {productCat}
+                      {resolvedBrandName} — {productCat}
                     </Typography>
                     
                     <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 40 }, fontWeight: 500, lineHeight: 1.25, mb: 2 }}>
@@ -269,8 +270,6 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
           </Container>
         </Box>
 
-        {/* Site Footer */}
-        <SiteFooter />
       </Box>
     </ThemeProvider>
   );

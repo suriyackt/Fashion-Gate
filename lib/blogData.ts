@@ -1,6 +1,7 @@
 export type BlogPost = {
   slug: string;
   title: string;
+  titleAr?: string;
   format: "Blog post" | "Case study" | "Thought leadership";
   month: string;
   priority: "High" | "Medium" | "Low";
@@ -13,6 +14,7 @@ export type BlogPost = {
   client?: string;
   status?: string;
   excerpt: string;
+  excerptAr?: string;
   content?: string[];
   image: string;
 };

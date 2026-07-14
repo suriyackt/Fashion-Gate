@@ -95,6 +95,14 @@ export const structure: StructureResolver = (S) =>
                     .title("Login Page")
                 ),
               S.listItem()
+                .title("Terms & Conditions")
+                .child(
+                  S.document()
+                    .schemaType("termsPage")
+                    .documentId("termsPage")
+                    .title("Terms & Conditions")
+                ),
+              S.listItem()
                 .title("Brand Pages")
                 .child(
                   S.documentTypeList("brandPage")
