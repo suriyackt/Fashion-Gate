@@ -6,6 +6,7 @@ import LoaderProvider from "@/components/LoaderProvider";
 import "./globals.css";
 
 import { getHomepageData, imageUrl } from "@/lib/sanity";
+import { Analytics } from "@vercel/analytics/next";
 
 export const revalidate = 0;
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </LayoutWrapper>
           </LoaderProvider>
         </AppRouterCacheProvider>
+        <Analytics />
       </body>
     </html>
   );
