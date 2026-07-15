@@ -18,6 +18,28 @@ import { useParams, usePathname } from "next/navigation";
 import { getFooterSettings, getLocalizedValue } from "@/lib/sanity";
 import Tooltip from "./Tooltip";
 
+export function resolvePath(href: string, lang: "ar" | "en") {
+  if (!href) return `/${lang}`;
+  if (href.startsWith("#")) return `/${lang}${href}`;
+  if (href.startsWith("http://") || href.startsWith("https://")) return href;
+
+  let cleanHref = href.replace(/^\/+|\/+$/g, "");
+  const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
+  const parts = cleanHref.split("/");
+  const firstPart = parts[0];
+  
+  if (categories.includes(firstPart)) {
+    cleanHref = `category/${cleanHref}`;
+  }
+
+  const partsList = cleanHref.split("/");
+  const lastPart = partsList[partsList.length - 1];
+  if (lastPart !== "ar" && lastPart !== "en") {
+    return `/${cleanHref}/${lang}`;
+  }
+  return `/${cleanHref}`;
+}
+
 export default function SiteFooter() {
   const pathname = usePathname();
   const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
@@ -96,22 +118,31 @@ export default function SiteFooter() {
     { label: { en: "Atelier", ar: "الأتيلييه" }, href: "about" }
   ];
 
-  const links = rawLinks.map((link: any) => ({
-    label: getLocalizedValue(link.label, lang),
-    href: link.href || ""
-  }));
+  const links = rawLinks
+    .filter((link: any) => link.isEnabled !== false) // Skip disabled links
+    .sort((a: any, b: any) => (a.order || 0) - (b.order || 0)) // Sort by display order
+    .map((link: any) => ({
+      label: getLocalizedValue(link.label, lang),
+      href: link.href || ""
+    }));
 
-  // Append Terms and Conditions link
-  links.push({
-    label: lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions",
-    href: "terms"
-  });
+  // Append Terms and Conditions and Privacy Policy only if they are not already defined in the CMS list
+  const hasTerms = rawLinks.some((link: any) => link.href === "terms" || link.href === "/terms");
+  const hasPrivacy = rawLinks.some((link: any) => link.href === "privacy" || link.href === "/privacy");
 
-  // Append Privacy Policy link
-  links.push({
-    label: lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy",
-    href: "privacy"
-  });
+  if (!hasTerms) {
+    links.push({
+      label: lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions",
+      href: "terms"
+    });
+  }
+
+  if (!hasPrivacy) {
+    links.push({
+      label: lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy",
+      href: "privacy"
+    });
+  }
 
   return (
     <Box
@@ -179,11 +210,7 @@ export default function SiteFooter() {
               }}
             >
               {links.map((link: any, index: number) => {
-                const destination = link.href.startsWith("#") 
-                  ? `/${lang}${link.href}` 
-                  : link.href === "" 
-                    ? `/${lang}` 
-                    : `/${link.href}/${lang}`;
+                 const destination = resolvePath(link.href, lang);
 
                 return (
                   <Typography

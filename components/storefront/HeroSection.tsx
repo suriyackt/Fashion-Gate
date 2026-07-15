@@ -129,7 +129,10 @@ export default function HeroSection({
             inset: 0,
             backgroundImage: `url(${bgImageUrl})`,
             backgroundSize: "cover",
-            backgroundPosition: "right top",
+            backgroundPosition: {
+              xs: section.mobileBgPosition || "right top",
+              md: "right top"
+            },
             filter: "brightness(0.86)",
             zIndex: 1,
           }}

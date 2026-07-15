@@ -17,6 +17,28 @@ import { getAnnouncements, getLocalizedValue } from "@/lib/sanity";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Tooltip from "./Tooltip";
 
+export function resolvePath(href: string, lang: "ar" | "en") {
+  if (!href) return `/${lang}`;
+  if (href.startsWith("#")) return `/${lang}${href}`;
+  if (href.startsWith("http://") || href.startsWith("https://")) return href;
+
+  let cleanHref = href.replace(/^\/+|\/+$/g, "");
+  const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
+  const parts = cleanHref.split("/");
+  const firstPart = parts[0];
+  
+  if (categories.includes(firstPart)) {
+    cleanHref = `category/${cleanHref}`;
+  }
+
+  const partsList = cleanHref.split("/");
+  const lastPart = partsList[partsList.length - 1];
+  if (lastPart !== "ar" && lastPart !== "en") {
+    return `/${cleanHref}/${lang}`;
+  }
+  return `/${cleanHref}`;
+}
+
 const MotionBox = motion.create(Box);
 
 // Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
@@ -148,7 +170,6 @@ const categoriesConfig = [
 ];
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
-  const [index, setIndex] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
@@ -185,86 +206,92 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
     });
   }, [lang]);
 
-  useEffect(() => {
-    if (announcements.length === 0) return;
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % announcements.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [announcements.length]);
-
   if (announcements.length === 0) return null;
 
+  // Duplicate items sufficiently to cover screen width and ensure seamless loops
+  const marqueeItems = [...announcements, ...announcements, ...announcements, ...announcements];
+
   return (
-    <Box 
-      component="div"
-      sx={{ 
-        bgcolor: "#050505", 
-        color: "#CB6116", 
-        py: 0.8, 
-        px: { xs: 3, md: 4 }, 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        position: "relative",
-        minHeight: 38,
-        overflow: "hidden"
-      }}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{
-            fontFamily: '"Cairo", sans-serif',
-            fontSize: "12px",
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            textAlign: "center",
-            lineHeight: 1.4,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%"
-          }}
-        >
-          {announcements[index].link ? (
-            <Typography
-              component={Link}
-              href={announcements[index].link}
-              sx={{
-                fontSize: { xs: 11, md: 12 },
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textAlign: "center",
-                maxWidth: "90%",
-                textDecoration: "none",
-                color: "inherit",
-                "&:hover": { textDecoration: "underline" }
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes marquee-header-scroll {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
+        }
+        .marquee-header-container {
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+          width: max-content;
+          animation: marquee-header-scroll 35s linear infinite;
+        }
+        .marquee-header-container:hover {
+          animation-play-state: paused;
+        }
+      `}} />
+      <Box 
+        component="div"
+        dir="ltr"
+        sx={{ 
+          bgcolor: "#050505", 
+          color: "#CB6116", 
+          py: 0.9, 
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          position: "relative",
+          minHeight: 38,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        <Box className="marquee-header-container" dir="ltr">
+          {marqueeItems.map((item, idx) => (
+            <Box 
+              key={idx} 
+              sx={{ 
+                display: "inline-flex", 
+                alignItems: "center",
+                mx: 3
               }}
             >
-              {announcements[index].text}
-            </Typography>
-          ) : (
-            <Typography
-              sx={{
-                fontSize: { xs: 11, md: 12 },
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textAlign: "center",
-                maxWidth: "90%"
-              }}
-            >
-              {announcements[index].text}
-            </Typography>
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </Box>
+              {item.link ? (
+                <Typography
+                  component={Link}
+                  href={item.link}
+                  sx={{
+                    fontFamily: '"Cairo", sans-serif',
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    color: "#ffffff",
+                    "&:hover": { textDecoration: "underline" }
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              ) : (
+                <Typography
+                  sx={{
+                    fontFamily: '"Cairo", sans-serif',
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    color: "#ffffff"
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              )}
+              {/* Luxury Diamond Spacer */}
+              <Box component="span" sx={{ color: "rgba(255, 255, 255, 0.28)", ml: 6, fontSize: 10 }}>
+                ✦
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </>
   );
 }
 
@@ -600,6 +627,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   const [hoveredFashionCategory, setHoveredFashionCategory] = useState<"women-fashion" | "men-fashion" | null>(null);
   const [sanityBrands, setSanityBrands] = useState<any[]>([]);
   const [headerMenuItems, setHeaderMenuItems] = useState<any[]>([]);
+  const [expandedMobileItem, setExpandedMobileItem] = useState<number | null>(null);
 
   // Sanity header settings states
   const [logoTitle, setLogoTitle] = useState<{ en?: string; ar?: string } | null>(null);
@@ -1061,15 +1089,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
               const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
               
-              let finalHref = item.href || "/";
-              if (finalHref === "/") {
-                finalHref = `/${lang}`;
-              } else if (finalHref && !finalHref.startsWith("#")) {
-                const parts = finalHref.split("/").filter(Boolean);
-                if (parts[parts.length - 1] !== "ar" && parts[parts.length - 1] !== "en") {
-                  finalHref = `/${parts.join("/")}/${lang}`;
-                }
-              }
+              const finalHref = resolvePath(item.href, lang);
 
               const isCurrentActive = (() => {
                 if (!pathname) return false;
@@ -1407,49 +1427,98 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const activeMenuItems = headerMenuItems && headerMenuItems.length > 0 ? headerMenuItems : fallbackMenuItems;
 
               return activeMenuItems.map((item, idx) => {
-                const hasDropdown = item.designerCategories && item.designerCategories.length > 2;
+                const hasDropdown = item.designerCategories && item.designerCategories.length > 0;
                 const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
                 
-                let finalHref = item.href || "/";
-                if (finalHref === "/") {
-                  finalHref = `/${lang}`;
-                } else if (finalHref && !finalHref.startsWith("#")) {
-                  const parts = finalHref.split("/").filter(Boolean);
-                  if (parts[parts.length - 1] !== "ar" && parts[parts.length - 1] !== "en") {
-                    finalHref = `/${parts.join("/")}/${lang}`;
-                  }
-                }
+                const finalHref = resolvePath(item.href, lang);
+
+                const isExpanded = expandedMobileItem === idx;
 
                 return (
-                  <MuiLink
-                    key={idx}
-                    component={hasDropdown ? "span" : Link}
-                    href={hasDropdown ? undefined : finalHref}
-                    onClick={(e: React.MouseEvent) => {
-                      if (hasDropdown) {
-                        e.preventDefault();
-                      } else {
-                        setOpen(false);
-                      }
-                    }}
-                    sx={{
-                      color: "rgba(255,255,255,0.85)",
-                      fontSize: 15,
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.15em",
-                      textDecoration: "none",
-                      fontFamily: '"Cairo", sans-serif',
-                      transition: "all 0.25s ease",
-                      textAlign: "center",
-                      "&:hover": { 
-                        color: "#CB6116",
-                        transform: "scale(1.05)"
-                      }
-                    }}
-                  >
-                    {labelStr}
-                  </MuiLink>
+                  <Stack key={idx} spacing={1.5} sx={{ width: "100%", alignItems: "center" }}>
+                    <MuiLink
+                      component={hasDropdown ? "span" : Link}
+                      href={hasDropdown ? undefined : finalHref}
+                      onClick={(e: React.MouseEvent) => {
+                        if (hasDropdown) {
+                          e.preventDefault();
+                          setExpandedMobileItem(isExpanded ? null : idx);
+                        } else {
+                          setOpen(false);
+                        }
+                      }}
+                      sx={{
+                        color: (isExpanded || activeDropdown === idx) ? "#CB6116" : "rgba(255,255,255,0.85)",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.15em",
+                        textDecoration: "none",
+                        fontFamily: '"Cairo", sans-serif',
+                        transition: "all 0.25s ease",
+                        textAlign: "center",
+                        cursor: "pointer",
+                        "&:hover": { 
+                          color: "#CB6116"
+                        }
+                      }}
+                    >
+                      {labelStr}
+                    </MuiLink>
+                    
+                    {hasDropdown && (
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            style={{ overflow: "hidden", width: "100%" }}
+                          >
+                            <Stack spacing={2.5} sx={{ py: 2, px: 3, bgcolor: "rgba(255,255,255,0.03)", borderLeft: lang === "ar" ? "none" : "2px solid #CB6116", borderRight: lang === "ar" ? "2px solid #CB6116" : "none", width: "100%" }}>
+                              {item.designerCategories.map((cat: any, catIdx: number) => {
+                                const catTitle = lang === "ar" ? cat.title?.ar || cat.title?.en : cat.title?.en || cat.title?.ar;
+                                if (!cat.brands || cat.brands.length === 0) return null;
+                                
+                                return (
+                                  <Stack key={catIdx} spacing={1.2} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                                    <Typography sx={{ color: "#CB6116", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                                      {catTitle}
+                                    </Typography>
+                                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                                      {cat.brands.map((brand: any, brandIdx: number) => {
+                                        const brandTitle = lang === "ar" ? brand.titleAr || brand.title : brand.title || brand.titleAr;
+                                        const brandHref = `/brand/${brand.slug?.current || brand.slug}/${lang}`;
+                                        
+                                        return (
+                                          <MuiLink
+                                            key={brandIdx}
+                                            component={Link}
+                                            href={brandHref}
+                                            onClick={() => setOpen(false)}
+                                            sx={{
+                                              color: "rgba(255,255,255,0.65)",
+                                              fontSize: 13,
+                                              textDecoration: "none",
+                                              fontFamily: '"Cairo", sans-serif',
+                                              "&:hover": { color: "#ffffff" }
+                                            }}
+                                          >
+                                            {brandTitle}
+                                          </MuiLink>
+                                        );
+                                      })}
+                                    </Box>
+                                  </Stack>
+                                );
+                              })}
+                            </Stack>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
+                  </Stack>
                 );
               });
             })()}

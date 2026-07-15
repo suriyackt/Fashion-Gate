@@ -90,8 +90,8 @@ export default function PrivacyClient({ lang, initialData }: PrivacyClientProps)
     ? "أهلاً بكم في فاشن غيت سوريا. توضح سياسة الخصوصية هذه كيفية جمع معلوماتك الشخصية واستخدامها ومشاركتها عند زيارة متجرنا أو الشراء منه." 
     : "Welcome to Fashion Gate Syria. This Privacy Policy describes how your personal information is collected, used, and shared when you visit or make a purchase from our store.");
   const introPara2 = getLocalizedValue(initialData?.introText2, lang) || (isAr 
-    ? "نحن ملتزمون بحماية معلوماتك الشخصية وحقك في الخصوصية. إذا كان لديك أي أسئلة أو مخاوف بشأن سياستنا، أو ممارساتنا فيما يتعلق بمعلوماتك الشخصية، يرجى الاتصال بنا على البريد الإلكتروني support@fashiongatesyria.com." 
-    : "We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us at support@fashiongatesyria.com.");
+    ? "نحن ملتزمون بحماية معلوماتك الشخصية وحقك في الخصوصية. إذا كان لديك أي أسئلة أو مخاوف بشأن سياستنا، أو ممارساتنا فيما يتعلق بمعلوماتك الشخصية، يرجى الاتصال بنا على البريد الإلكتروني support@fashiongatemall.com." 
+    : "We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us at support@fashiongatemall.com.");
 
   // 5. Fallback translation settings for loop items
   const t = React.useMemo(() => ({
@@ -246,7 +246,7 @@ export default function PrivacyClient({ lang, initialData }: PrivacyClientProps)
                               إذا كنت ترغب في الوصول إلى أي معلومات شخصية لدينا عنك، أو تصحيحها، أو تعديلها، أو حذفها، أو تسجيل شكوى، أو كنت تريد ببساطة مزيداً من المعلومات، يرجى الاتصال بفريق الدعم لدينا على البريد الإلكتروني{" "}
                               <Box
                                 component="a"
-                                href="mailto:support@fashiongatesyria.com"
+                                href="mailto:support@fashiongatemall.com"
                                 sx={{
                                   color: "primary.main",
                                   textDecoration: "underline",
@@ -255,7 +255,7 @@ export default function PrivacyClient({ lang, initialData }: PrivacyClientProps)
                                   "&:hover": { color: "primary.dark" }
                                 }}
                               >
-                                support@fashiongatesyria.com
+                                support@fashiongatemall.com
                               </Box>
                             </>
                           ) : (
@@ -263,7 +263,7 @@ export default function PrivacyClient({ lang, initialData }: PrivacyClientProps)
                               If you would like to access, correct, amend, or delete any personal information we have about you, register a complaint, or simply want more information, please contact our support team at{" "}
                               <Box
                                 component="a"
-                                href="mailto:support@fashiongatesyria.com"
+                                href="mailto:support@fashiongatemall.com"
                                 sx={{
                                   color: "primary.main",
                                   textDecoration: "underline",
@@ -272,7 +272,7 @@ export default function PrivacyClient({ lang, initialData }: PrivacyClientProps)
                                   "&:hover": { color: "primary.dark" }
                                 }}
                               >
-                                support@fashiongatesyria.com
+                                support@fashiongatemall.com
                               </Box>
                             </>
                           )}

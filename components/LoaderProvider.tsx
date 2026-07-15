@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 const MotionBox = motion.create(Box);
 
 interface LoaderContextType {
-  setLoading: (loading: boolean, bypassMinTime?: boolean) => void;
+  setLoading: (loading: boolean, bypassMinTime?: boolean, targetLang?: "en" | "ar") => void;
 }
 
 const LoaderContext = createContext<LoaderContextType | undefined>(undefined);
@@ -16,7 +16,7 @@ const LoaderContext = createContext<LoaderContextType | undefined>(undefined);
 export function useLoader() {
   const context = useContext(LoaderContext);
   if (!context) {
-    return { setLoading: (loading: boolean, bypassMinTime?: boolean) => {} };
+    return { setLoading: (loading: boolean, bypassMinTime?: boolean, targetLang?: "en" | "ar") => {} };
   }
   return context;
 }
@@ -28,6 +28,10 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   const [minTimeActive, setMinTimeActive] = useState(true);
   const [pendingClose, setPendingClose] = useState(true);
   const [pageMounted, setPageMounted] = useState(true);
+  const [forcedLang, setForcedLang] = useState<"en" | "ar" | null>(null);
+
+  const activeLang = forcedLang || (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en");
+  const isAr = activeLang === "ar";
 
   // Lock the preloader on initial mount to let the ease sweep finish fully (2.6 seconds)
   useEffect(() => {
@@ -46,6 +50,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   // Set pageMounted = true when pathname changes (meaning navigation completed)
   useEffect(() => {
     setPageMounted(true);
+    setForcedLang(null);
   }, [pathname]);
 
   // Watch for lock release, page mount, and close requests
@@ -57,8 +62,11 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   }, [minTimeActive, pendingClose, pageMounted]);
 
   // Safe setLoading handler that enforces a minimum animation runtime
-  const safeSetLoading = (val: boolean, bypassMinTime = false) => {
+  const safeSetLoading = (val: boolean, bypassMinTime = false, targetLang?: "en" | "ar") => {
     if (val) {
+      if (targetLang) {
+        setForcedLang(targetLang);
+      }
       setLoading(true);
       setMinTimeActive(!bypassMinTime);
       setPendingClose(true);
@@ -71,6 +79,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
         }, 2600);
       }
     } else {
+      setForcedLang(null);
       setPageMounted(true); // Destination page has mounted and triggered the load exit
       setMinTimeActive((currentMin) => {
         if (currentMin) {
@@ -88,20 +97,25 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
     if (typeof window === "undefined") return;
 
     const handlePopState = () => {
-      if (window.location.pathname !== pathname) {
+      if (window.location.pathname !== pathname && !loading) {
         safeSetLoading(true);
       }
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [pathname]);
+  }, [pathname, loading]);
 
   // Intercept global link clicks to trigger route change loading (runs transition loader)
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const handleGlobalClick = (e: MouseEvent) => {
+      if (loading) {
+        e.preventDefault();
+        return;
+      }
+
       let target = e.target as HTMLElement | null;
       while (target && target !== document.body) {
         const anchor = target.tagName === "A" ? (target as HTMLAnchorElement) : target.closest("a");
@@ -120,28 +134,33 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               if (url.pathname.includes("/studio") || window.location.pathname.includes("/studio")) {
                 break;
               }
+              const targetLang = (href.endsWith("/ar") || href.includes("/ar/") || href.includes("?lang=ar")) ? "ar" :
+                                 (href.endsWith("/en") || href.includes("/en/") || href.includes("?lang=en")) ? "en" : undefined;
+
               // Only trigger loader if navigating to a different pathname
               if (url.pathname !== window.location.pathname) {
                 e.preventDefault(); // Stay on current page while loader turns on
                 const isLogin = url.pathname.includes("/login");
-                safeSetLoading(true, isLogin);
+                safeSetLoading(true, isLogin, targetLang);
 
                 setTimeout(() => {
                   router.push(href);
-                }, 180);
+                }, 50);
               }
             } catch (err) {
               // Bypass completely if destination page is studio
               if (href.includes("/studio")) {
                 break;
               }
+              const targetLang = (href.endsWith("/ar") || href.includes("/ar/") || href.includes("?lang=ar")) ? "ar" :
+                                 (href.endsWith("/en") || href.includes("/en/") || href.includes("?lang=en")) ? "en" : undefined;
               const isLogin = href.includes("/login");
               if (href !== window.location.pathname) {
                 e.preventDefault();
-                safeSetLoading(true, isLogin);
+                safeSetLoading(true, isLogin, targetLang);
                 setTimeout(() => {
                   router.push(href);
-                }, 180);
+                }, 50);
               }
             }
             break;
@@ -153,7 +172,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
 
     window.addEventListener("click", handleGlobalClick, { capture: true });
     return () => window.removeEventListener("click", handleGlobalClick, { capture: true });
-  }, [router]);
+  }, [router, loading]);
 
   return (
     <LoaderContext.Provider value={{ setLoading: safeSetLoading }}>
@@ -199,43 +218,44 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               >
                 <Typography 
                   sx={{ 
-                    fontFamily: "var(--heading-font)", 
-                    fontSize: { xs: "1.4rem", md: "1.8rem" }, 
-                    fontWeight: 500, 
-                    letterSpacing: "0.25em", 
+                    fontFamily: isAr ? '"Cairo", sans-serif' : "var(--heading-font)", 
+                    fontSize: isAr ? { xs: "1.8rem", md: "2.4rem" } : { xs: "1.4rem", md: "1.8rem" }, 
+                    fontWeight: isAr ? 700 : 500, 
+                    letterSpacing: isAr ? "0.02em" : "0.25em", 
                     color: "#ffffff",
                     textTransform: "uppercase"
                   }}
                 >
-                  FASHION GATE
+                  {isAr ? "فاشن غيت" : "FASHION GATE"}
                 </Typography>
                 <Typography 
                   sx={{ 
                     fontFamily: '"Cairo", sans-serif', 
-                    fontSize: 10, 
+                    fontSize: isAr ? 12 : 10, 
                     fontWeight: 600, 
-                    letterSpacing: "0.4em", 
+                    letterSpacing: isAr ? "0.05em" : "0.4em", 
                     color: "#CB6116", // Brand orange
                     textTransform: "uppercase",
                     mt: 1
                   }}
                 >
-                  BOULEVARD
+                  {isAr ? "بوليفارد دمشق" : "BOULEVARD"}
                 </Typography>
               </MotionBox>
               
               {/* Elegant Accent Orange Progress bar */}
-              <Box sx={{ width: 140, height: 1.5, bgcolor: "rgba(255,255,255,0.08)", mt: 4, position: "relative", overflow: "hidden" }}>
+              <Box sx={{ width: 140, height: 1.5, bgcolor: "rgba(255,255,255,0.08)", mt: 4, position: "relative", overflow: "hidden" }} dir={isAr ? "rtl" : "ltr"}>
                 <MotionBox 
-                  initial={{ left: "-100%" }}
-                  animate={{ left: "0%" }}
+                  initial={isAr ? { right: "-100%" } : { left: "-100%" }}
+                  animate={isAr ? { right: "0%" } : { left: "0%" }}
                   transition={{ duration: 2.6, ease: "easeInOut" }}
                   sx={{ 
                     position: "absolute",
                     top: 0,
                     bottom: 0,
                     width: "100%",
-                    bgcolor: "#CB6116"
+                    bgcolor: "#CB6116",
+                    ...(isAr ? { right: 0, left: "auto" } : { left: 0, right: "auto" })
                   }}
                 />
               </Box>

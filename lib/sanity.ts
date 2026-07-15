@@ -52,6 +52,7 @@ export async function getHomepageData() {
         subHeadlineLine1 { en, ar },
         subHeadlineLine2 { en, ar },
         bgType,
+        mobileBgPosition,
         bgImage,
         bgVideo { asset->{ url } },
         image,
@@ -124,16 +125,35 @@ export async function getHomepageData() {
 }
 
 export async function getAboutPageData() {
-  return sanityClient.fetch(`*[_type == "aboutPage"][0] {
-    eyebrow,
-    title,
-    subtitle,
-    visionTitle,
-    visionText,
-    commitmentTitle,
-    commitmentText,
-    heroImage { asset->{ url } }
-  }`);
+  try {
+    return await sanityClient.fetch(`*[_type == "aboutPage"][0] {
+      eyebrow,
+      title,
+      headline,
+      subtitle,
+      p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6,
+      p7,
+      visionTitle,
+      visionText,
+      commitmentTitle,
+      commitmentText,
+      heroImage { asset->{ url } },
+      collageImage1 { asset->{ url } },
+      collageImage2 { asset->{ url } },
+      videoBgImage { asset->{ url } },
+      videoUrl,
+      videoTitle,
+      videoSubtitle
+    }`);
+  } catch (err) {
+    console.error("Error fetching about page data:", err);
+    return null;
+  }
 }
 
 export async function getLoginPageData() {
@@ -270,7 +290,9 @@ export async function getFooterSettings() {
       exploreTitle { en, ar },
       links[]{
         label { en, ar },
-        href
+        href,
+        isEnabled,
+        order
       },
       updatesTitle { en, ar },
       subscribeText { en, ar },
