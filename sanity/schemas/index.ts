@@ -38,6 +38,7 @@ import { blogsPage } from "./blogsPage";
 import { loginPage } from "./loginPage";
 import { brandPage } from "./brandPage";
 import { termsPage } from "./termsPage";
+import { privacyPage } from "./privacyPage";
 
 export const schemaTypes = [
   // E-commerce & Base
@@ -82,5 +83,6 @@ export const schemaTypes = [
   loginPage,
   brandPage,
   termsPage,
+  privacyPage,
 ];
 

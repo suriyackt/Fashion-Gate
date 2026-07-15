@@ -1,16 +1,17 @@
 import { defineType, defineField } from "sanity";
-import { Scale } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
-export const termsPage = defineType({
-  name: "termsPage",
-  title: "Terms Page",
+export const privacyPage = defineType({
+  name: "privacyPage",
+  title: "Privacy Policy Page",
   type: "document",
-  icon: Scale,
+  icon: ShieldCheck,
   fields: [
     defineField({
       name: "title",
       title: "Page Title",
       type: "localizedString",
+      initialValue: { en: "Privacy Policy", ar: "سياسة الخصوصية" },
     }),
     defineField({
       name: "subtitle",
@@ -34,17 +35,17 @@ export const termsPage = defineType({
     }),
     defineField({
       name: "sections",
-      title: "Terms Sections",
+      title: "Privacy Sections",
       type: "array",
       of: [
         {
           type: "object",
-          name: "termsSection",
-          title: "Terms Section",
+          name: "privacySection",
+          title: "Privacy Section",
           fields: [
             { 
               name: "sectionId", 
-              title: "Section ID (e.g. general, online-store)", 
+              title: "Section ID (e.g. cookies, security)", 
               type: "string",
               description: "Anchor ID used for navigation. Do not use spaces or special characters."
             },
@@ -58,7 +59,7 @@ export const termsPage = defineType({
   preview: {
     prepare() {
       return {
-        title: "Terms & Conditions Settings"
+        title: "Privacy Policy Settings"
       };
     }
   }

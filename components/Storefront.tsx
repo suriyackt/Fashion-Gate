@@ -136,7 +136,7 @@ const stringMap: Record<string, string> = {
   "Heritage & Craftsmanship": "التراث والمهارة الحرفية",
   "The Pinnacle of Syrian Luxury Shopping": "قمة تسوق الفخامة السورية",
   "Fashion Gate brings together the world's most renowned haute couture houses, bespoke local ateliers, and curations of fine design. Housed in the prestigious Boulevard district, we offer an immersive luxury journey that connects the heritage of Silk Road craftsmanship with contemporary global style.":
-    "تجمع بوابة الأزياء (فاشن جيت) بين أشهر دور الأزياء العالمية، وأرقى الأتيليهات المحلية المصممة خصيصاً، ومجموعات منتقاة من التصميم الفاخر. في قلب حي البوليفارد المرموق، نقدم رحلة فاخرة غامرة تربط بين تراث طريق الحرير الحرفي والأسلوب العالمي المعاصر.",
+    "تجمع بوابة الأزياء (فاشن غيت) بين أشهر دور الأزياء العالمية، وأرقى الأتيليهات المحلية المصممة خصيصاً، ومجموعات منتقاة من التصميم الفاخر. في قلب حي البوليفارد المرموق، نقدم رحلة فاخرة غامرة تربط بين تراث طريق الحرير الحرفي والأسلوب العالمي المعاصر.",
 };
 
 export function resolveImage(source?: SanityImage, fallback?: string) {

@@ -251,7 +251,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
           {/* Header Title Section */}
           <Stack spacing={2} sx={{ mb: 6, textAlign: lang === "ar" ? "right" : "left" }}>
             <Typography sx={{ color: "#CB6116", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", fontFamily: '"Cairo", sans-serif' }}>
-              {lang === "ar" ? "فاشن جيت مول" : "Fashion Gate Mall"}
+              {lang === "ar" ? "فاشن غيت مول" : "Fashion Gate Mall"}
             </Typography>
             <Typography variant="h3" sx={{ fontFamily: "var(--heading-font)", fontWeight: 500, color: "#111111" }}>
               {pageTitle}

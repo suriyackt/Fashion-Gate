@@ -107,6 +107,12 @@ export default function SiteFooter() {
     href: "terms"
   });
 
+  // Append Privacy Policy link
+  links.push({
+    label: lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy",
+    href: "privacy"
+  });
+
   return (
     <Box
       component="footer"
@@ -132,7 +138,7 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
+            <Stack direction="row" spacing={lang === "ar" ? 2.5 : 1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
               <Box
                 sx={{
                   width: 48,
@@ -145,12 +151,12 @@ export default function SiteFooter() {
               >
                 <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ width: 28, height: "auto" }} />
               </Box>
-              <Stack spacing={0.1} sx={{ textAlign: "left" }}>
+              <Stack spacing={0.1} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, fontWeight: 600, color: "#111111", lineHeight: 1 }}>
-                  Fashion Gate
+                  {lang === "ar" ? "فاشن غيت" : "Fashion Gate"}
                 </Typography>
-                <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                  Boulevard Damascus
+                <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: lang === "ar" ? "0.05em" : "0.2em", textTransform: "uppercase" }}>
+                  {lang === "ar" ? "بوليفارد دمشق" : "Boulevard Damascus"}
                 </Typography>
               </Stack>
             </Stack>
@@ -251,7 +257,7 @@ export default function SiteFooter() {
               fontFamily: '"Cairo", sans-serif'
             }}
           >
-            © {new Date().getFullYear()} {lang === "ar" ? "فاشن جيت مول" : "Fashion Gate Mall"}. {copyrightText}
+            © {new Date().getFullYear()} {lang === "ar" ? "فاشن غيت مول" : "Fashion Gate Mall"}. {copyrightText}
           </Typography>
 
           {/* Social Links */}
