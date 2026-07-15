@@ -327,7 +327,7 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
                               يجب إرسال الأسئلة المتعلقة بالشروط والأحكام إلينا على البريد الإلكتروني{" "}
                               <Box
                                 component="a"
-                                href="mailto:support@fashiongatesyria.com"
+                                href="mailto:support@fashiongatemall.com"
                                 sx={{
                                   color: "primary.main",
                                   textDecoration: "underline",
@@ -336,7 +336,7 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
                                   "&:hover": { color: "primary.dark" }
                                 }}
                               >
-                                support@fashiongatesyria.com
+                                support@fashiongatemall.com
                               </Box>
                             </>
                           ) : (
@@ -344,7 +344,7 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
                               Questions about the terms and conditions should be sent to us at{" "}
                               <Box
                                 component="a"
-                                href="mailto:support@fashiongatesyria.com"
+                                href="mailto:support@fashiongatemall.com"
                                 sx={{
                                   color: "primary.main",
                                   textDecoration: "underline",
@@ -353,7 +353,7 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
                                   "&:hover": { color: "primary.dark" }
                                 }}
                               >
-                                support@fashiongatesyria.com
+                                support@fashiongatemall.com
                               </Box>
                             </>
                           )}

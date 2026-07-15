@@ -75,7 +75,26 @@ export const header = defineType({
             defineField({
               name: "href",
               title: "Redirect Link",
-              type: "string"
+              type: "string",
+              options: {
+                list: [
+                  { title: "Homepage", value: "/" },
+                  { title: "About Us", value: "/about" },
+                  { title: "Contact Us", value: "/contact" },
+                  { title: "Blogs", value: "/blogs" },
+                  { title: "Terms & Conditions", value: "/terms" },
+                  { title: "Privacy Policy", value: "/privacy" },
+                  { title: "Men Section", value: "/men" },
+                  { title: "Women Section", value: "/women" },
+                  { title: "Designers Section", value: "/designers" },
+                  { title: "Perfumes Section", value: "/perfumes" },
+                  { title: "Skincare Section", value: "/skincare" },
+                  { title: "Dining Section", value: "/dining" },
+                  { title: "Women Anchor (#women)", value: "#women" },
+                  { title: "Men Anchor (#men)", value: "#men" },
+                  { title: "Designers Anchor (#designers)", value: "#designers" }
+                ]
+              }
             })
           ]
         }
@@ -119,7 +138,25 @@ export const header = defineType({
               name: "href",
               title: "Redirect Link",
               type: "string",
-              description: "Example: / or /category/fashion or #brand"
+              options: {
+                list: [
+                  { title: "Homepage", value: "/" },
+                  { title: "About Us", value: "/about" },
+                  { title: "Contact Us", value: "/contact" },
+                  { title: "Blogs", value: "/blogs" },
+                  { title: "Terms & Conditions", value: "/terms" },
+                  { title: "Privacy Policy", value: "/privacy" },
+                  { title: "Men Section", value: "/men" },
+                  { title: "Women Section", value: "/women" },
+                  { title: "Designers Section", value: "/designers" },
+                  { title: "Perfumes Section", value: "/perfumes" },
+                  { title: "Skincare Section", value: "/skincare" },
+                  { title: "Dining Section", value: "/dining" },
+                  { title: "Women Anchor (#women)", value: "#women" },
+                  { title: "Men Anchor (#men)", value: "#men" },
+                  { title: "Designers Anchor (#designers)", value: "#designers" }
+                ]
+              }
             }),
             defineField({
               name: "designerCategories",

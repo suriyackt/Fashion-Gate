@@ -48,12 +48,12 @@ export default function LanguageSwitcher({
 
   const handleLangToggle = () => {
     if (typeof window === "undefined") return;
-    setLoading(true);
+    const nextLang = currentLang === "ar" ? "en" : "ar";
+    setLoading(true, false, nextLang);
     if (onToggleStart) {
       onToggleStart();
     }
     setTimeout(() => {
-      const nextLang = currentLang === "ar" ? "en" : "ar";
       let nextPath = pathname;
       if (pathname.endsWith("/en")) {
         nextPath = pathname.substring(0, pathname.length - 3) + "/ar";

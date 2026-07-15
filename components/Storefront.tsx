@@ -12,6 +12,7 @@ import type { CollectionItem, MediaItem, SanityImage, Section, SiteSettings } fr
 import Link from "next/link";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { products, type Product } from "@/lib/productData";
+import { useLoader } from "@/components/LoaderProvider";
 import FaqSection from "./storefront/FaqSection";
 import HeroSection from "./storefront/HeroSection";
 import ManifestoSection from "./storefront/ManifestoSection";
@@ -208,7 +209,6 @@ function BrandMark({ settings, light = false, lang }: { settings: SiteSettings; 
 }
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
-  const [index, setIndex] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
@@ -245,85 +245,92 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
     });
   }, [lang]);
 
-  useEffect(() => {
-    if (announcements.length === 0) return;
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % announcements.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [announcements.length]);
-
   if (announcements.length === 0) return null;
 
+  // Duplicate items sufficiently to cover screen width and ensure seamless loops
+  const marqueeItems = [...announcements, ...announcements, ...announcements, ...announcements];
+
   return (
-    <Box 
-      sx={{ 
-        bgcolor: "#050505", 
-        color: "primary.main", 
-        py: { xs: 1, md: 1 }, 
-        px: { xs: 3, md: 4 }, 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        position: "relative",
-        minHeight: { xs: 40, md: 40 },
-        overflow: "hidden"
-      }}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{
-            fontFamily: '"Cairo", sans-serif',
-            fontSize: "13px",
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            textAlign: "center",
-            lineHeight: 1.4,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%"
-          }}
-        >
-          {announcements[index].link ? (
-            <Typography
-              component={Link}
-              href={announcements[index].link}
-              sx={{
-                fontSize: { xs: 12, md: 13 },
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textAlign: "center",
-                maxWidth: "90%",
-                textDecoration: "none",
-                color: "inherit",
-                "&:hover": { textDecoration: "underline" }
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes marquee-storefront-scroll {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
+        }
+        .marquee-storefront-container {
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+          width: max-content;
+          animation: marquee-storefront-scroll 35s linear infinite;
+        }
+        .marquee-storefront-container:hover {
+          animation-play-state: paused;
+        }
+      `}} />
+      <Box 
+        component="div"
+        dir="ltr"
+        sx={{ 
+          bgcolor: "#050505", 
+          color: "#f37e2b", 
+          py: 0.9, 
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          position: "relative",
+          minHeight: 38,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        <Box className="marquee-storefront-container" dir="ltr">
+          {marqueeItems.map((item, idx) => (
+            <Box 
+              key={idx} 
+              sx={{ 
+                display: "inline-flex", 
+                alignItems: "center",
+                mx: 3
               }}
             >
-              {announcements[index].text}
-            </Typography>
-          ) : (
-            <Typography
-              sx={{
-                fontSize: { xs: 12, md: 13 },
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textAlign: "center",
-                maxWidth: "90%"
-              }}
-            >
-              {announcements[index].text}
-            </Typography>
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </Box>
+              {item.link ? (
+                <Typography
+                  component={Link}
+                  href={item.link}
+                  sx={{
+                    fontFamily: '"Cairo", sans-serif',
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    color: "#ffffff",
+                    "&:hover": { textDecoration: "underline" }
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              ) : (
+                <Typography
+                  sx={{
+                    fontFamily: '"Cairo", sans-serif',
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    color: "#ffffff"
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              )}
+              {/* Luxury Diamond Spacer */}
+              <Box component="span" sx={{ color: "rgba(255, 255, 255, 0.28)", ml: 6, fontSize: 13 }}>
+                ✦
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </>
   );
 }
 
@@ -717,12 +724,17 @@ export default function Storefront({
     setIsLangTransitioning(false);
   }, [lang]);
 
+  const { setLoading } = useLoader();
+
   const handleLangToggle = () => {
     if (isLangTransitioning) return;
 
-    setIsLangTransitioning(true);
     const nextLang = lang === "ar" ? "en" : "ar";
-    router.push(`/${nextLang}`);
+    setLoading(true, false, nextLang);
+    setIsLangTransitioning(true);
+    setTimeout(() => {
+      router.push(`/${nextLang}`);
+    }, 180);
   };
 
   // Translation function using the mapping list

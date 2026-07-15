@@ -55,6 +55,13 @@ export const section = defineType({
     }),
     defineField({ name: "bgImage", title: "Background Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "bgVideo", title: "Background Video File", type: "file", options: { accept: "video/*" } }),
+    defineField({
+      name: "mobileBgPosition",
+      title: "Mobile Background Position",
+      description: "Custom alignment of background image in mobile viewport (e.g. '85% top', 'right center', 'center center')",
+      type: "string",
+      initialValue: "right top"
+    }),
 
     defineField({
       name: "cta",
