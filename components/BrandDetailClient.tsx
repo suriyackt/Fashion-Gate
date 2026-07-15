@@ -252,7 +252,7 @@ export default function BrandDetailClient({
                 fontFamily: '"Cairo", sans-serif'
               }}
             >
-              {lang === "ar" ? "شريك فاشن جيت" : "FASHION GATE PARTNER"}
+              {lang === "ar" ? "شريك فاشن غيت" : "FASHION GATE PARTNER"}
             </Typography>
 
             {/* Brand Logo (Bigger Size, Inverted white, Aligned to Start based on text direction) */}

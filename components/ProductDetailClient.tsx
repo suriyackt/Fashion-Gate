@@ -191,7 +191,7 @@ export default function ProductDetailClient({ product, initialLang }: ProductDet
                     
                     <Typography sx={{ color: "rgba(255,255,255,0.64)", fontSize: 15, lineHeight: 1.8, fontFamily: '"Cairo", sans-serif' }}>
                       {lang === "ar" 
-                        ? "هذه القطعة الحصرية مصممة كتحفة فريدة وتصل قريباً كجزء من المجموعات الخاصة القادمة إلى فاشن جيت مول، بوليفارد دمشق. ترقبوا الإطلاق الرسمي."
+                        ? "هذه القطعة الحصرية مصممة كتحفة فريدة وتصل قريباً كجزء من المجموعات الخاصة القادمة إلى فاشن غيت مول، بوليفارد دمشق. ترقبوا الإطلاق الرسمي."
                         : `This exclusive design piece is currently arriving as a featured collection entry at Fashion Gate Mall, Damascus Boulevard. Register below to check availability or secure a private atelier pre-order.`
                       }
                     </Typography>

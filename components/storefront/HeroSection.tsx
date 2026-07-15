@@ -67,7 +67,7 @@ export default function HeroSection({
     section.eyebrow,
     lang,
     lang === "ar"
-      ? (section.eyebrowAr || "فاشن جيت بوليفارد")
+      ? (section.eyebrowAr || "فاشن غيت بوليفارد")
       : (section.eyebrowEn || "Fashion Gate Boulevard")
   );
 

@@ -34,7 +34,7 @@ export const page = defineType({
         _type: "heroSection",
         enabled: true,
         anchor: "arrival",
-        eyebrow: { en: "Fashion Gate Boulevard", ar: "فاشن جيت بوليفارد" },
+        eyebrow: { en: "Fashion Gate Boulevard", ar: "فاشن غيت بوليفارد" },
         headline: { en: "Fashion Gate", ar: "بوابة الأزياء" },
         subHeadlineLine1: { en: "Syria's first international", ar: "أول متجر أقسام" },
         subHeadlineLine2: { en: "luxury department store", ar: "دولي فاخر في سوريا" },
@@ -71,7 +71,7 @@ export const page = defineType({
         quote: { en: "“You do not shop Fashion Gate Boulevard. You walk it.”", ar: "«أنت لا تتسوق في بوابة الموضة بوليفارد، بل تمشي فيها.»" },
         description: {
           en: "Fashion Gate Boulevard is Syria's first luxury department store — a single address containing multiple worlds under one unified architectural vision.",
-          ar: "فاشن جيت بوليفارد هو أول متجر سوري فاخر - عنوان واحد يضم عوالم متعددة تحت رؤية معمارية موحدة."
+          ar: "فاشن غيت بوليفارد هو أول متجر سوري فاخر - عنوان واحد يضم عوالم متعددة تحت رؤية معمارية موحدة."
         }
       },
       {
@@ -82,7 +82,7 @@ export const page = defineType({
         headline: { en: "Not a store. Not a mall. A destination.", ar: "ليس مجرد متجر. ليس مركزاً تجارياً. وجهة." },
         description: {
           en: "Explore curated seasonal edits, signature silhouettes, and international designer collections that define the Fashion Gate experience.",
-          ar: "اكتشف تعديلاتنا الموسمية المنقحة، وتصميماتنا الحصرية، ومجموعات المصممين العالميين التي تحدد تجربة فاشن جيت."
+          ar: "اكتشف تعديلاتنا الموسمية المنقحة، وتصميماتنا الحصرية، ومجموعات المصممين العالميين التي تحدد تجربة فاشن غيت."
         },
         slides: [
           {
@@ -103,7 +103,7 @@ export const page = defineType({
             title: { en: "Signature Accents", ar: "تفاصيل مميزة" },
             description: {
               en: "Exquisite bags and finely polished accessories that complete the definitive Fashion Gate statement.",
-              ar: "حقائب رائعة وإكسسوارات مصقولة بدقة تكمل المظهر النهائي المميز لفاشن جيت."
+              ar: "حقائب رائعة وإكسسوارات مصقولة بدقة تكمل المظهر النهائي المميز لفاشن غيت."
             }
           }
         ]
@@ -116,7 +116,7 @@ export const page = defineType({
         headline: { en: "Multiple Worlds. One Architectural Vision.", ar: "عوالم متعددة. رؤية معمارية موحدة." },
         description: {
           en: "Fashion Gate Boulevard unites international fashion designer collections, luxury accessories, premium beauty, and gourmet foods under a single architectural vision.",
-          ar: "يوحد فاشن جيت بوليفارد مجموعات مصممي الأزياء العالميين، والإكسسوارات الفاخرة، والجمال المتميز، والأطعمة الفاخرة تحت رؤية معمارية واحدة."
+          ar: "يوحد فاشن غيت بوليفارد مجموعات مصممي الأزياء العالميين، والإكسسوارات الفاخرة، والجمال المتميز، والأطعمة الفاخرة تحت رؤية معمارية واحدة."
         }
       },
       {

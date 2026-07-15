@@ -232,6 +232,15 @@ export async function getTermsPageData() {
   }
 }
 
+export async function getPrivacyPageData() {
+  try {
+    return await sanityClient.fetch(`*[_type == "privacyPage"][0]`);
+  } catch (err) {
+    console.error("Error fetching privacy page data:", err);
+    return null;
+  }
+}
+
 export async function getSanityBrand(slug: string) {
   try {
     return await sanityClient.fetch(`*[_type == "brand" && slug.current == $slug && isActive == true][0] {

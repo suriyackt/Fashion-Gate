@@ -90,17 +90,17 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
   // 3. Resolve metadata text values
   const pageTitle = getLocalizedValue(initialData?.title, lang) || (isAr ? "الشروط والأحكام" : "Terms & Conditions");
   const pageSubtitle = getLocalizedValue(initialData?.subtitle, lang) || (isAr 
-    ? "تحدد هذه الشروط القواعد واللوائح الخاصة باستخدام موقع فاشن جيت سوريا وخدماته." 
+    ? "تحدد هذه الشروط القواعد واللوائح الخاصة باستخدام موقع فاشن غيت سوريا وخدماته." 
     : "These terms define the rules and regulations governing your use of Fashion Gate Syria and its services.");
   const updatedText = isAr ? "آخر تحديث: يوليو 2026" : "Last Updated: July 2026";
 
   // 4. Resolve Introduction Texts
   const introTitleText = getLocalizedValue(initialData?.introTitle, lang) || (isAr ? "المقدمة" : "Introduction");
   const introPara1 = getLocalizedValue(initialData?.introText1, lang) || (isAr 
-    ? "أهلاً بكم في فاشن جيت سوريا. تحكم هذه الشروط والأحكام استخدامكم لموقعنا الإلكتروني وخدماتنا. من خلال الدخول إلى منصتنا أو الشراء منها، فإنكم توافقون على هذه القواعد. إذا كنتم لا توافقون على أي جزء من هذه الشروط، يرجى عدم استخدام خدماتنا." 
+    ? "أهلاً بكم في فاشن غيت سوريا. تحكم هذه الشروط والأحكام استخدامكم لموقعنا الإلكتروني وخدماتنا. من خلال الدخول إلى منصتنا أو الشراء منها، فإنكم توافقون على هذه القواعد. إذا كنتم لا توافقون على أي جزء من هذه الشروط، يرجى عدم استخدام خدماتنا." 
     : "Welcome to Fashion Gate Syria. These terms and conditions govern your use of our website and services. By accessing or purchasing from our platform, you agree to these rules. If you do not agree with any part of these terms, please do not use our services.");
   const introPara2 = getLocalizedValue(initialData?.introText2, lang) || (isAr 
-    ? "يتم تشغيل هذا الموقع بواسطة فاشن جيت سوريا. في جميع أنحاء الموقع، تشير المصطلحات 'نحن' و'نصنع' و'خاصتنا' إلى فاشن جيت سوريا. نحن نقدم هذا الموقع الإلكتروني، بما في ذلك جميع المعلومات والأدوات والخدمات المتاحة من هذا الموقع لكم، كمستخدمين، بشرط موافقتكم على جميع الشروط والأحكام والسياسات والإشعارات المذكورة هنا." 
+    ? "يتم تشغيل هذا الموقع بواسطة فاشن غيت سوريا. في جميع أنحاء الموقع، تشير المصطلحات 'نحن' و'نصنع' و'خاصتنا' إلى فاشن غيت سوريا. نحن نقدم هذا الموقع الإلكتروني، بما في ذلك جميع المعلومات والأدوات والخدمات المتاحة من هذا الموقع لكم، كمستخدمين، بشرط موافقتكم على جميع الشروط والأحكام والسياسات والإشعارات المذكورة هنا." 
     : "This website is operated by Fashion Gate Syria. Throughout the site, the terms \"we,\" \"us,\" and \"our\" refer to Fashion Gate Syria. We offer this website, including all information, tools, and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies, and notices stated here.");
 
   // 5. Fallback translation settings for loop items
@@ -139,7 +139,7 @@ export default function TermsClient({ lang, initialData }: TermsClientProps) {
       ? "نحن لا نضمن أو نتعهد بأن استخدامكم لخدمتنا سيكون دون انقطاع أو في الوقت المناسب أو آمناً أو خالياً من الأخطاء. توافقون على أنه يجوز لنا من وقت لآخر إزالة الخدمة لفترات زمنية غير محددة أو إلغاء الخدمة في أي وقت دون إشعاركم. لا نتحمل نحن ولا مدرائنا أو موظفينا أو الشركات التابعة لنا المسؤولية تحت أي ظرف من الظروف عن أي ضرر مباشر أو غير مباشر أو عرضي أو تأديبي أو خاص أو تبعي من أي نوع." 
       : "We do not guarantee, represent, or warrant that your use of our service will be uninterrupted, timely, secure, or error free. You agree that from time to time we may remove the service for indefinite periods of time or cancel the service at any time, without notice to you. In no case shall Fashion Gate Syria, our directors, officers, employees, affiliates, agents, contractors, or interns be liable for any injury, loss, claim, or any direct, indirect, incidental, punitive, special, or consequential damages of any kind.",
     indemnification: isAr 
-      ? "توافقون على تعويض والدفاع عن وحماية فاشن جيت سوريا والشركات التابعة لنا وشركائنا ومسؤولينا ومدرائنا وموظفينا من أي مطالبة أو طلب، بما في ذلك أتعاب المحاماة المعقولة، التي يقدمها أي طرف ثالث بسبب أو نتيجة لخرقكم لهذه الشروط أو القوانين المعمول بها." 
+      ? "توافقون على تعويض والدفاع عن وحماية فاشن غيت سوريا والشركات التابعة لنا وشركائنا ومسؤولينا ومدرائنا وموظفينا من أي مطالبة أو طلب، بما في ذلك أتعاب المحاماة المعقولة، التي يقدمها أي طرف ثالث بسبب أو نتيجة لخرقكم لهذه الشروط أو القوانين المعمول بها." 
       : "You agree to indemnify, defend, and hold harmless Fashion Gate Syria and our parent, subsidiaries, affiliates, partners, officers, directors, agents, contractors, licensors, service providers, subcontractors, suppliers, and employees, harmless from any claim or demand, including reasonable attorneys fees, made by any third party due to or arising out of your breach of these terms or the documents they incorporate by reference, or your violation of any law or the rights of a third party.",
     severability: isAr 
       ? "في حالة تحديد عدم قانونية أي بند من بنود هذه الشروط أو بطلانه أو عدم قابليته للتنفيذ، يكون هذا البند قابلاً للتنفيذ بأقصى حد يسمح به القانون المعمول به، ويُعتبر الجزء غير القابل للتنفيذ منفصلاً عن هذه الشروط، ولا يؤثر هذا التحديد على صحة وقابلية تنفيذ أي بنود أخرى متبقية." 
