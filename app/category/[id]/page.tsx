@@ -10,5 +10,8 @@ interface PageProps {
 
 export default async function CategoryRedirectPage({ params }: PageProps) {
   const { id } = await params;
+  if (id === "designers") {
+    redirect("/brand/ar");
+  }
   redirect(`/category/${id}/ar`);
 }

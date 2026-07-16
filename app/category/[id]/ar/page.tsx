@@ -1,5 +1,5 @@
 import CategoryDetailClient from "@/components/CategoryDetailClient";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getAllSanityProducts } from "@/lib/sanity";
 
@@ -18,6 +18,9 @@ interface PageProps {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { id } = await params;
+  if (id === "designers") {
+    redirect("/brand/ar");
+  }
   const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
   
   if (!categories.includes(id)) {

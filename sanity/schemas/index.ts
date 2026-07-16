@@ -33,6 +33,7 @@ import { designerCategory } from "./designerCategory";
 
 // New dynamic pages
 import { aboutPage } from "./aboutPage";
+import { restaurantPage } from "./restaurantPage";
 import { contactPage } from "./contactPage";
 import { blogsPage } from "./blogsPage";
 import { loginPage } from "./loginPage";
@@ -78,6 +79,7 @@ export const schemaTypes = [
 
   // New Pages
   aboutPage,
+  restaurantPage,
   contactPage,
   blogsPage,
   loginPage,

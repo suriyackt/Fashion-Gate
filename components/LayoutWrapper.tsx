@@ -33,16 +33,32 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }), [settings.accentColor, settings.primaryColor]);
 
   const isAuthOrStudio = pathname?.includes("/login") || pathname?.includes("/studio");
+  const isVilamore = pathname?.includes("/dining/vilamore");
 
   if (isAuthOrStudio) {
     return <>{children}</>;
   }
 
+  const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
+
+  if (isVilamore) {
+    return (
+      <ThemeProvider theme={theme}>
+        <div dir={lang === "ar" ? "rtl" : "ltr"}>
+          {children}
+          <SiteFooter />
+        </div>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
-      <SiteHeader settings={settings} />
-      {children}
-      <SiteFooter />
+      <div dir={lang === "ar" ? "rtl" : "ltr"}>
+        <SiteHeader settings={settings} />
+        {children}
+        <SiteFooter />
+      </div>
     </ThemeProvider>
   );
 }

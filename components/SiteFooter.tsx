@@ -19,11 +19,17 @@ import { getFooterSettings, getLocalizedValue } from "@/lib/sanity";
 import Tooltip from "./Tooltip";
 
 export function resolvePath(href: string, lang: "ar" | "en") {
-  if (!href) return `/${lang}`;
+  if (!href || href === "/" || href.trim() === "") return `/${lang}`;
   if (href.startsWith("#")) return `/${lang}${href}`;
   if (href.startsWith("http://") || href.startsWith("https://")) return href;
 
   let cleanHref = href.replace(/^\/+|\/+$/g, "");
+  if (cleanHref === "") return `/${lang}`;
+
+  if (cleanHref === "designers" || cleanHref === "category/designers" || cleanHref.includes("designers")) {
+    return `/brand/${lang}`;
+  }
+
   const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
   const parts = cleanHref.split("/");
   const firstPart = parts[0];
@@ -169,7 +175,7 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" spacing={lang === "ar" ? 2.5 : 1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
+            <Stack direction="row" spacing={lang === "ar" ? 4 : 1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
               <Box
                 sx={{
                   width: 48,
