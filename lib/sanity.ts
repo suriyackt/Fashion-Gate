@@ -605,3 +605,65 @@ export async function getHeaderSettings() {
     }
   }`);
 }
+
+
+export async function getRestaurantPageData(restaurantId: string) {
+  try {
+    return await sanityClient.fetch(`*[_type == "restaurantPage" && restaurantId == $restaurantId][0] {
+      restaurantId,
+      title,
+      headerLogo { asset->{ url } },
+      headerLinks[]{
+        title { en, ar },
+        linkType,
+        anchorSection,
+        urlPath
+      },
+      heroTitle,
+      heroSub,
+      heroQuote,
+      heroBgType,
+      heroBgImage { asset->{ url } },
+      heroBgVideoUrl,
+      aboutTitle,
+      aboutSubtitle,
+      aboutQuote,
+      aboutDesc,
+      aboutImages[]{ asset->{ url } },
+      panels[]{
+        label,
+        title,
+        desc,
+        btnText,
+        image { asset->{ url } }
+      },
+      menuHeader,
+      menuTabs,
+      menus[]{
+        categoryIndex,
+        name,
+        desc,
+        price,
+        tag,
+        note,
+        image { asset->{ url } }
+      },
+      galleryTitle,
+      gallerySubtitle,
+      galleryImages[]{
+        image { asset->{ url } },
+        title,
+        subtitle
+      },
+      locationHeader,
+      hoursTitle,
+      hoursVal,
+      contactTitle,
+      contactVal,
+      addressVal
+    }`, { restaurantId });
+  } catch (err) {
+    console.error("Error fetching restaurant page data:", err);
+    return null;
+  }
+}

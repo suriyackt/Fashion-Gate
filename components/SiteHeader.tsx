@@ -18,11 +18,17 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Tooltip from "./Tooltip";
 
 export function resolvePath(href: string, lang: "ar" | "en") {
-  if (!href) return `/${lang}`;
+  if (!href || href === "/" || href.trim() === "") return `/${lang}`;
   if (href.startsWith("#")) return `/${lang}${href}`;
   if (href.startsWith("http://") || href.startsWith("https://")) return href;
 
   let cleanHref = href.replace(/^\/+|\/+$/g, "");
+  if (cleanHref === "") return `/${lang}`;
+
+  if (cleanHref === "designers" || cleanHref === "category/designers" || cleanHref.includes("designers")) {
+    return `/brand/${lang}`;
+  }
+
   const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
   const parts = cleanHref.split("/");
   const firstPart = parts[0];
@@ -209,21 +215,30 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   if (announcements.length === 0) return null;
 
   // Duplicate items sufficiently to cover screen width and ensure seamless loops
-  const marqueeItems = [...announcements, ...announcements, ...announcements, ...announcements];
+  const marqueeItems = [];
+  for (let i = 0; i < 20; i++) {
+    marqueeItems.push(...announcements);
+  }
+
+  const isAr = lang === "ar";
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes marquee-header-scroll {
+        @keyframes marquee-header-scroll-left {
           0% { transform: translate3d(0, 0, 0); }
           100% { transform: translate3d(-50%, 0, 0); }
+        }
+        @keyframes marquee-header-scroll-right {
+          0% { transform: translate3d(-50%, 0, 0); }
+          100% { transform: translate3d(0, 0, 0); }
         }
         .marquee-header-container {
           display: flex;
           align-items: center;
           white-space: nowrap;
           width: max-content;
-          animation: marquee-header-scroll 35s linear infinite;
+          animation: marquee-header-scroll-left 175s linear infinite;
         }
         .marquee-header-container:hover {
           animation-play-state: paused;
@@ -1085,7 +1100,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const isFashion = item.href?.includes("/category/fashion");
               const isPerfumes = item.href?.includes("/category/perfumes");
               const isSkincare = item.href?.includes("/category/skincare");
-              const isCategoryDropdown = isFashion || isPerfumes || isSkincare;
+              const isDining = item.href?.includes("/category/dining");
+              const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
               const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
               const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
               
@@ -1109,10 +1125,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   sx={{ display: "inline-block", height: "100%", position: "relative" }}
                 >
                   <Button
-                    component={Link}
-                    href={finalHref}
+                    component={hasDropdown && !isCategoryDropdown ? "button" : Link}
+                    href={hasDropdown && !isCategoryDropdown ? undefined : finalHref}
                     className="luxury-link"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent) => {
                       if (hasDropdown && !isCategoryDropdown) {
                         e.preventDefault();
                       }
@@ -1176,7 +1192,30 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                         >
                           {isCategoryDropdown ? (
                             <Stack spacing={2} sx={{ width: "100%" }}>
-                              {(isFashion || isSkincare) ? (
+                              {isDining ? (
+                                [
+                                  { label: lang === "ar" ? "مطعم فيلامور" : "Restaurant (Vilamore)", href: `/dining/vilamore/${lang}` },
+                                  { label: lang === "ar" ? "مقهى آرتو" : "Café (Arto Coffee)", href: `/dining/arto-coffee/${lang}` }
+                                ].map((opt) => (
+                                  <Typography
+                                    key={opt.label}
+                                    component={Link}
+                                    href={opt.href}
+                                    onClick={() => setActiveDropdown(null)}
+                                    sx={{
+                                      color: "#333333",
+                                      textDecoration: "none",
+                                      fontSize: 12.5,
+                                      fontWeight: 600,
+                                      fontFamily: '"Cairo", sans-serif',
+                                      "&:hover": { color: "#CB6116", transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)" },
+                                      transition: "all 0.2s ease"
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </Typography>
+                                ))
+                              ) : (isFashion || isSkincare) ? (
                                 [
                                   { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=women` },
                                   { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=men` }
@@ -1427,7 +1466,12 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const activeMenuItems = headerMenuItems && headerMenuItems.length > 0 ? headerMenuItems : fallbackMenuItems;
 
               return activeMenuItems.map((item, idx) => {
-                const hasDropdown = item.designerCategories && item.designerCategories.length > 0;
+                const isFashion = item.href?.includes("/category/fashion");
+                const isPerfumes = item.href?.includes("/category/perfumes");
+                const isSkincare = item.href?.includes("/category/skincare");
+                const isDining = item.href?.includes("/category/dining");
+                const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
+                const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
                 const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
                 
                 const finalHref = resolvePath(item.href, lang);
@@ -1477,42 +1521,112 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                             style={{ overflow: "hidden", width: "100%" }}
                           >
                             <Stack spacing={2.5} sx={{ py: 2, px: 3, bgcolor: "rgba(255,255,255,0.03)", borderLeft: lang === "ar" ? "none" : "2px solid #CB6116", borderRight: lang === "ar" ? "2px solid #CB6116" : "none", width: "100%" }}>
-                              {item.designerCategories.map((cat: any, catIdx: number) => {
-                                const catTitle = lang === "ar" ? cat.title?.ar || cat.title?.en : cat.title?.en || cat.title?.ar;
-                                if (!cat.brands || cat.brands.length === 0) return null;
-                                
-                                return (
-                                  <Stack key={catIdx} spacing={1.2} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-                                    <Typography sx={{ color: "#CB6116", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
-                                      {catTitle}
-                                    </Typography>
-                                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-                                      {cat.brands.map((brand: any, brandIdx: number) => {
-                                        const brandTitle = lang === "ar" ? brand.titleAr || brand.title : brand.title || brand.titleAr;
-                                        const brandHref = `/brand/${brand.slug?.current || brand.slug}/${lang}`;
-                                        
-                                        return (
-                                          <MuiLink
-                                            key={brandIdx}
-                                            component={Link}
-                                            href={brandHref}
-                                            onClick={() => setOpen(false)}
-                                            sx={{
-                                              color: "rgba(255,255,255,0.65)",
-                                              fontSize: 13,
-                                              textDecoration: "none",
-                                              fontFamily: '"Cairo", sans-serif',
-                                              "&:hover": { color: "#ffffff" }
-                                            }}
-                                          >
-                                            {brandTitle}
-                                          </MuiLink>
-                                        );
-                                      })}
-                                    </Box>
-                                  </Stack>
-                                );
-                              })}
+                              {isCategoryDropdown ? (
+                                <Stack spacing={2} sx={{ width: "100%", alignItems: "center" }}>
+                                  {isDining ? (
+                                    [
+                                      { label: lang === "ar" ? "مطعم فيلامور" : "Restaurant (Vilamore)", href: `/dining/vilamore/${lang}` },
+                                      { label: lang === "ar" ? "مقهى آرتو" : "Café (Arto Coffee)", href: `/dining/arto-coffee/${lang}` }
+                                    ].map((opt) => (
+                                      <MuiLink
+                                        key={opt.label}
+                                        component={Link}
+                                        href={opt.href}
+                                        onClick={() => setOpen(false)}
+                                        sx={{
+                                          color: "rgba(255,255,255,0.65)",
+                                          fontSize: 13,
+                                          textDecoration: "none",
+                                          fontFamily: '"Cairo", sans-serif',
+                                          "&:hover": { color: "#ffffff" }
+                                        }}
+                                      >
+                                        {opt.label}
+                                      </MuiLink>
+                                    ))
+                                  ) : (isFashion || isSkincare) ? (
+                                    [
+                                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=women` },
+                                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=men` }
+                                    ].map((opt) => (
+                                      <MuiLink
+                                        key={opt.label}
+                                        component={Link}
+                                        href={opt.href}
+                                        onClick={() => setOpen(false)}
+                                        sx={{
+                                          color: "rgba(255,255,255,0.65)",
+                                          fontSize: 13,
+                                          textDecoration: "none",
+                                          fontFamily: '"Cairo", sans-serif',
+                                          "&:hover": { color: "#ffffff" }
+                                        }}
+                                      >
+                                        {opt.label}
+                                      </MuiLink>
+                                    ))
+                                  ) : (
+                                    [
+                                      { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/perfumes/${lang}?sub=women` },
+                                      { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/perfumes/${lang}?sub=men` },
+                                      { label: lang === "ar" ? "للجنسين" : "UNISEX", href: `/category/perfumes/${lang}?sub=unisex` }
+                                    ].map((opt) => (
+                                      <MuiLink
+                                        key={opt.label}
+                                        component={Link}
+                                        href={opt.href}
+                                        onClick={() => setOpen(false)}
+                                        sx={{
+                                          color: "rgba(255,255,255,0.65)",
+                                          fontSize: 13,
+                                          textDecoration: "none",
+                                          fontFamily: '"Cairo", sans-serif',
+                                          "&:hover": { color: "#ffffff" }
+                                        }}
+                                      >
+                                        {opt.label}
+                                      </MuiLink>
+                                    ))
+                                  )}
+                                </Stack>
+                              ) : (
+                                item.designerCategories.map((cat: any, catIdx: number) => {
+                                  const catTitle = lang === "ar" ? cat.title?.ar || cat.title?.en : cat.title?.en || cat.title?.ar;
+                                  if (!cat.brands || cat.brands.length === 0) return null;
+                                  
+                                  return (
+                                    <Stack key={catIdx} spacing={1.2} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+                                      <Typography sx={{ color: "#CB6116", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                                        {catTitle}
+                                      </Typography>
+                                      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                                        {cat.brands.map((brand: any, brandIdx: number) => {
+                                          const brandTitle = lang === "ar" ? brand.titleAr || brand.title : brand.title || brand.titleAr;
+                                          const brandHref = `/brand/${brand.slug?.current || brand.slug}/${lang}`;
+                                          
+                                          return (
+                                            <MuiLink
+                                              key={brandIdx}
+                                              component={Link}
+                                              href={brandHref}
+                                              onClick={() => setOpen(false)}
+                                              sx={{
+                                                color: "rgba(255,255,255,0.65)",
+                                                fontSize: 13,
+                                                textDecoration: "none",
+                                                fontFamily: '"Cairo", sans-serif',
+                                                "&:hover": { color: "#ffffff" }
+                                              }}
+                                            >
+                                              {brandTitle}
+                                            </MuiLink>
+                                          );
+                                        })}
+                                      </Box>
+                                    </Stack>
+                                  );
+                                })
+                              )}
                             </Stack>
                           </motion.div>
                         )}

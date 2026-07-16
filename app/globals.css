@@ -145,3 +145,9 @@ img {
   transform-origin: bottom left;
 }
 
+/* Custom gap override for MUI Stack component class requested by user */
+.css-1k2hieu-MuiStack-root,
+.mui-1k2hieu-MuiStack-root {
+  gap: 12px !important;
+}
+

@@ -248,21 +248,30 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   if (announcements.length === 0) return null;
 
   // Duplicate items sufficiently to cover screen width and ensure seamless loops
-  const marqueeItems = [...announcements, ...announcements, ...announcements, ...announcements];
+  const marqueeItems = [];
+  for (let i = 0; i < 20; i++) {
+    marqueeItems.push(...announcements);
+  }
+
+  const isAr = lang === "ar";
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes marquee-storefront-scroll {
+        @keyframes marquee-storefront-scroll-left {
           0% { transform: translate3d(0, 0, 0); }
           100% { transform: translate3d(-50%, 0, 0); }
+        }
+        @keyframes marquee-storefront-scroll-right {
+          0% { transform: translate3d(-50%, 0, 0); }
+          100% { transform: translate3d(0, 0, 0); }
         }
         .marquee-storefront-container {
           display: flex;
           align-items: center;
           white-space: nowrap;
           width: max-content;
-          animation: marquee-storefront-scroll 35s linear infinite;
+          animation: marquee-storefront-scroll-left 175s linear infinite;
         }
         .marquee-storefront-container:hover {
           animation-play-state: paused;

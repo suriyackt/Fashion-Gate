@@ -183,7 +183,7 @@ export default function AuthClient({ initialLang, sanityData }: AuthClientProps)
               </Typography>
             </Stack>
 
-            <Box component="form" onSubmit={handleSubmit}>
+            <Box component="form" onSubmit={handleSubmit} dir={lang === "ar" ? "rtl" : "ltr"}>
               <Stack spacing={3}>
                 {mode === "signup" && (
                   <TextField
