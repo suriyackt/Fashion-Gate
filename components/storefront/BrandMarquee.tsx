@@ -11,7 +11,7 @@ const brandsList = [
   { 
     id: "elie-saab", 
     logo: (
-      <svg width="240" height="88" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Helvetica Neue', Arial, sans-serif" fontSize="15" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">ELIE SAAB</text>
       </svg>
     )
@@ -19,7 +19,7 @@ const brandsList = [
   { 
     id: "prada", 
     logo: (
-      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Didot', Bodoni, serif" fontSize="19" fontWeight="bold" letterSpacing="0.2em" textAnchor="middle">PRADA</text>
       </svg>
     )
@@ -27,7 +27,7 @@ const brandsList = [
   { 
     id: "gucci", 
     logo: (
-      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', Times, serif" fontSize="19" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GUCCI</text>
       </svg>
     )
@@ -35,7 +35,7 @@ const brandsList = [
   { 
     id: "ysl", 
     logo: (
-      <svg width="240" height="48" viewBox="0 0 140 30" fill="currentColor">
+      <svg viewBox="0 0 140 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="15" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">SAINT LAURENT</text>
       </svg>
     )
@@ -43,7 +43,7 @@ const brandsList = [
   { 
     id: "adidas", 
     logo: (
-      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Futura', 'Arial', sans-serif" fontSize="20" fontWeight="bold" letterSpacing="0.18em" textAnchor="middle">ADIDAS</text>
       </svg>
     )
@@ -51,7 +51,7 @@ const brandsList = [
   { 
     id: "calvin-klein", 
     logo: (
-      <svg width="260" height="48" viewBox="0 0 140 30" fill="currentColor">
+      <svg viewBox="0 0 140 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="16" fontWeight="bold" letterSpacing="0.25em" textAnchor="middle">CALVIN KLEIN</text>
       </svg>
     )
@@ -59,7 +59,7 @@ const brandsList = [
   { 
     id: "skechers", 
     logo: (
-      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Futura', sans-serif" fontSize="18" fontWeight="900" letterSpacing="0.15em" textAnchor="middle">SKECHERS</text>
       </svg>
     )
@@ -67,7 +67,7 @@ const brandsList = [
   { 
     id: "maxmara", 
     logo: (
-      <svg width="240" height="48" viewBox="0 0 160 30" fill="currentColor">
+      <svg viewBox="0 0 160 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', Times, serif" fontSize="20" fontWeight="bold" letterSpacing="0.2em" textAnchor="middle">MaxMara</text>
       </svg>
     )
@@ -75,7 +75,7 @@ const brandsList = [
   { 
     id: "editorial", 
     logo: (
-      <svg width="200" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Didot', Bodoni, serif" fontSize="18" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">EDITORIAL</text>
       </svg>
     )
@@ -83,7 +83,7 @@ const brandsList = [
   { 
     id: "paul-shark", 
     logo: (
-      <svg width="240" height="88" viewBox="0 0 160 30" fill="currentColor">
+      <svg viewBox="0 0 160 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Futura', sans-serif" fontSize="15" fontWeight="900" letterSpacing="0.18em" textAnchor="middle">PAUL & SHARK</text>
       </svg>
     )
@@ -91,7 +91,7 @@ const brandsList = [
   { 
     id: "sandro", 
     logo: (
-      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Helvetica Neue', 'Arial', sans-serif" fontSize="18" fontWeight="bold" letterSpacing="0.28em" textAnchor="middle">SANDRO</text>
       </svg>
     )
@@ -99,7 +99,7 @@ const brandsList = [
   { 
     id: "moje", 
     logo: (
-      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+      <svg viewBox="0 0 100 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Didot', 'Times New Roman', serif" fontSize="21" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">moje</text>
       </svg>
     )
@@ -107,7 +107,7 @@ const brandsList = [
   { 
     id: "hugo-boss", 
     logo: (
-      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Helvetica Neue', Arial, sans-serif" fontSize="17" fontWeight="bold" letterSpacing="0.2em" textAnchor="middle">BOSS</text>
       </svg>
     )
@@ -115,7 +115,7 @@ const brandsList = [
   { 
     id: "giorgio-armani", 
     logo: (
-      <svg width="260" height="48" viewBox="0 0 140 30" fill="currentColor">
+      <svg viewBox="0 0 140 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Didot', Bodoni, serif" fontSize="14" fontWeight="bold" letterSpacing="0.22em" textAnchor="middle">GIORGIO ARMANI</text>
       </svg>
     )
@@ -123,7 +123,7 @@ const brandsList = [
   { 
     id: "lancome", 
     logo: (
-      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', serif" fontSize="18" fontWeight="normal" letterSpacing="0.24em" textAnchor="middle">LANCÔME</text>
       </svg>
     )
@@ -131,7 +131,7 @@ const brandsList = [
   { 
     id: "cartier", 
     logo: (
-      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+      <svg viewBox="0 0 100 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Didot', Bodoni, serif" fontSize="18" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">Cartier</text>
       </svg>
     )
@@ -139,7 +139,7 @@ const brandsList = [
   { 
     id: "jimmy-choo", 
     logo: (
-      <svg width="240" height="48" viewBox="0 0 140 30" fill="currentColor">
+      <svg viewBox="0 0 140 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', serif" fontSize="16" fontWeight="bold" letterSpacing="0.2em" textAnchor="middle">JIMMY CHOO</text>
       </svg>
     )
@@ -147,7 +147,7 @@ const brandsList = [
   { 
     id: "coach", 
     logo: (
-      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+      <svg viewBox="0 0 100 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', serif" fontSize="21" fontWeight="bold" letterSpacing="0.15em" textAnchor="middle">COACH</text>
       </svg>
     )
@@ -155,7 +155,7 @@ const brandsList = [
   { 
     id: "valentino", 
     logo: (
-      <svg width="220" height="48" viewBox="0 0 120 30" fill="currentColor">
+      <svg viewBox="0 0 120 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Times New Roman', serif" fontSize="21" fontWeight="bold" letterSpacing="0.18em" textAnchor="middle">VALENTINO</text>
       </svg>
     )
@@ -163,32 +163,12 @@ const brandsList = [
   { 
     id: "chloe", 
     logo: (
-      <svg width="180" height="48" viewBox="0 0 100 30" fill="currentColor">
+      <svg viewBox="0 0 100 30" fill="currentColor">
         <text x="50%" y="22" fontFamily="'Century Gothic', sans-serif" fontSize="19" fontWeight="bold" letterSpacing="0.15em" textAnchor="middle">Chloé</text>
       </svg>
     )
   }
 ];
-
-const brandTweaks: Record<string, { scale?: number; yOffset?: number }> = {
-  "skechers": { scale: 0.65 },        // Scale down bold/italic Skechers
-  "valentino": { scale: 1.25, yOffset: 2 }, // Scale up Valentino and shift down
-  "adidas": { scale: 1.2 },           // Scale up Adidas text logo
-  "ysl": { scale: 0.85 },            // Modern Saint Laurent Paris logo
-  "gucci": { scale: 0.9 },
-  "prada": { scale: 0.9 },
-  "calvin-klein": { scale: 1.05 },
-  "cartier": { scale: 0.9 },          // Reduced size as requested
-  "elie-saab": { scale: 1.25 },       // Increased size as requested
-  "chloe": { scale: 1.25 },           // Increased size as requested
-  "editorial": { scale: 1.25 },       // Increased size as requested
-  "moje": { scale: 1.25 },            // Increased size as requested
-  "paul-shark": { scale: 1.4 },       // Scaled up for original shark logo PNG visibility
-  "hugo-boss": { scale: 0.8 },        // Scale down bold BOSS
-  "giorgio-armani": { scale: 0.9 },
-  "sandro": { scale: 0.85 },
-  "maxmara": { scale: 0.9 }
-};
 
 export default function BrandMarquee({
   section,
@@ -210,7 +190,8 @@ export default function BrandMarquee({
 
         let brandLogoNode: React.ReactNode = null;
 
-        const logoImage = (lang === "ar" && b.imageAr) ? b.imageAr : b.image;
+        // Force to use default/English image (remove Arabic logo)
+        const logoImage = b.image;
         if (logoImage) {
           try {
             const url = logoImage.asset?.url || imageUrl(logoImage).width(600).quality(100).url();
@@ -248,21 +229,8 @@ export default function BrandMarquee({
           id: slugStr || `brand-${index}`,
           title: localizedTitle,
           size: b.size,
-          logo: brandLogoNode || (lang === "ar" ? (
-            <svg width="220" height="50" viewBox="0 0 120 30" fill="currentColor">
-              <text 
-                x="50%" 
-                y="22" 
-                fontFamily="'Cairo', 'Didot', serif" 
-                fontSize="13" 
-                fontWeight="bold" 
-                letterSpacing="0.05em" 
-                textAnchor="middle"
-              >
-                {localizedTitle}
-              </text>
-            </svg>
-          ) : staticMatch ? (
+          scale: b.scale,
+          logo: brandLogoNode || (staticMatch ? (
             staticMatch.logo
           ) : (
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 18, fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase" }}>
@@ -273,7 +241,7 @@ export default function BrandMarquee({
       });
     }
     
-    // Fallback: use static brandsList but localize the logos if lang === "ar"
+    // Fallback: use static brandsList directly (do not construct Arabic SVG logos)
     return brandsList.map(item => {
       const local = getBrandById(item.id);
       const title = local ? (lang === "ar" ? local.nameAr : local.name) : item.id;
@@ -281,21 +249,8 @@ export default function BrandMarquee({
         id: item.id,
         title: title,
         size: (local as any)?.size || "medium",
-        logo: lang === "ar" ? (
-          <svg width="220" height="50" viewBox="0 0 120 30" fill="currentColor">
-            <text 
-              x="50%" 
-              y="22" 
-              fontFamily="'Cairo', 'Didot', serif" 
-              fontSize="13" 
-              fontWeight="bold" 
-              letterSpacing="0.05em" 
-              textAnchor="middle"
-            >
-              {title}
-            </text>
-          </svg>
-        ) : item.logo
+        scale: (local as any)?.scale,
+        logo: item.logo
       };
     });
   }, [section?.brands, lang]);
@@ -422,18 +377,10 @@ export default function BrandMarquee({
           }}
         >
           {scrollingItems.map((item: any, index: number) => {
-            const tweak = brandTweaks[item.id] || {};
-            
-            // Resolve custom size scale multiplier based on Sanity size field
-            let sizeMultiplier = 1.0;
-            if (item.size === "small") {
-              sizeMultiplier = 0.75;
-            } else if (item.size === "large") {
-              sizeMultiplier = 1.5;
-            }
-
-            const finalScale = (tweak.scale || 1.0) * sizeMultiplier;
-            const finalY = tweak.yOffset || 0;
+            const finalScale = item.scale !== undefined && item.scale !== null ? Number(item.scale) : 3.0;
+            const finalY = 0;
+            const scaleDifference = Math.max(0, finalScale - 3.0);
+            const extraSpace = scaleDifference * 24; // 24px extra spacing per unit scale increase above 3.0
 
             return (
               <Link
@@ -453,6 +400,7 @@ export default function BrandMarquee({
                     opacity: 0.75,
                     cursor: "pointer",
                     transition: "all 0.35s ease",
+                    mx: extraSpace > 0 ? { xs: `${extraSpace * 0.6}px`, md: `${extraSpace}px` } : 0,
                     "& svg": {
                       height: "100% !important",
                       width: "auto !important",
@@ -476,7 +424,7 @@ export default function BrandMarquee({
                       color: "#000000",
                       opacity: 1,
                       "& svg, & img": {
-                        transform: `scale(${finalScale * 1.06}) translateY(${finalY}px) translateZ(0)`
+                        transform: `scale(${finalScale * 1.1}) translateY(${finalY}px) translateZ(0)`
                       }
                     }
                   }}

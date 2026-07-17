@@ -7,6 +7,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "DimaShekari";
+  src: url("/assets/dimashekari-regular/DimaShekari%20regular/DimaShekari%20regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 :root {
   --fg-orange: #CB6116;

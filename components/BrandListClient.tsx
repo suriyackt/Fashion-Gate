@@ -121,8 +121,8 @@ export default function BrandListClient({ initialBrands, initialLang }: BrandLis
       const headline = sb.headline?.en || fb?.headline || "";
       const headlineAr = sb.headline?.ar || fb?.headlineAr || headline;
 
-      const logoUrl = (lang === "ar" && sb.imageAr?.asset?.url) ? sb.imageAr.asset.url : sb.image?.asset?.url;
-      const fallbackLogo = logoUrl || sb.image?.asset?.url || null;
+      const logoUrl = sb.image?.asset?.url || null;
+      const fallbackLogo = logoUrl;
 
       return {
         id: sb.slug?.current || sb._id,

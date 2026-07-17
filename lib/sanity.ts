@@ -72,7 +72,8 @@ export async function getHomepageData() {
           image { asset->{ url, metadata { dimensions { aspectRatio } } } },
           imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
           isActive,
-          size
+          size,
+          scale
         },
         slides[]{
           title { en, ar },
@@ -115,6 +116,7 @@ export async function getHomepageData() {
       image { asset->{ url, metadata { dimensions { aspectRatio } } } },
       imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
       size,
+      scale,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -231,6 +233,7 @@ export async function getSanityBrands() {
       image { asset->{ url, metadata { dimensions { aspectRatio } } } },
       imageAr { asset->{ url, metadata { dimensions { aspectRatio } } } },
       size,
+      scale,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -271,6 +274,7 @@ export async function getSanityBrand(slug: string) {
       image { asset->{ url } },
       imageAr { asset->{ url } },
       size,
+      scale,
       "headline": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].headline, headline) { en, ar },
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
@@ -613,6 +617,13 @@ export async function getRestaurantPageData(restaurantId: string) {
       restaurantId,
       title,
       headerLogo { asset->{ url } },
+      logoHeight,
+      logoHeightMobile,
+      logoWidth,
+      backButtonLabel { en, ar },
+      backButtonLink,
+      visitUsButtonLabel { en, ar },
+      visitUsButtonLink,
       headerLinks[]{
         title { en, ar },
         linkType,
@@ -664,6 +675,54 @@ export async function getRestaurantPageData(restaurantId: string) {
     }`, { restaurantId });
   } catch (err) {
     console.error("Error fetching restaurant page data:", err);
+    return null;
+  }
+}
+
+export async function getDiningPageData() {
+  try {
+    return await sanityClient.fetch(`*[_type == "diningPage"][0] {
+      title,
+      eyebrow { en, ar },
+      headline { en, ar },
+      description { en, ar },
+      restaurantPlace {
+        title { en, ar },
+        description { en, ar },
+        image { asset->{ url } },
+        logo { asset->{ url } },
+        operatingHoursLabel { en, ar },
+        operatingHoursValue { en, ar },
+        contactUsLabel { en, ar },
+        contactUsValue { en, ar },
+        buttonText { en, ar },
+        redirectionType,
+        pageReference->{ restaurantId },
+        buttonPath,
+        showSecondaryButton,
+        secondaryButtonText { en, ar },
+        secondaryButtonPath
+      },
+      cafePlace {
+        title { en, ar },
+        description { en, ar },
+        image { asset->{ url } },
+        logo { asset->{ url } },
+        operatingHoursLabel { en, ar },
+        operatingHoursValue { en, ar },
+        contactUsLabel { en, ar },
+        contactUsValue { en, ar },
+        buttonText { en, ar },
+        redirectionType,
+        pageReference->{ restaurantId },
+        buttonPath,
+        showSecondaryButton,
+        secondaryButtonText { en, ar },
+        secondaryButtonPath
+      }
+    }`);
+  } catch (err) {
+    console.error("Error fetching dining page data:", err);
     return null;
   }
 }

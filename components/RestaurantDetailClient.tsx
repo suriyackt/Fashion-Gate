@@ -421,13 +421,13 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
     : (isVilamore ? "/brand/hero-woman.jpg" : "/brand/arto-bg.jpg");
 
   const resolvedPanel1Img = initialSanityData?.panels?.[0]?.image
-    ? imageUrl(initialSanityData.panels[0].image).url()
+    ? (typeof initialSanityData.panels[0].image === 'string' ? initialSanityData.panels[0].image : (initialSanityData.panels[0].image.asset?.url || imageUrl(initialSanityData.panels[0].image).url()))
     : "/brand/vilamore-kebab.jpg";
   const resolvedPanel2Img = initialSanityData?.panels?.[1]?.image
-    ? imageUrl(initialSanityData.panels[1].image).url()
+    ? (typeof initialSanityData.panels[1].image === 'string' ? initialSanityData.panels[1].image : (initialSanityData.panels[1].image.asset?.url || imageUrl(initialSanityData.panels[1].image).url()))
     : "/brand/vilamore-bg.jpg";
   const resolvedPanel3Img = initialSanityData?.panels?.[2]?.image
-    ? imageUrl(initialSanityData.panels[2].image).url()
+    ? (typeof initialSanityData.panels[2].image === 'string' ? initialSanityData.panels[2].image : (initialSanityData.panels[2].image.asset?.url || imageUrl(initialSanityData.panels[2].image).url()))
     : "/brand/hero-woman.jpg";
 
   const handleScrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
@@ -500,7 +500,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           price: getVal(item.price, "TBC"),
           tag: getVal(item.tag, ""),
           note: getVal(item.note, ""),
-          image: item.image ? imageUrl(item.image).url() : "/brand/logo.png"
+          image: item.image ? (typeof item.image === "string" ? item.image : (item.image.asset?.url || imageUrl(item.image).url())) : "/brand/logo.png"
         }));
       }
     }
@@ -523,7 +523,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           price: getVal(item.price, "TBC"),
           tag: getVal(item.tag, ""),
           note: getVal(item.note, ""),
-          image: item.image ? imageUrl(item.image).url() : "/brand/logo.png"
+          image: item.image ? (typeof item.image === "string" ? item.image : (item.image.asset?.url || imageUrl(item.image).url())) : "/brand/logo.png"
         }));
       }
     }
@@ -656,7 +656,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               right: 0,
               height: "100px",
               zIndex: 999,
-              bgcolor: headerScrolled ? "rgba(253, 251, 248, 0.95)" : "transparent",
+              bgcolor: headerScrolled ? "rgba(253, 251, 248, 0.95)" : "#fdfbf8f2",
               backdropFilter: headerScrolled ? "blur(12px)" : "none",
               borderBottom: headerScrolled ? "1px solid rgba(44, 37, 34, 0.08)" : "none",
               transition: "background-color 0.3s, border-bottom 0.3s, opacity 0.2s",
@@ -712,9 +712,12 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               <Box 
                 component="img" 
                 src={resolvedLogoUrl} 
-                alt="Vilamore" 
+                alt="Logo" 
                 sx={{ 
-                  height: { md: "42px", lg: "50px" }, 
+                  height: { 
+                    md: `${initialSanityData?.logoHeight || 50}px` 
+                  },
+                  width: initialSanityData?.logoWidth ? `${initialSanityData.logoWidth}px` : "auto",
                   objectFit: "contain",
                   display: "block" 
                 }} 
@@ -739,7 +742,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               {/* Back to Mall Home */}
               <Box
                 component={Link}
-                href={lang === "ar" ? "/ar" : "/en"}
+                href={initialSanityData?.backButtonLink || (lang === "ar" ? "/ar" : "/en")}
                 sx={{
                   bgcolor: cardBg,
                   color: charcoalText,
@@ -763,7 +766,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   }
                 }}
               >
-                {isAr ? "الرئيسية" : "HOME"}
+                {getVal(initialSanityData?.backButtonLabel, isAr ? "الرئيسية" : "Back to Dining")}
               </Box>
 
               {/* Language Switch */}
@@ -780,7 +783,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: 1,
+                  gap: 1.5,
                   boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
                   fontFamily: "Cairo, sans-serif",
                   fontWeight: 700,
@@ -793,13 +796,25 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   }
                 }}
               >
-                <LanguageIcon sx={{ fontSize: 18 }} />
+                <Box 
+                  component="img" 
+                  src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
+                  alt={lang === "en" ? "Syria Flag" : "UK Flag"}
+                  sx={{ width: 22, height: 15, objectFit: "cover", borderRadius: "2px" }}
+                />
                 {t.langToggleText}
               </Box>
 
               {/* VISIT US Link */}
               <Box
-                onClick={() => handleScrollToSection(locationSectionRef)}
+                onClick={() => {
+                  const link = initialSanityData?.visitUsButtonLink;
+                  if (link && !link.startsWith("#")) {
+                    window.location.href = link;
+                  } else {
+                    handleScrollToSection(locationSectionRef);
+                  }
+                }}
                 sx={{
                   bgcolor: cardBg,
                   color: accentColor,
@@ -820,7 +835,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   }
                 }}
               >
-                {isAr ? "اتصل بنا" : "VISIT US"}
+                {getVal(initialSanityData?.visitUsButtonLabel, isAr ? "اتصل بنا" : "VISIT US")}
               </Box>
             </Stack>
           </Box>
@@ -881,9 +896,10 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               <Box 
                 component="img" 
                 src={resolvedLogoUrl} 
-                alt="Vilamore" 
+                alt="Logo" 
                 sx={{ 
-                  height: "30px", 
+                  height: `${initialSanityData?.logoHeightMobile || 30}px`,
+                  width: "auto",
                   objectFit: "contain",
                   display: "block" 
                 }} 
@@ -893,7 +909,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             <Stack direction="row" spacing={1}>
               <Box
                 component={Link}
-                href={lang === "ar" ? "/ar" : "/en"}
+                href={initialSanityData?.backButtonLink || (lang === "ar" ? "/ar" : "/en")}
                 sx={{
                   bgcolor: cardBg,
                   color: charcoalText,
@@ -906,7 +922,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   fontFamily: "Cairo, sans-serif"
                 }}
               >
-                {isAr ? "الرئيسية" : "HOME"}
+                {getVal(initialSanityData?.backButtonLabel, isAr ? "الرئيسية" : "HOME")}
               </Box>
               <Box
                 component={Link}
@@ -920,9 +936,18 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   py: 0.6,
                   fontSize: "0.75rem",
                   fontWeight: 700,
-                  fontFamily: "Cairo, sans-serif"
+                  fontFamily: "Cairo, sans-serif",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5
                 }}
               >
+                <Box 
+                  component="img" 
+                  src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
+                  alt={lang === "en" ? "Syria Flag" : "UK Flag"}
+                  sx={{ width: 14, height: 10, objectFit: "cover", borderRadius: "1px" }}
+                />
                 {t.langToggleText}
               </Box>
             </Stack>
@@ -950,7 +975,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           >
             {/* Drawer Header */}
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 8 }}>
-              <Box component="img" src={resolvedLogoUrl} alt="Vilamore" sx={{ height: "45px", objectFit: "contain" }} />
+              <Box component="img" src={resolvedLogoUrl} alt="Logo" sx={{ height: `${initialSanityData?.logoHeightMobile || 45}px`, objectFit: "contain" }} />
               <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: charcoalText, zIndex: 10 }}>
                 <CloseIcon sx={{ fontSize: 30 }} />
               </IconButton>
@@ -1189,7 +1214,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                       fontSize: "0.85rem"
                     }}
                   >
-                    VILAMORE EXPERIENCE
+                    {isAr ? "تجربة فيلامور" : "VILAMORE EXPERIENCE"}
                   </Typography>
 
                   <Typography
@@ -1297,7 +1322,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 {/* Story block */}
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.25em", fontSize: "0.9rem" }}>
-                    THE HERITAGE OF FLAVOR
+                    {isAr ? "عراقة النكهة" : "THE HERITAGE OF FLAVOR"}
                   </Typography>
                   <Typography
                     variant="h2"
@@ -1441,7 +1466,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                     fontSize: "0.9rem"
                   }}
                 >
-                  DISCOVER THE DIFFERENCE
+                   {isAr ? "اكتشف الفرق" : "DISCOVER THE DIFFERENCE"}
                 </Typography>
                 
                 <Typography
@@ -1494,7 +1519,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
 
                   <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900 }}>
-                      01 / GASTRONOMY
+                      {isAr ? "01 / فن الطهي" : "01 / GASTRONOMY"}
                     </Typography>
                     <Typography variant="h3" sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "1.8rem", sm: "2.5rem" }, fontWeight: 700, mt: 1, mb: 3 }}>
                       {t.panel1Title}
@@ -1575,7 +1600,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
 
                   <Grid size={{ xs: 12, md: 6 }} dir={isAr ? "rtl" : "ltr"}>
                     <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900 }}>
-                      02 / NATURE & SPATIALITY
+                      {isAr ? "02 / الطبيعة والمكان" : "02 / NATURE & SPATIALITY"}
                     </Typography>
                     <Typography variant="h3" sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "1.8rem", sm: "2.5rem" }, fontWeight: 700, mt: 1, mb: 3 }}>
                       {t.panel2Title}
@@ -1655,7 +1680,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
 
                   <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900 }}>
-                      03 / PRESTIGE
+                      {isAr ? "03 / النخبة والتميز" : "03 / PRESTIGE"}
                     </Typography>
                     <Typography variant="h3" sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "1.8rem", sm: "2.5rem" }, fontWeight: 700, mt: 1, mb: 3 }}>
                       {t.panel3Title}
@@ -2078,10 +2103,26 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 dir={isAr ? "rtl" : "ltr"}
               >
                 {[
-                  { img: "/brand/vilamore-bg.jpg", title: "Central Jasmin Courtyard", subtitle: "Traditional fountains & jasmine arches" },
-                  { img: "/brand/vilamore-kebab.jpg", title: "Clay Oven baking pit", subtitle: "Slow pit wood roasting fire" },
-                  { img: "/brand/hero-woman.jpg", title: "Intimate Stone Alcoves", subtitle: "Heritage architecture layout" },
-                  { img: "/brand/hero-unisex-perfume.jpg", title: "Grand Mall Archways", subtitle: "Under the golden vaults" }
+                  {
+                    img: "/brand/vilamore-bg.jpg",
+                    title: isAr ? "تراس الياسمين المركزي" : "Central Jasmin Courtyard",
+                    subtitle: isAr ? "النوافير التقليدية وأقواس الياسمين الفواح" : "Traditional fountains & jasmine arches"
+                  },
+                  {
+                    img: "/brand/vilamore-kebab.jpg",
+                    title: isAr ? "فرن الطين التقليدي" : "Clay Oven baking pit",
+                    subtitle: isAr ? "الخبز الطازج والشواء على نار حطب الزيتون" : "Slow pit wood roasting fire"
+                  },
+                  {
+                    img: "/brand/hero-woman.jpg",
+                    title: isAr ? "الأركان الحجرية الدافئة" : "Intimate Stone Alcoves",
+                    subtitle: isAr ? "تصميم معماري يحاكي البيوت الدمشقية العريقة" : "Heritage architecture layout"
+                  },
+                  {
+                    img: "/brand/hero-unisex-perfume.jpg",
+                    title: isAr ? "الممرات والقباب الذهبية" : "Grand Mall Archways",
+                    subtitle: isAr ? "تحت القباب الذهبية الفاخرة للمول" : "Under the golden vaults"
+                  }
                 ].map((slide, idx) => (
                   <Box key={idx} sx={{ flexShrink: 0, width: { xs: "310px", sm: "440px" }, bgcolor: beigeBg, p: 2, border: "1px solid rgba(0,0,0,0.03)", borderRadius: "20px" }}>
                     <Box sx={{ overflow: "hidden", height: 320, mb: 2, borderRadius: "12px" }}>
@@ -2207,17 +2248,394 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
     }
   });
 
+  const oppositeLang = isAr ? "en" : "ar";
+  const oppositeLangPath = `/dining/arto-coffee/${oppositeLang}`;
+
+  const backHref = useMemo(() => {
+    const rawLink = initialSanityData?.backButtonLink || "/dining";
+    if (rawLink === "/dining") {
+      return `/dining/${lang}`;
+    }
+    return rawLink;
+  }, [initialSanityData?.backButtonLink, lang]);
+
   return (
     <ThemeProvider theme={artoTheme}>
-      <Box sx={{ bgcolor: "#FFFFFF", color: "#000000", minHeight: "100vh", pb: 15, overflowX: "hidden" }}>
+      <Box sx={{ bgcolor: "#FFFFFF", color: "#000000", minHeight: "100vh", pb: 15, overflowX: "hidden", pt: "100px", position: "relative" }}>
         
+        {/* ==================== ARTO COFFEE HEADER ==================== */}
+        
+        {/* Desktop Fixed Navigation Buttons (Locks to sides, centered wordmark) */}
+        <Box
+          component={motion.div}
+          animate={{ y: headerVisible ? 0 : -120 }}
+          transition={{ type: "spring", stiffness: 100, damping: 18 }}
+          sx={{
+            display: { xs: "none", md: "block" },
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "100px",
+            zIndex: 999,
+            bgcolor: headerScrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+            backdropFilter: headerScrolled ? "blur(12px)" : "none",
+            borderBottom: headerScrolled ? "1px solid rgba(0, 0, 0, 0.08)" : "none",
+            transition: "background-color 0.3s, border-bottom 0.3s, opacity 0.2s",
+            opacity: drawerOpen ? 0 : 1,
+            pointerEvents: drawerOpen ? "none" : "auto"
+          }}
+        >
+          {/* Left side: MENU Drawer Button */}
+          <Box
+            component={motion.div}
+            onClick={() => setDrawerOpen(true)}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: { md: 24, lg: 60 },
+              transform: "translateY(-50%)",
+              zIndex: 999,
+              bgcolor: "#000000",
+              color: "#ffffff",
+              border: "2px solid #ffffff",
+              borderRadius: "16px",
+              px: 5,
+              py: 2,
+              cursor: "pointer",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
+              "&:hover": {
+                bgcolor: "#333333"
+              }
+            }}
+          >
+            <MenuIcon sx={{ fontSize: 20 }} />
+            <Typography sx={{ fontFamily: "Cairo, sans-serif", fontWeight: 700, fontSize: "1.1rem", letterSpacing: "0.1em" }}>
+              {t.menuText}
+            </Typography>
+          </Box>
+
+          {/* Center Logo/Branding PNG */}
+          <Box
+            component={Link}
+            href="/"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 999
+            }}
+          >
+            <Box 
+              component="img" 
+              src={resolvedLogoUrl} 
+              alt="Logo" 
+              sx={{ 
+                height: { 
+                  md: `${initialSanityData?.logoHeight || 50}px` 
+                },
+                width: initialSanityData?.logoWidth ? `${initialSanityData.logoWidth}px` : "auto",
+                objectFit: "contain",
+                display: "block" 
+              }} 
+            />
+          </Box>
+
+          {/* Right side: Language Switch, HOME Button, & VISIT US Anchor with flex gap spacing */}
+          <Stack
+            direction="row"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              right: { md: 24, lg: 60 },
+              transform: "translateY(-50%)",
+              zIndex: 999,
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              alignItems: "center"
+            }}
+          >
+            {/* Back to Dining page */}
+            <Box
+              component={Link}
+              href={backHref}
+              sx={{
+                bgcolor: "#ffffff",
+                color: "#000000",
+                border: `1.5px solid #000000`,
+                borderRadius: "16px",
+                px: 4,
+                py: 1.8,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+                fontFamily: "Cairo, sans-serif",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                fontSize: "0.9rem",
+                transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
+                "&:hover": {
+                  bgcolor: "#000000",
+                  color: "#ffffff"
+                }
+              }}
+            >
+              {getVal(initialSanityData?.backButtonLabel, isAr ? "العودة للمطاعم" : "BACK TO DINING")}
+            </Box>
+
+            {/* Language Switch */}
+            <Box
+              component={Link}
+              href={oppositeLangPath}
+              sx={{
+                bgcolor: "#ffffff",
+                color: "#000000",
+                border: `1.5px solid #000000`,
+                borderRadius: "16px",
+                px: 4,
+                py: 1.8,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+                fontFamily: "Cairo, sans-serif",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                fontSize: "0.9rem",
+                transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
+                "&:hover": {
+                  bgcolor: "#000000",
+                  color: "#ffffff"
+                }
+              }}
+            >
+              <Box 
+                component="img" 
+                src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
+                alt={lang === "en" ? "Syria Flag" : "UK Flag"}
+                sx={{ width: 22, height: 15, objectFit: "cover", borderRadius: "2px" }}
+              />
+              {t.langToggleText}
+            </Box>
+
+            {/* VISIT US Link */}
+            <Box
+              onClick={() => {
+                const link = initialSanityData?.visitUsButtonLink;
+                if (link && !link.startsWith("#")) {
+                  window.location.href = link;
+                } else {
+                  handleScrollToSection(locationSectionRef);
+                }
+              }}
+              sx={{
+                bgcolor: "#ffffff",
+                color: "#000000",
+                border: `2px solid #000000`,
+                borderRadius: "16px",
+                px: 5,
+                py: 1.8,
+                cursor: "pointer",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+                fontFamily: "Cairo, sans-serif",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                letterSpacing: "0.05em",
+                transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
+                "&:hover": {
+                  bgcolor: "#000000",
+                  color: "#ffffff"
+                }
+              }}
+            >
+              {getVal(initialSanityData?.visitUsButtonLabel, isAr ? "اتصل بنا" : "VISIT US")}
+            </Box>
+          </Stack>
+        </Box>
+
+        {/* Mobile Top Sticky Navigation Bar */}
+        <Box
+          component={motion.div}
+          animate={{ y: headerVisible ? 0 : -80 }}
+          transition={{ type: "spring", stiffness: 100, damping: 18 }}
+          sx={{
+            display: { xs: "flex", md: "none" },
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1100,
+            bgcolor: headerScrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+            backdropFilter: headerScrolled ? "blur(8px)" : "none",
+            borderBottom: headerScrolled ? "1px solid rgba(0, 0, 0, 0.08)" : "none",
+            justifyContent: "space-between",
+            alignItems: "center",
+            px: 2,
+            py: 2,
+            transition: "background-color 0.3s, border-bottom 0.3s, opacity 0.2s",
+            opacity: drawerOpen ? 0 : 1,
+            pointerEvents: drawerOpen ? "none" : "auto"
+          }}
+        >
+          <IconButton 
+            onClick={() => setDrawerOpen(true)} 
+            sx={{ 
+              color: "#ffffff", 
+              bgcolor: headerScrolled ? "rgba(0, 0, 0, 0.75)" : "rgba(0, 0, 0, 0.4)",
+              borderRadius: "50%",
+              width: 44,
+              height: 44,
+              zIndex: 10,
+              transition: "background-color 0.3s, color 0.3s",
+              "&:hover": {
+                bgcolor: "#333333"
+              }
+            }}
+          >
+            <MenuIcon sx={{ fontSize: 24 }} />
+          </IconButton>
+
+          {/* Mobile Center Logo PNG */}
+          <Box
+            component={Link}
+            href="/"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Box 
+              component="img" 
+              src={resolvedLogoUrl} 
+              alt="Logo" 
+              sx={{ 
+                height: `${initialSanityData?.logoHeightMobile || 30}px`,
+                width: "auto",
+                objectFit: "contain",
+                display: "block" 
+              }} 
+            />
+          </Box>
+
+          <Stack direction="row" spacing={1}>
+            <Box
+              component={Link}
+              href={backHref}
+              sx={{
+                bgcolor: "#ffffff",
+                color: "#000000",
+                border: "1px solid rgba(0,0,0,0.2)",
+                borderRadius: "8px",
+                px: 1.5,
+                py: 0.6,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                fontFamily: "Cairo, sans-serif"
+              }}
+            >
+              {getVal(initialSanityData?.backButtonLabel, isAr ? "العودة" : "BACK")}
+            </Box>
+            <Box
+              component={Link}
+              href={oppositeLangPath}
+              sx={{
+                bgcolor: "#ffffff",
+                color: "#000000",
+                border: "1px solid rgba(0,0,0,0.2)",
+                borderRadius: "8px",
+                px: 1.5,
+                py: 0.6,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                fontFamily: "Cairo, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5
+              }}
+            >
+              <Box 
+                component="img" 
+                src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
+                alt={lang === "en" ? "Syria Flag" : "UK Flag"}
+                sx={{ width: 14, height: 10, objectFit: "cover", borderRadius: "1px" }}
+              />
+              {t.langToggleText}
+            </Box>
+          </Stack>
+        </Box>
+
+        {/* Navigation drawer (Left slide-out Askim style menu) */}
+        <Drawer
+          anchor={isAr ? "right" : "left"}
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          PaperProps={{
+            sx: {
+              width: { xs: "100%", sm: "450px" },
+              bgcolor: "#FFFFFF",
+              backgroundImage: "none",
+              p: 5,
+              display: "flex",
+              flexDirection: "column",
+              borderRight: isAr ? "none" : "1.5px solid rgba(0,0,0,0.1)",
+              borderLeft: isAr ? "1.5px solid rgba(0,0,0,0.1)" : "none",
+              zIndex: 10000
+            }
+          }}
+          sx={{ zIndex: 10000 }}
+        >
+          {/* Drawer Header */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 8 }}>
+            <Box component="img" src={resolvedLogoUrl} alt="Logo" sx={{ height: `${initialSanityData?.logoHeightMobile || 45}px`, objectFit: "contain" }} />
+            <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "#000000", zIndex: 10 }}>
+              <CloseIcon sx={{ fontSize: 30 }} />
+            </IconButton>
+          </Stack>
+
+          {/* Menu Links */}
+          <Stack spacing={4} sx={{ flexGrow: 1, justifyContent: "center" }}>
+            {resolvedHeaderLinks.map((item: any, idx: number) => (
+              <Box
+                key={idx}
+                component={motion.div}
+                onClick={item.action}
+                sx={{ cursor: "pointer", py: 1, borderBottom: "1px solid rgba(0,0,0,0.06)" }}
+              >
+                <Typography
+                  sx={{
+                    fontFamily: "Cairo, sans-serif",
+                    fontSize: "2.2rem",
+                    fontWeight: 500,
+                    color: "#000000",
+                    transition: "color 0.2s",
+                    "&:hover": { color: "#555555" }
+                  }}
+                >
+                  {item.title}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </Drawer>
+
         {/* Cinematic Asymmetric Hero Section */}
-        <Container maxWidth="xl" sx={{ py: { xs: 8, md: 16 } }}>
+        <Container ref={heroSectionRef} maxWidth="xl" sx={{ py: { xs: 8, md: 16 }, pt: { xs: 12, md: 20 } }}>
           <Grid container spacing={8} alignItems="center" dir={lang === "ar" ? "rtl" : "ltr"}>
             <Grid size={{ xs: 12, md: 7 }}>
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
                 <Typography sx={{ color: accentColor, fontWeight: 900, fontSize: 14, letterSpacing: "0.3em", textTransform: "uppercase", mb: 3 }}>
-                  ARTO COFFEE ROASTERS
+                  {isAr ? "محامص قهوة أرتو" : "ARTO COFFEE ROASTERS"}
                 </Typography>
                 <Typography variant="h1" sx={{ fontFamily: "var(--heading-font)", fontWeight: 900, fontSize: { xs: "3.5rem", sm: "5rem", md: "7rem" }, lineHeight: 0.95, letterSpacing: "-0.03em", mb: 4 }}>
                   {t.artoHeroTitle}
@@ -2264,13 +2682,13 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               {lang === "ar" ? "«القهوة ليست مجرد شراب، بل هي لغة قائمة بذاتها تُقرب المسافات»" : "“Coffee is a language in itself, extracted carefully to bridge cultures and gather souls.”"}
             </Typography>
             <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.2em" }}>
-              ARTO SLOGAN
+              {isAr ? "شعار أرتو" : "ARTO SLOGAN"}
             </Typography>
           </Container>
         </Box>
 
         {/* What makes us special Section */}
-        <Container maxWidth="lg" sx={{ py: 16 }}>
+        <Container ref={philosophySectionRef} maxWidth="lg" sx={{ py: 16 }}>
           <Grid container spacing={8} alignItems="center" dir={lang === "ar" ? "rtl" : "ltr"}>
             <Grid size={{ xs: 12, md: 5 }}>
               <Box sx={{ border: "1px solid rgba(0,0,0,0.08)", p: 1.5, borderRadius: "24px", overflow: "hidden", boxShadow: "0 15px 35px rgba(0,0,0,0.03)" }}>
@@ -2280,7 +2698,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             
             <Grid size={{ xs: 12, md: 7 }}>
               <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.2em", fontSize: 13 }}>
-                SPECIALTY ROASTING STANDARDS
+                {isAr ? "معايير التحميص المختص" : "SPECIALTY ROASTING STANDARDS"}
               </Typography>
               <Typography variant="h2" sx={{ fontFamily: "var(--heading-font)", fontWeight: 900, mb: 4, mt: 2, fontSize: { xs: "2.5rem", md: "4rem" }, textTransform: "uppercase", lineHeight: 1.1 }}>
                 {lang === "ar" ? "شغف الاستخلاص المتوازن" : "THE PURSUIT OF COFFEE SYMMETRY"}
@@ -2293,11 +2711,11 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
         </Container>
 
         {/* Visible Minimal Process Horizontal scroll track */}
-        <Container maxWidth="xl" sx={{ py: 16 }}>
+        <Container ref={terraceSectionRef} maxWidth="xl" sx={{ py: 16 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 6, px: { md: 4 } }} dir={lang === "ar" ? "rtl" : "ltr"}>
             <Box>
               <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.2em" }}>
-                ARTISANAL TIMELINE
+                {isAr ? "خطوات التحضير الفنية" : "ARTISANAL TIMELINE"}
               </Typography>
               <Typography variant="h2" sx={{ fontFamily: "var(--heading-font)", fontWeight: 900, textTransform: "uppercase", fontSize: { xs: "2.5rem", md: "3.8rem" }, mt: 1 }}>
                 {t.processHeader}
@@ -2329,10 +2747,26 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             dir={lang === "ar" ? "rtl" : "ltr"}
           >
             {[
-              { img: "/brand/arto-flatwhite.jpg", title: "01 / Precision Pour-Over", desc: "Temperature calibrated water filtration" },
-              { img: "/brand/arto-bg.jpg", title: "02 / Specialty Roasting", desc: "Micro-batch profile monitoring" },
-              { img: "/brand/hero-unisex-perfume.jpg", title: "03 / Dessert Pairings", desc: "Decadent San Sebastian matching" },
-              { img: "/brand/hero-woman.jpg", title: "04 / Minimalist Sanctuary", desc: "Crafted for peaceful work and design meetings" }
+              {
+                img: "/brand/arto-flatwhite.jpg",
+                title: isAr ? "01 / التقطير الدقيق" : "01 / Precision Pour-Over",
+                desc: isAr ? "ترشيح المياه بالحرارة المعايرة" : "Temperature calibrated water filtration"
+              },
+              {
+                img: "/brand/arto-bg.jpg",
+                title: isAr ? "02 / التحميص المختص" : "02 / Specialty Roasting",
+                desc: isAr ? "مراقبة منحنيات التحميص للدفعات الصغيرة" : "Micro-batch profile monitoring"
+              },
+              {
+                img: "/brand/hero-unisex-perfume.jpg",
+                title: isAr ? "03 / متناغمات الحلويات" : "03 / Dessert Pairings",
+                desc: isAr ? "مواءمة كعكة سان سيباستيان الفاخرة" : "Decadent San Sebastian matching"
+              },
+              {
+                img: "/brand/hero-woman.jpg",
+                title: isAr ? "04 / ملاذ التبسيط" : "04 / Minimalist Sanctuary",
+                desc: isAr ? "مصمم للعمل الهادئ واجتماعات التصميم" : "Crafted for peaceful work and design meetings"
+              }
             ].map((slide, idx) => (
               <Box key={idx} sx={{ flexShrink: 0, width: { xs: "320px", sm: "420px" } }}>
                 <Box sx={{ overflow: "hidden", height: 280, mb: 2, border: "1px solid rgba(0,0,0,0.1)", borderRadius: "20px" }}>
@@ -2361,11 +2795,11 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
         </Container>
 
         {/* Minimal Board Menu with Category Tabs */}
-        <Box sx={{ borderY: "1.5px solid #000000", py: 16, bgcolor: "#FAFAFA" }}>
+        <Box ref={menuSectionRef} sx={{ borderY: "1.5px solid #000000", py: 16, bgcolor: "#FAFAFA" }}>
           <Container maxWidth="lg">
             <Box sx={{ textAlign: "center", mb: 8 }}>
               <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.25em" }}>
-                THE BREW LIST
+                {isAr ? "قائمة القهوة والتقطير" : "THE BREW LIST"}
               </Typography>
               <Typography variant="h2" sx={{ fontFamily: "var(--heading-font)", fontWeight: 900, textTransform: "uppercase", mt: 1, fontSize: { xs: "2.8rem", md: "4rem" } }}>
                 {t.menuHeader}
@@ -2540,10 +2974,10 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
         </Box>
 
         {/* Minimalist Location & Map Card */}
-        <Container maxWidth="lg" sx={{ pt: 12, textAlign: "center" }}>
+        <Container ref={locationSectionRef} maxWidth="lg" sx={{ pt: 12, textAlign: "center" }}>
           <Box sx={{ mb: 8 }}>
             <Typography variant="overline" sx={{ color: accentColor, fontWeight: 900, letterSpacing: "0.2em", mb: 2, display: "block" }}>
-              FIND US
+              {isAr ? "تفضل بزيارتنا" : "FIND US"}
             </Typography>
             <Typography variant="h2" sx={{ fontFamily: "var(--heading-font)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em" }}>
               {t.location}
@@ -2605,7 +3039,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               </Box>
             </Grid>
           </Grid>
-          <Typography sx={{ fontSize: 12, fontStyle: "italic", opacity: 0.5, mt: 10 }}>{t.dubaiRef}</Typography>
+          {/* <Typography sx={{ fontSize: 12, fontStyle: "italic", opacity: 0.5, mt: 10 }}>{t.dubaiRef}</Typography> */}
         </Container>
       </Box>
     </ThemeProvider>

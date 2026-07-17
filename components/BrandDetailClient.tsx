@@ -96,7 +96,7 @@ export default function BrandDetailClient({
   const bgUrl = brand.bgImage?.asset?.url || brand.backdropUrl || "/assets/headerbg.png";
   const headlineText = brand.headline?.[lang] || brand.headline || "";
   const descriptionText = brand.description?.[lang] || brand.description || "";
-  const logoUrl = (lang === "ar" && brand.imageAr?.asset?.url) ? brand.imageAr.asset.url : brand.image?.asset?.url;
+  const logoUrl = brand.image?.asset?.url;
   const buttonText = brand.buttonText?.[lang] || brand.buttonText || "";
   const buttonLink = brand.buttonLink || "";
 
