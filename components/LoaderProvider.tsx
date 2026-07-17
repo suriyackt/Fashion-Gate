@@ -226,7 +226,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
                     textTransform: "uppercase"
                   }}
                 >
-                  {isAr ? "فاشن غيت" : "FASHION GATE"}
+                  {isAr ? "فاشن غيت" : "FASHION GATE MALL"}
                 </Typography>
                 <Typography 
                   sx={{ 
@@ -239,7 +239,7 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
                     mt: 1
                   }}
                 >
-                  {isAr ? "بوليفارد دمشق" : "BOULEVARD"}
+                  {isAr ? "بوليفارد دمشق" : "DAMASCUS BOULEVARD"}
                 </Typography>
               </MotionBox>
               

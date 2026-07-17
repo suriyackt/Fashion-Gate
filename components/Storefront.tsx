@@ -696,7 +696,7 @@ function SectionRenderer({
   if (type === "brandMarquee") return <BrandMarquee section={section} lang={lang} />;
   if (type === "manifesto") return <ManifestoSection section={section} t={t} lang={lang} />;
   if (type === "collections") return <CollectionsSection section={section} t={t} lang={lang} />;
-  if (type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} brands={brands} />;
+  // if (type === "lookbook") return <LookbookSection section={section} t={t} lang={lang} brands={brands} />;
   if (type === "boulevard" || type === "boulevard-selection" || type === "boulevardSelection") return <BoulevardSelectionSection section={section} t={t} lang={lang} />;
   if (type === "carousel") return <CarouselSection section={section} t={t} lang={lang} />;
   if (type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;

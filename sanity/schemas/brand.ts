@@ -57,6 +57,14 @@ export default defineType({
       initialValue: "medium",
     }),
     defineField({
+      name: "scale",
+      title: "Logo Custom Scale",
+      type: "number",
+      description: "Define a decimal scale multiplier for the brand logo (e.g. 1.0 or 3.0).",
+      initialValue: 3.0,
+      validation: (Rule) => Rule.min(0.01),
+    }),
+    defineField({
       name: "headline",
       title: "Headline",
       type: "localizedString",

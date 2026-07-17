@@ -37,13 +37,34 @@ export default function HeroSection({
   }
 
   // Resolve Headline dynamically
-  const headlineText = getLocalizedValue(
+  const headlineRaw = getLocalizedValue(
     section.headline,
     lang,
     lang === "ar"
       ? (section.headlineAr || "بوابة الأزياء")
       : (section.headlineEn || "Fashion Gate")
   );
+
+  // Normalize spaces
+  const headlineText = headlineRaw ? headlineRaw.replace(/\s+/g, " ").trim() : "";
+
+  // Split headline for elegance (keep "Fashion Gate Mall" in line 1, "Syria" in line 2)
+  let headlinePart1 = headlineText;
+  let headlinePart2 = "";
+
+  if (lang === "ar") {
+    const arSyriaRegex = /(?:سوريا|سورية)$/;
+    if (arSyriaRegex.test(headlineText)) {
+      headlinePart1 = headlineText.replace(arSyriaRegex, "").trim().replace(/،\s*$/, "").trim();
+      headlinePart2 = headlineText.match(arSyriaRegex)?.[0] || "سوريا";
+    }
+  } else {
+    const enSyriaRegex = /Syria$/i;
+    if (enSyriaRegex.test(headlineText)) {
+      headlinePart1 = headlineText.replace(enSyriaRegex, "").trim().replace(/,\s*$/, "").trim();
+      headlinePart2 = "Syria";
+    }
+  }
 
   // Resolve Subheadlines dynamically
   const subHeadlineLine1 = getLocalizedValue(
@@ -152,6 +173,7 @@ export default function HeroSection({
           textAlign: "center",
           pointerEvents: "none",
           zIndex: 10,
+          marginTop: { xs: "0px", md: "80px" },
         }}
       >
         <Stack
@@ -178,30 +200,59 @@ export default function HeroSection({
               letterSpacing: lang === "ar" ? "0.02em" : "0.06em",
               textShadow: "0 4px 25px rgba(0,0,0,0.5)",
               textAlign: "center",
+              width: "100%",
             }}
           >
-            {headlineText}
+            {headlinePart2 ? (
+              <>
+                <Box component="span" sx={{ display: "block", lineHeight: 1.0 }}>
+                  {headlinePart1}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    display: "block",
+                    fontSize: {
+                      xs: "0.5em",
+                      sm: "0.52em",
+                      md: "0.55em",
+                    },
+                    fontWeight: 300,
+                    letterSpacing: lang === "ar" ? "0.06em" : "0.32em",
+                    opacity: 0.9,
+                    mt: { xs: 0.5, sm: 1, md: 1.5 },
+                    mr: lang === "ar" ? 0 : "-0.32em",
+                    lineHeight: 1.1,
+                    color:"#cb6116"
+                  }}
+                >
+                  {headlinePart2}
+                </Box>
+              </>
+            ) : (
+              headlineText
+            )}
           </Typography>
 
           {/* Subheadline (Double Line) */}
           <Typography
             sx={{
-              fontFamily: '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
+              fontFamily: lang === "ar" ? '"DimaShekari", sans-serif' : '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
               fontSize: { xs: "1.1rem", sm: "1.7rem", md: "2.3rem" },
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
-              alignSelf: lang === "ar" ? "flex-start" : "flex-end",
+              alignSelf: "flex-end",
               mr: lang === "ar" ? 0 : { xs: 1, md: 3 },
               ml: lang === "ar" ? { xs: 1, md: 3 } : 0,
               mt: -0.5,
-              lineHeight: 1.1,
+              lineHeight: 1.7,
               textAlign: lang === "ar" ? "left" : "right",
             }}
           >
             {lang === "ar" ? (
               <>
-                <span style={{ marginLeft: "60px" }}>{subHeadlineLine1}</span>
+                <span style={{ marginLeft: "70px" }}>{subHeadlineLine1}</span>
                 <br />
                 <span>{subHeadlineLine2}</span>
               </>

@@ -7,7 +7,8 @@ import {
   Layers, 
   HelpCircle, 
   Heart,
-  Award
+  Award,
+  Utensils
 } from "lucide-react";
 
 export const structure: StructureResolver = (S) =>
@@ -136,9 +137,25 @@ export const structure: StructureResolver = (S) =>
                 .title("Dining Page")
                 .child(
                   S.document()
-                    .schemaType("page")
-                    .documentId("dining")
+                    .schemaType("diningPage")
+                    .documentId("diningPage")
                     .title("Dining Page")
+                ),
+              S.listItem()
+                .title("Vilamore Restaurant")
+                .child(
+                  S.document()
+                    .schemaType("restaurantPage")
+                    .documentId("vilamore")
+                    .title("Vilamore Restaurant")
+                ),
+              S.listItem()
+                .title("Arto Coffee")
+                .child(
+                  S.document()
+                    .schemaType("restaurantPage")
+                    .documentId("arto-coffee")
+                    .title("Arto Coffee")
                 ),
             ])
         ),
@@ -149,6 +166,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("product").title("Products").icon(ShoppingBag),
       S.documentTypeListItem("brand").title("Brands").icon(Award),
       S.documentTypeListItem("collection").title("Collections / Categories").icon(Layers),
+      S.documentTypeListItem("restaurantPage").title("Restaurants & Cafes").icon(Utensils),
 
       S.divider(),
 
@@ -199,7 +217,9 @@ export const structure: StructureResolver = (S) =>
             "brand",
             "siteSettings",
             "footerSettings",
-            "section"
+            "section",
+            "diningPage",
+            "restaurantPage"
           ].includes(listItem.getId() || "")
       ),
     ]);

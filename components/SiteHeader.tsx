@@ -29,7 +29,7 @@ export function resolvePath(href: string, lang: "ar" | "en") {
     return `/brand/${lang}`;
   }
 
-  const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
+  const categories = ["women", "men", "perfumes", "skincare", "fashion", "designers"];
   const parts = cleanHref.split("/");
   const firstPart = parts[0];
   
@@ -1089,7 +1089,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   }
                 ]
               },
-              { label: { en: "Dining", ar: "المطاعم" }, href: "/category/dining" },
+              { label: { en: "Dining", ar: "المطاعم" }, href: "/dining" },
               { label: { en: "About Us", ar: "من نحن" }, href: "/about" },
               { label: { en: "Contact Us", ar: "اتصل بنا" }, href: "/contact" }
             ];
@@ -1100,7 +1100,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const isFashion = item.href?.includes("/category/fashion");
               const isPerfumes = item.href?.includes("/category/perfumes");
               const isSkincare = item.href?.includes("/category/skincare");
-              const isDining = item.href?.includes("/category/dining");
+              const isDining = item.href?.includes("/dining");
               const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
               const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
               const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
@@ -1194,8 +1194,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                             <Stack spacing={2} sx={{ width: "100%" }}>
                               {isDining ? (
                                 [
-                                  { label: lang === "ar" ? "مطعم فيلامور" : "Restaurant (Vilamore)", href: `/dining/vilamore/${lang}` },
-                                  { label: lang === "ar" ? "مقهى آرتو" : "Café (Arto Coffee)", href: `/dining/arto-coffee/${lang}` }
+                                  { label: lang === "ar" ? "مطعم فيلامور" : "RESTAURANT (VILAMORE)", href: `/dining/vilamore/${lang}` },
+                                  { label: lang === "ar" ? "مقهى آرتو" : "CAFE (ARTO COFFEE)", href: `/dining/arto-coffee/${lang}` }
                                 ].map((opt) => (
                                   <Typography
                                     key={opt.label}
@@ -1204,7 +1204,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                                     onClick={() => setActiveDropdown(null)}
                                     sx={{
                                       color: "#333333",
-                                      textDecoration: "none",
+                                      textDecoration: "uppercase",
                                       fontSize: 12.5,
                                       fontWeight: 600,
                                       fontFamily: '"Cairo", sans-serif',
@@ -1459,7 +1459,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                     }
                   ]
                 },
-                { label: { en: "Dining", ar: "المطاعم" }, href: "/category/dining" },
+                { label: { en: "Dining", ar: "المطاعم" }, href: "/dining" },
                 { label: { en: "About Us", ar: "من نحن" }, href: "/about" },
                 { label: { en: "Contact Us", ar: "اتصل بنا" }, href: "/contact" }
               ];
@@ -1469,7 +1469,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 const isFashion = item.href?.includes("/category/fashion");
                 const isPerfumes = item.href?.includes("/category/perfumes");
                 const isSkincare = item.href?.includes("/category/skincare");
-                const isDining = item.href?.includes("/category/dining");
+                const isDining = item.href?.includes("/dining");
                 const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
                 const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
                 const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;

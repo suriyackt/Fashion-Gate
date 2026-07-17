@@ -13,6 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
+import { getLocalizedValue, imageUrl } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
 
@@ -159,6 +160,19 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
   const [brands, setBrands] = useState<any[]>([]);
   const [brandSearchQuery, setSidebarSearchQuery] = useState("");
+  const [diningCmsData, setDiningCmsData] = useState<any>(null);
+
+  useEffect(() => {
+    if (categoryId === "dining") {
+      import("@/lib/sanity").then(({ getDiningPageData }) => {
+        getDiningPageData().then((data) => {
+          if (data) {
+            setDiningCmsData(data);
+          }
+        });
+      });
+    }
+  }, [categoryId]);
 
   useEffect(() => {
     import("@/lib/sanity").then(({ getSanityBrands }) => {
@@ -198,8 +212,8 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
       const headline = sb.headline?.en || fb?.headline || "";
       const headlineAr = sb.headline?.ar || fb?.headlineAr || headline;
 
-      const logoUrl = (lang === "ar" && sb.imageAr?.asset?.url) ? sb.imageAr.asset.url : sb.image?.asset?.url;
-      const fallbackLogo = logoUrl || sb.image?.asset?.url || null;
+      const logoUrl = sb.image?.asset?.url || null;
+      const fallbackLogo = logoUrl;
 
       return {
         id: sb.slug?.current || sb._id,
@@ -224,6 +238,97 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   }, [initialLang]);
 
   const t = categoryTranslations[lang];
+
+  const fallbackDiningData = useMemo(() => ({
+    description: "At Fashion Gate Mall Syria, exceptional food and drink is something we take incredibly seriously. That is why we are proud to offer a destination featuring VILAMORE RESTAURANT & CAFE and Arto Coffee. We have carefully curated these establishments to provide an elevated culinary experience, ensuring that every visit offers both quality and variety. Whether you are looking for a refined meal or a perfect brew, our selection is designed to satisfy the most discerning tastes in a comfortable and sophisticated setting.",
+    places: [
+      {
+        title: "VILAMORE RESTAURANT & CAFE",
+        description: "VILAMORE RESTAURANT & CAFE brings a celebrated blend of Syrian and Turkish culinary traditions to our guests, offering an authentic taste of the Levantine region in every bite. We are delighted to announce the grand opening of our newest destination at Fashion Gate Mall Syria. When visiting our new home in Syria, you will find warm lighting, sophisticated comfort, and a menu featuring traditional breakfasts, signature grilled specialties, and rich Mediterranean flavors. We invite you to join us for a beautiful dining experience that celebrates great food and genuine hospitality.",
+        image: "/brand/vilamore-bg.jpg",
+        logo: "/brand/vilamore-logo.png",
+        operatingHoursLabel: "Operating Hours",
+        operatingHoursValue: "Daily TBC",
+        contactUsLabel: "Contact Us",
+        contactUsValue: "TBC",
+        buttonText: "Explore Menu",
+        redirectionType: "custom",
+        buttonPath: "/dining/vilamore",
+        showSecondaryButton: true,
+        secondaryButtonText: "Book A Table",
+        secondaryButtonPath: "https://wa.me/963119988"
+      },
+      {
+        title: "Arto Coffee",
+        description: "From the vibrant heart of Dubai Mall to the welcoming atmosphere of Fashion Gate Mall Syria, Arto Coffee brings a refined coffee culture to Syria. We take pride in in our dedication to excellence, sourcing premium specialty beans directly from Brazil and other renowned origins to ensure a superior cup in every pour. Whether you are pausing for a quiet moment during your shopping day or meeting friends to share our decadent selection of desserts, our cafe provides an inviting space where quality meets passion. We are thrilled to bring the same standard of artistry and flavor that our guests love in Dubai to our new home in Syria.",
+        image: "/brand/arto-bg.jpg",
+        logo: "/brand/arto-logo.png",
+        operatingHoursLabel: "Operating Hours",
+        operatingHoursValue: "Daily TBC",
+        contactUsLabel: "Contact Us",
+        contactUsValue: "TBC",
+        buttonText: "Explore Menu",
+        redirectionType: "custom",
+        buttonPath: "/dining/arto-coffee",
+        showSecondaryButton: false,
+        secondaryButtonText: "Book A Table",
+        secondaryButtonPath: "https://wa.me/963119988"
+      }
+    ]
+  }), []);
+
+  const getPlacePath = (p: any, fallbackPath: string) => {
+    if (p.redirectionType === "reference" && p.pageReference?.restaurantId) {
+      return `/dining/${p.pageReference.restaurantId}/${lang}`;
+    }
+    const rawPath = p.buttonPath || fallbackPath;
+    if (rawPath.startsWith("/") && !rawPath.includes("/en") && !rawPath.includes("/ar")) {
+      return `${rawPath}/${lang}`;
+    }
+    return rawPath;
+  };
+
+  const resolvedDiningIntro = getLocalizedValue(diningCmsData?.description, lang, fallbackDiningData.description);
+
+  const resolvedRestaurant = useMemo(() => {
+    const p = diningCmsData?.restaurantPlace || {};
+    const f = fallbackDiningData.places[0];
+    return {
+      title: getLocalizedValue(p.title, lang, f.title),
+      description: getLocalizedValue(p.description, lang, f.description),
+      operatingHoursLabel: getLocalizedValue(p.operatingHoursLabel, lang, f.operatingHoursLabel),
+      operatingHoursValue: getLocalizedValue(p.operatingHoursValue, lang, f.operatingHoursValue),
+      contactUsLabel: getLocalizedValue(p.contactUsLabel, lang, f.contactUsLabel),
+      contactUsValue: getLocalizedValue(p.contactUsValue, lang, f.contactUsValue),
+      buttonText: getLocalizedValue(p.buttonText, lang, f.buttonText),
+      buttonPath: getPlacePath(p, f.buttonPath),
+      image: p.image ? (p.image.asset?.url || imageUrl(p.image).url()) : f.image,
+      logo: p.logo ? (p.logo.asset?.url || imageUrl(p.logo).url()) : f.logo,
+      showSecondaryButton: p.showSecondaryButton !== undefined ? p.showSecondaryButton : f.showSecondaryButton,
+      secondaryButtonText: getLocalizedValue(p.secondaryButtonText, lang, f.secondaryButtonText),
+      secondaryButtonPath: p.secondaryButtonPath || f.secondaryButtonPath
+    };
+  }, [diningCmsData?.restaurantPlace, lang, fallbackDiningData]);
+
+  const resolvedCafe = useMemo(() => {
+    const p = diningCmsData?.cafePlace || {};
+    const f = fallbackDiningData.places[1];
+    return {
+      title: getLocalizedValue(p.title, lang, f.title),
+      description: getLocalizedValue(p.description, lang, f.description),
+      operatingHoursLabel: getLocalizedValue(p.operatingHoursLabel, lang, f.operatingHoursLabel),
+      operatingHoursValue: getLocalizedValue(p.operatingHoursValue, lang, f.operatingHoursValue),
+      contactUsLabel: getLocalizedValue(p.contactUsLabel, lang, f.contactUsLabel),
+      contactUsValue: getLocalizedValue(p.contactUsValue, lang, f.contactUsValue),
+      buttonText: getLocalizedValue(p.buttonText, lang, f.buttonText),
+      buttonPath: getPlacePath(p, f.buttonPath),
+      image: p.image ? (p.image.asset?.url || imageUrl(p.image).url()) : f.image,
+      logo: p.logo ? (p.logo.asset?.url || imageUrl(p.logo).url()) : f.logo,
+      showSecondaryButton: p.showSecondaryButton !== undefined ? p.showSecondaryButton : f.showSecondaryButton,
+      secondaryButtonText: getLocalizedValue(p.secondaryButtonText, lang, f.secondaryButtonText),
+      secondaryButtonPath: p.secondaryButtonPath || f.secondaryButtonPath
+    };
+  }, [diningCmsData?.cafePlace, lang, fallbackDiningData]);
 
   // 1. Determine layout subcategories list
   const subcategoryList = useMemo(() => {
@@ -1116,7 +1221,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
                         sx={{
-                          textAlign: "center",
+                          textAlign: "left",
                           maxWidth: "850px",
                           mx: "auto",
                           mb: 8,
@@ -1132,9 +1237,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                             fontWeight: 400
                           }}
                         >
-                          {lang === "ar"
-                            ? "في فاشن غيت مول سوريا، نولي اهتماماً بالغاً لتقديم المأكولات والمشروبات الاستثنائية. ولهذا نفخر بتقديم وجهة فريدة تضم مطعم ومقهى فيلامور (VILAMORE RESTAURANT & CAFE) وآرتو كافيه (Arto Coffee). لقد اخترنا هذه المنشآت بعناية فائقة لنضمن تقديم تجربة طهي راقية ومتنوعة تلبي أرقى الأذواق في أجواء مريحة وفاخرة."
-                            : "At Fashion Gate Mall Syria, exceptional food and drink is something we take incredibly seriously. That is why we are proud to offer a destination featuring VILAMORE RESTAURANT & CAFE and Arto Coffee. We have carefully curated these establishments to provide an elevated culinary experience, ensuring that every visit offers both quality and variety. Whether you are looking for a refined meal or a perfect brew, our selection is designed to satisfy the most discerning tastes in a comfortable and sophisticated setting."}
+                          {resolvedDiningIntro}
                         </Typography>
                       </Box>
 
@@ -1156,7 +1259,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                       >
                         {/* Image Left */}
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Link href={`/dining/vilamore/${lang}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                          <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
                             <Box
                               sx={{
                                 height: { xs: "300px", sm: "400px", md: "100%" },
@@ -1174,7 +1277,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                 sx={{
                                   position: "absolute",
                                   inset: 0,
-                                  backgroundImage: 'url("/brand/vilamore-bg.jpg")',
+                                  backgroundImage: `url("${resolvedRestaurant.image}")`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center center",
                                   transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
@@ -1202,10 +1305,10 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                             textAlign: lang === "ar" ? "right" : "left"
                           }}
                         >
-                          <Link href={`/dining/vilamore/${lang}`}>
+                          <Link href={resolvedRestaurant.buttonPath}>
                             <Box
                               component="img"
-                              src="/brand/vilamore-logo.png"
+                              src={resolvedRestaurant.logo}
                               alt="Vilamore Logo"
                               sx={{
                                 maxHeight: { xs: 65, md: 80 },
@@ -1218,7 +1321,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                             />
                           </Link>
                           
-                          <Link href={`/dining/vilamore/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                          <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
                             <Typography
                               variant="h5"
                               sx={{
@@ -1229,7 +1332,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                 "&:hover": { color: "#CB6116" }
                               }}
                             >
-                              {lang === "ar" ? "مطعم ومقهى فيلامور" : "VILAMORE RESTAURANT & CAFE"}
+                              {resolvedRestaurant.title}
                             </Typography>
                           </Link>
                           
@@ -1242,9 +1345,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                               mb: 4
                             }}
                           >
-                            {lang === "ar"
-                              ? "يجمع مطعم ومقهى فيلامور بين المأكولات السورية والتركية العريقة، ليوفر لضيوفنا نكهات الشام والبلاد المتوسطية الأصيلة في كل طبق. يسعدنا الإعلان عن الافتتاح الكبير لأحدث فروعنا في فاشن غيت مول سوريا، حيث نرحب بكم في أجواء دافئة وتصميم يعبر عن الراحة والرفاهية مع قائمة طعام تشمل الفطور التقليدي، المشاوي الفاخرة، والنكهات الغنية التي تميز منطقتنا."
-                              : "VILAMORE RESTAURANT & CAFE brings a celebrated blend of Syrian and Turkish culinary traditions to our guests, offering an authentic taste of the Levantine region in every bite. We are delighted to announce the grand opening of our newest destination at Fashion Gate Mall Syria. When visiting our new home in Syria, you will find warm lighting, sophisticated comfort, and a menu featuring traditional breakfasts, signature grilled specialties, and rich Mediterranean flavors. We invite you to join us for a beautiful dining experience that celebrates great food and genuine hospitality."}
+                            {resolvedRestaurant.description}
                           </Typography>
 
                           <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
@@ -1252,18 +1353,43 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                           {/* Metadata */}
                           <Stack spacing={1.5} sx={{ mb: 4 }}>
                             <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{lang === "ar" ? "أوقات العمل:" : "Operating Hours:"}</strong> {lang === "ar" ? "يومياً (سيتم تأكيده لاحقاً)" : "Daily TBC"}
+                              <strong>{resolvedRestaurant.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedRestaurant.operatingHoursValue}
                             </Typography>
                             <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{lang === "ar" ? "اتصل بنا:" : "Contact Us:"}</strong> {lang === "ar" ? "سيتم تأكيده لاحقاً" : "TBC"}
+                              <strong>{resolvedRestaurant.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedRestaurant.contactUsValue}
                             </Typography>
                           </Stack>
 
                           {/* Buttons */}
                           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            <Link href={`/dining/vilamore/${lang}`} style={{ textDecoration: "none" }}>
+                            {resolvedRestaurant.showSecondaryButton && (
+                              <Link href={resolvedRestaurant.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
+                                <Button
+                                  variant="contained"
+                                  sx={{
+                                    bgcolor: "#111111",
+                                    color: "#ffffff",
+                                    px: 4,
+                                    py: 1.5,
+                                    borderRadius: 0,
+                                    textTransform: "uppercase",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    letterSpacing: "0.1em",
+                                    fontFamily: '"Cairo", sans-serif',
+                                    width: "100%",
+                                    "&:hover": {
+                                      bgcolor: "#CB6116"
+                                    }
+                                  }}
+                                >
+                                  {resolvedRestaurant.secondaryButtonText}
+                                </Button>
+                              </Link>
+                            )}
+                            <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none" }}>
                               <Button
-                                variant="contained"
+                                variant="outlined"
                                 sx={{
                                   bgcolor: "#111111",
                                   color: "#ffffff",
@@ -1281,32 +1407,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                   }
                                 }}
                               >
-                                {lang === "ar" ? "احجز طاولة" : "Book A Table"}
-                              </Button>
-                            </Link>
-                            <Link href={`/dining/vilamore/${lang}`} style={{ textDecoration: "none" }}>
-                              <Button
-                                variant="outlined"
-                                sx={{
-                                  borderColor: "#111111",
-                                  color: "#111111",
-                                  px: 4,
-                                  py: 1.5,
-                                  borderRadius: 0,
-                                  textTransform: "uppercase",
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                  letterSpacing: "0.1em",
-                                  fontFamily: '"Cairo", sans-serif',
-                                  width: "100%",
-                                  "&:hover": {
-                                    borderColor: "#CB6116",
-                                    color: "#CB6116",
-                                    bgcolor: "transparent"
-                                  }
-                                }}
-                              >
-                                {lang === "ar" ? "تصفح القائمة" : "Explore Menu"}
+                                {resolvedRestaurant.buttonText}
                               </Button>
                             </Link>
                           </Stack>
@@ -1332,7 +1433,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                       >
                         {/* Image Right */}
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Link href={`/dining/arto-coffee/${lang}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                          <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
                             <Box
                               sx={{
                                 height: { xs: "300px", sm: "400px", md: "100%" },
@@ -1350,7 +1451,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                 sx={{
                                   position: "absolute",
                                   inset: 0,
-                                  backgroundImage: 'url("/brand/arto-bg.jpg")',
+                                  backgroundImage: `url("${resolvedCafe.image}")`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center center",
                                   transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
@@ -1378,10 +1479,10 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                             textAlign: lang === "ar" ? "right" : "left"
                           }}
                         >
-                          <Link href={`/dining/arto-coffee/${lang}`}>
+                          <Link href={resolvedCafe.buttonPath}>
                             <Box
                               component="img"
-                              src="/brand/arto-logo.png"
+                              src={resolvedCafe.logo}
                               alt="Arto Coffee Logo"
                               sx={{
                                 maxHeight: { xs: 65, md: 80 },
@@ -1394,7 +1495,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                             />
                           </Link>
                           
-                          <Link href={`/dining/arto-coffee/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                          <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
                             <Typography
                               variant="h5"
                               sx={{
@@ -1405,7 +1506,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                 "&:hover": { color: "#CB6116" }
                               }}
                             >
-                              {lang === "ar" ? "آرتو كافيه" : "Arto Coffee"}
+                              {resolvedCafe.title}
                             </Typography>
                           </Link>
                           
@@ -1418,9 +1519,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                               mb: 4
                             }}
                           >
-                            {lang === "ar"
-                              ? "من القلب النابض لـ دبي مول إلى الأجواء الترحيبية في فاشن غيت مول سوريا، ينقل آرتو كافيه ثقافة القهوة المختصة والراقية إلى سوريا. نحن فخورون بالتزامنا بالتميز، حيث نستورد حبوب البن الفاخرة مباشرة من البرازيل ومختلف بلدان المنشأ العالمية لضمان تقديم فنجان قهوة مثالي. سواء كنت تبحث عن لحظة هادئة أثناء التسوق أو تلتقي بالأصدقاء لمشاركة خياراتنا الشهية من الحلويات، فإننا نوفر لكم المساحة الأمثل حيث يلتقي الشغف بالجودة."
-                              : "From the vibrant heart of Dubai Mall to the welcoming atmosphere of Fashion Gate Mall Syria, Arto Coffee brings a refined coffee culture to Syria. We take pride in in our dedication to excellence, sourcing premium specialty beans directly from Brazil and other renowned origins to ensure a superior cup in every pour. Whether you are pausing for a quiet moment during your shopping day or meeting friends to share our decadent selection of desserts, our cafe provides an inviting space where quality meets passion. We are thrilled to bring the same standard of artistry and flavor that our guests love in Dubai to our new home in Syria."}
+                            {resolvedCafe.description}
                           </Typography>
 
                           <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
@@ -1428,16 +1527,41 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                           {/* Metadata */}
                           <Stack spacing={1.5} sx={{ mb: 4 }}>
                             <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{lang === "ar" ? "أوقات العمل:" : "Operating Hours:"}</strong> {lang === "ar" ? "يومياً (سيتم تأكيده لاحقاً)" : "Daily TBC"}
+                              <strong>{resolvedCafe.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedCafe.operatingHoursValue}
                             </Typography>
                             <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{lang === "ar" ? "اتصل بنا:" : "Contact Us:"}</strong> {lang === "ar" ? "سيتم تأكيده لاحقاً" : "TBC"}
+                              <strong>{resolvedCafe.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedCafe.contactUsValue}
                             </Typography>
                           </Stack>
 
                           {/* Buttons */}
                           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            <Link href={`/dining/arto-coffee/${lang}`} style={{ textDecoration: "none" }}>
+                            {resolvedCafe.showSecondaryButton && (
+                              <Link href={resolvedCafe.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
+                                <Button
+                                  variant="outlined"
+                                  sx={{
+                                    bgcolor: "#111111",
+                                    color: "#ffffff",
+                                    px: 4,
+                                    py: 1.5,
+                                    borderRadius: 0,
+                                    textTransform: "uppercase",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    letterSpacing: "0.1em",
+                                    fontFamily: '"Cairo", sans-serif',
+                                    width: "100%",
+                                    "&:hover": {
+                                      bgcolor: "#CB6116"
+                                    }
+                                  }}
+                                >
+                                  {resolvedCafe.secondaryButtonText}
+                                </Button>
+                              </Link>
+                            )}
+                            <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none" }}>
                               <Button
                                 variant="contained"
                                 sx={{
@@ -1457,7 +1581,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                   }
                                 }}
                               >
-                                {lang === "ar" ? "تصفح القائمة" : "Explore Our Menu"}
+                                {resolvedCafe.buttonText}
                               </Button>
                             </Link>
                           </Stack>

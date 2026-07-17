@@ -34,6 +34,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   const isAuthOrStudio = pathname?.includes("/login") || pathname?.includes("/studio");
   const isVilamore = pathname?.includes("/dining/vilamore");
+  const isArtoCoffee = pathname?.includes("/dining/arto-coffee");
 
   if (isAuthOrStudio) {
     return <>{children}</>;
@@ -41,7 +42,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
 
-  if (isVilamore) {
+  if (isVilamore || isArtoCoffee) {
     return (
       <ThemeProvider theme={theme}>
         <div dir={lang === "ar" ? "rtl" : "ltr"}>
