@@ -6,6 +6,29 @@ import type { Section } from "@/lib/types";
 import { imageUrl, getLocalizedValue } from "@/lib/sanity";
 import Link from "next/link";
 
+// Helper function to dynamically stretch Arabic cursive connections using Tatweel (\u0640)
+function stretchArabicText(text: string, count: number = 2): string {
+  if (!text) return "";
+  const nonConnecting = new Set([
+    'ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ة', 'ء'
+  ]);
+  let result = "";
+  const tatweel = "\u0640";
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    result += char;
+    if (i < text.length - 1) {
+      const nextChar = text[i + 1];
+      const isCurrArabic = char.charCodeAt(0) >= 0x0600 && char.charCodeAt(0) <= 0x06FF;
+      const isNextArabic = nextChar.charCodeAt(0) >= 0x0600 && nextChar.charCodeAt(0) <= 0x06FF;
+      if (isCurrArabic && isNextArabic && !nonConnecting.has(char)) {
+        result += tatweel.repeat(count);
+      }
+    }
+  }
+  return result;
+}
+
 export default function HeroSection({
   section,
   t,
@@ -57,6 +80,11 @@ export default function HeroSection({
     if (arSyriaRegex.test(headlineText)) {
       headlinePart1 = headlineText.replace(arSyriaRegex, "").trim().replace(/،\s*$/, "").trim();
       headlinePart2 = headlineText.match(arSyriaRegex)?.[0] || "سوريا";
+    }
+    // Apply Kashida (Tatweel) letter stretching for elegant typography
+    headlinePart1 = stretchArabicText(headlinePart1, 2);
+    if (headlinePart2) {
+      headlinePart2 = stretchArabicText(headlinePart2, 2);
     }
   } else {
     const enSyriaRegex = /Syria$/i;
@@ -151,14 +179,25 @@ export default function HeroSection({
             backgroundImage: `url(${bgImageUrl})`,
             backgroundSize: "cover",
             backgroundPosition: {
-              xs: section.mobileBgPosition || "right top",
-              md: "right top"
+              xs: section.mobileBgPosition || "58% center",
+              md: "center"
             },
             filter: "brightness(0.86)",
             zIndex: 1,
           }}
         />
       )}
+
+      {/* Dark Overlay */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          // backgroundColor: "rgba(0, 0, 0, 0.15)", 
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      />
 
       {/* Typography Overlay Area */}
       <Box
@@ -173,7 +212,7 @@ export default function HeroSection({
           textAlign: "center",
           pointerEvents: "none",
           zIndex: 10,
-          marginTop: { xs: "0px", md: "80px" },
+          marginTop: { xs: "0px", md: "100px" },
         }}
       >
         <Stack
@@ -184,28 +223,30 @@ export default function HeroSection({
           {/* Headline */}
           <Typography
             component="h1"
-            className="animate-tracking"
+            className={lang === "ar" ? "animate-fade-in" : "animate-tracking"}
             sx={{
               fontFamily: "var(--heading-font)",
               fontSize: {
-                xs: "2.4rem",
-                sm: "4.2rem",
-                md: "6rem",
-                lg: "7.8rem",
+                xs: lang === "ar" ? "min(9.2vw, 2.4rem)" : "min(7.2vw, 2.4rem)",
+                sm: "min(6.5vw, 4.2rem)",
+                md: "min(6vw, 5.2rem)",
+                lg: "7rem",
               },
               fontWeight: 500,
               lineHeight: 0.9,
               textTransform: "uppercase",
               color: "#ffffff",
-              letterSpacing: lang === "ar" ? "0.02em" : "0.06em",
+              letterSpacing: lang === "ar" ? "0 !important" : "0.06em",
               textShadow: "0 4px 25px rgba(0,0,0,0.5)",
               textAlign: "center",
               width: "100%",
+              display:"inline-block",
+              transform: lang === "ar" ? "scale(1.25)" : "none",
             }}
           >
             {headlinePart2 ? (
               <>
-                <Box component="span" sx={{ display: "block", lineHeight: 1.0 }}>
+                <Box component="span" sx={{ display: "block", lineHeight: 1.0, whiteSpace: "nowrap" }}>
                   {headlinePart1}
                 </Box>
                 <Box
@@ -213,17 +254,18 @@ export default function HeroSection({
                   sx={{
                     display: "block",
                     fontSize: {
-                      xs: "0.5em",
-                      sm: "0.52em",
-                      md: "0.55em",
+                      xs: lang === "ar" ? "0.7em" : "0.82em",
+                      sm: "0.7em",
+                      md: "0.7em",
                     },
-                    fontWeight: 300,
-                    letterSpacing: lang === "ar" ? "0.06em" : "0.32em",
-                    opacity: 0.9,
+                    fontWeight: 600,
+                    letterSpacing: lang === "ar" ? "0 !important" : "0.15em",
+                    opacity: 1,
                     mt: { xs: 0.5, sm: 1, md: 1.5 },
                     mr: lang === "ar" ? 0 : "-0.32em",
                     lineHeight: 1.1,
-                    color:"#cb6116"
+                    color: "#cb6116",
+                    textShadow: "0 2px 15px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.9)"
                   }}
                 >
                   {headlinePart2}
@@ -238,14 +280,14 @@ export default function HeroSection({
           <Typography
             sx={{
               fontFamily: lang === "ar" ? '"DimaShekari", sans-serif' : '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
-              fontSize: { xs: "1.1rem", sm: "1.7rem", md: "2.3rem" },
+              fontSize: { xs: "1.1rem", sm: "min(2.5vw, 1.7rem)", md: "min(2.8vw, 2.3rem)" },
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
               alignSelf: "flex-end",
-              mr: lang === "ar" ? 0 : { xs: 1, md: 3 },
-              ml: lang === "ar" ? { xs: 1, md: 3 } : 0,
-              mt: -0.5,
+              mr: lang === "ar" ? "10rem !important" : { xs: 1, md: 3 },
+              // ml: lang === "ar" ? "120px" : 0,
+              mt: lang === "ar" ? "24px !important" : 0.5,
               lineHeight: 1.7,
               textAlign: lang === "ar" ? "left" : "right",
             }}

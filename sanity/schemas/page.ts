@@ -27,8 +27,6 @@ export const page = defineType({
     })
   ],
   initialValue: {
-    title: "Homepage",
-    slug: { current: "home" },
     sections: [
       {
         _type: "heroSection",
