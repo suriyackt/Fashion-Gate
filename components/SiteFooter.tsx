@@ -198,7 +198,7 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" alignItems="center" sx={{ justifyContent: "flex-start", gap: lang === "ar" ? "32px" : "12px" }}>
+            <Stack direction="row" alignItems="center" sx={{ justifyContent: "flex-start", gap: lang === "ar" ? "12px" : "12px" }}>
               <Box
                 sx={{
                   width: 48,
