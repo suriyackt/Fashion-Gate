@@ -309,8 +309,7 @@ export default function HeroSection({
         </Stack>
       </Box>
 
-      {/* Footer Info & CTA */}
-      <Container
+      {/* <Container
         maxWidth="xl"
         sx={{
           position: "absolute",
@@ -327,7 +326,6 @@ export default function HeroSection({
           alignItems={{ xs: "flex-start", md: "center" }}
           sx={{ width: "100%", justifyContent: "space-between" }}
         >
-          {/* Eyebrow Label */}
           <Typography
             className="animate-fade-in"
             sx={{
@@ -343,7 +341,6 @@ export default function HeroSection({
             {eyebrowText}
           </Typography>
 
-          {/* CTA Link Button */}
           {ctaLabel && (
             <Button
               component={Link}
@@ -381,7 +378,7 @@ export default function HeroSection({
             </Button>
           )}
         </Stack>
-      </Container>
+      </Container> */}
     </Box>
   );
 }

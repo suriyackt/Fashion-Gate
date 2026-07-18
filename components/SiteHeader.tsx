@@ -1472,7 +1472,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 const isPerfumes = item.href?.includes("/category/perfumes");
                 const isSkincare = item.href?.includes("/category/skincare");
                 const isDining = item.href?.includes("/dining");
-                const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
+                const isCategoryDropdown = isFashion || isPerfumes || isSkincare;
                 const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
                 const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
                 
