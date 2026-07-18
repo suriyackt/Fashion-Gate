@@ -232,7 +232,7 @@ export default function HeroSection({
                 md: "min(6vw, 5.2rem)",
                 lg: "7rem",
               },
-              fontWeight: 500,
+              fontWeight:lang === "ar" ? 600 : 500,
               lineHeight: 0.9,
               textTransform: "uppercase",
               color: "#ffffff",
