@@ -419,7 +419,7 @@ function SearchOption({
   }, [suggestedBrandsList, lang]);
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: { xs: "static", sm: "relative" } }}>
       {searchActive && (
         <Box 
           onClick={handleLinkClick}
@@ -479,7 +479,7 @@ function SearchOption({
             p: 1.14,
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 0,
-            ml: 0.5,
+            ml: 1,
             bgcolor: searchActive ? "rgba(255,255,255,0.1)" : "transparent"
           }}
         >
@@ -504,9 +504,9 @@ function SearchOption({
             sx={{
               position: "absolute",
               top: "100%",
-              right: lang === "ar" ? "auto" : 0,
-              left: lang === "ar" ? 0 : "auto",
-              width: { xs: "280px", sm: "360px", md: "420px" },
+              right: { xs: 12, sm: lang === "ar" ? "auto" : 0 },
+              left: { xs: 12, sm: lang === "ar" ? 0 : "auto" },
+              width: { xs: "auto", sm: "360px", md: "420px" },
               maxHeight: "60vh",
               overflowY: "auto",
               bgcolor: "#FAF8F5", // Light background for search popover
@@ -877,7 +877,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           direction="row" 
           justifyContent="space-between" 
           alignItems="center" 
-          sx={{ minHeight: 64, px: { xs: 2.5, md: 4 } }}
+          sx={{ minHeight: 64, px: { xs: 1.5, sm: 2.5, md: 4 } }}
         >
           {/* Logo on the left */}
           <Box
@@ -905,13 +905,13 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 sx={{ 
                   fontFamily: "var(--heading-font)", 
                   fontWeight: 600, 
-                  fontSize: { xs: 14, sm: 15, md: 19 }, 
+                  fontSize: { xs: 13, sm: 15, md: 19 }, 
                   lineHeight: 1, 
                   textTransform: "uppercase", 
                   color: "#ffffff",
                   letterSpacing: "0.08em",
                   whiteSpace: "nowrap",
-                  display: { xs: "none", sm: "block" }
+                  display: "block"
                 }}
               >
                 {lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE"}
@@ -940,10 +940,12 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             )}
 
             {showLanguageSwitcher && (
-              <LanguageSwitcher 
-                currentLang={lang} 
-                onToggleStart={onLangToggleStart} 
-              />
+              <Box sx={{ ml: { xs: "0px !important", sm: "inherit" } }}>
+                <LanguageSwitcher 
+                  currentLang={lang} 
+                  onToggleStart={onLangToggleStart} 
+                />
+              </Box>
             )}
 
             {/* Profile Button */}
