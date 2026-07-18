@@ -193,7 +193,7 @@ export default function HeroSection({
         sx={{
           position: "absolute",
           inset: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.15)", // dark overlay
+          // backgroundColor: "rgba(0, 0, 0, 0.15)", 
           pointerEvents: "none",
           zIndex: 2,
         }}
