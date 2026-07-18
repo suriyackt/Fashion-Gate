@@ -35,6 +35,8 @@
 html {
   scroll-behavior: smooth;
   background: var(--fg-white);
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -43,6 +45,8 @@ body {
   background: var(--fg-white);
   font-family: Cairo, sans-serif;
   overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
 }
 
 a {

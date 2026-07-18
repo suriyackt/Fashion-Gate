@@ -46,6 +46,29 @@ export function resolvePath(href: string, lang: "ar" | "en") {
   return `/${cleanHref}`;
 }
 
+// Helper function to dynamically stretch Arabic cursive connections using Tatweel (\u0640)
+function stretchArabicText(text: string, count: number = 2): string {
+  if (!text) return "";
+  const nonConnecting = new Set([
+    'ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ة', 'ء'
+  ]);
+  let result = "";
+  const tatweel = "\u0640";
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    result += char;
+    if (i < text.length - 1) {
+      const nextChar = text[i + 1];
+      const isCurrArabic = char.charCodeAt(0) >= 0x0600 && char.charCodeAt(0) <= 0x06FF;
+      const isNextArabic = nextChar.charCodeAt(0) >= 0x0600 && nextChar.charCodeAt(0) <= 0x06FF;
+      if (isCurrArabic && isNextArabic && !nonConnecting.has(char)) {
+        result += tatweel.repeat(count);
+      }
+    }
+  }
+  return result;
+}
+
 export default function SiteFooter() {
   const pathname = usePathname();
   const lang = (pathname?.endsWith("/ar") || pathname?.includes("/ar/") ? "ar" : "en") as "en" | "ar";
@@ -175,7 +198,7 @@ export default function SiteFooter() {
         >
           {/* Brand Info Column */}
           <Stack spacing={3} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-            <Stack direction="row" spacing={lang === "ar" ? 4 : 1.5} alignItems="center" sx={{ justifyContent: "flex-start" }}>
+            <Stack direction="row" alignItems="center" sx={{ justifyContent: "flex-start", gap: lang === "ar" ? "32px" : "12px" }}>
               <Box
                 sx={{
                   width: 48,
@@ -190,7 +213,7 @@ export default function SiteFooter() {
               </Box>
               <Stack spacing={0.1} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, fontWeight: 600, color: "#111111", lineHeight: 1 }}>
-                  {lang === "ar" ? "فاشن غيت" : "Fashion Gate"}
+                  {stretchArabicText(lang === "ar" ? "فاشن غيت" : "Fashion Gate", 2)}
                 </Typography>
                 <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: lang === "ar" ? "0.05em" : "0.2em", textTransform: "uppercase" }}>
                   {lang === "ar" ? "بوليفارد دمشق" : "Boulevard Damascus"}
