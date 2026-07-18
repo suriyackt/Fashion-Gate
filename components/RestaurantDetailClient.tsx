@@ -445,12 +445,15 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           : link.title?.en || link.title?.ar || "";
         const action = () => {
           if (link.linkType === "url") {
-            const isLocalLangRedirect = link.urlPath === "/en" || link.urlPath === "/ar";
-            if (isLocalLangRedirect) {
-              window.location.href = lang === "ar" ? "/ar" : "/en";
-            } else {
-              window.location.href = link.urlPath || "/";
+            let path = link.urlPath || "/";
+            if (path === "/dining") {
+              path = `/dining/${lang}`;
+            } else if (path === "/" || path === "/home") {
+              path = `/${lang}`;
+            } else if (path.startsWith("/dining") && !path.endsWith("/ar") && !path.endsWith("/en")) {
+              path = `${path}/${lang}`;
             }
+            window.location.href = path;
           } else {
             const refMap: Record<string, React.RefObject<HTMLDivElement | null>> = {
               hero: heroSectionRef,
@@ -589,6 +592,20 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
     const oppositeLang = isAr ? "en" : "ar";
     const oppositeLangPath = `/dining/vilamore/${oppositeLang}`;
 
+    const backHref = useMemo(() => {
+      const rawLink = initialSanityData?.backButtonLink || "/dining";
+      if (rawLink === "/dining") {
+        return `/dining/${lang}`;
+      }
+      if (rawLink === "/" || rawLink === "/home") {
+        return `/${lang}`;
+      }
+      if (rawLink.startsWith("/dining") && !rawLink.endsWith("/ar") && !rawLink.endsWith("/en")) {
+        return `${rawLink}/${lang}`;
+      }
+      return rawLink;
+    }, [initialSanityData?.backButtonLink, lang]);
+
     const signatureDishes = [
       { 
         number: "01", 
@@ -700,7 +717,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             {/* Center Logo/Branding PNG */}
             <Box
               component={Link}
-              href="/"
+              href={lang === "ar" ? "/ar" : "/en"}
               sx={{
                 position: "absolute",
                 top: "50%",
@@ -742,7 +759,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               {/* Back to Mall Home */}
               <Box
                 component={Link}
-                href={initialSanityData?.backButtonLink || (lang === "ar" ? "/ar" : "/en")}
+                href={backHref}
                 sx={{
                   bgcolor: cardBg,
                   color: charcoalText,
@@ -885,7 +902,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             {/* Mobile Center Logo PNG */}
             <Box
               component={Link}
-              href="/"
+              href={lang === "ar" ? "/ar" : "/en"}
               sx={{
                 position: "absolute",
                 top: "50%",
@@ -909,7 +926,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             <Stack direction="row" spacing={1}>
               <Box
                 component={Link}
-                href={initialSanityData?.backButtonLink || (lang === "ar" ? "/ar" : "/en")}
+                href={backHref}
                 sx={{
                   bgcolor: cardBg,
                   color: charcoalText,
@@ -2256,6 +2273,12 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
     if (rawLink === "/dining") {
       return `/dining/${lang}`;
     }
+    if (rawLink === "/" || rawLink === "/home") {
+      return `/${lang}`;
+    }
+    if (rawLink.startsWith("/dining") && !rawLink.endsWith("/ar") && !rawLink.endsWith("/en")) {
+      return `${rawLink}/${lang}`;
+    }
     return rawLink;
   }, [initialSanityData?.backButtonLink, lang]);
 
@@ -2322,7 +2345,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           {/* Center Logo/Branding PNG */}
           <Box
             component={Link}
-            href="/"
+            href={lang === "ar" ? "/ar" : "/en"}
             sx={{
               position: "absolute",
               top: "50%",
@@ -2507,7 +2530,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           {/* Mobile Center Logo PNG */}
           <Box
             component={Link}
-            href="/"
+            href={lang === "ar" ? "/ar" : "/en"}
             sx={{
               position: "absolute",
               top: "50%",
