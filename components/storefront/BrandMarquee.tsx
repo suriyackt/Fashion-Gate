@@ -390,7 +390,7 @@ export default function BrandMarquee({
               >
                 <Box
                   sx={{
-                    height: { xs: 35, md: 54 },
+                    height: { xs: 50, md: 54 },
                     maxWidth: { xs: 110, md: 170 },
                     width: "auto",
                     display: "flex",

@@ -45,6 +45,29 @@ export function resolvePath(href: string, lang: "ar" | "en") {
   return `/${cleanHref}`;
 }
 
+// Helper function to dynamically stretch Arabic cursive connections using Tatweel (\u0640)
+function stretchArabicText(text: string, count: number = 2): string {
+  if (!text) return "";
+  const nonConnecting = new Set([
+    'ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ة', 'ء'
+  ]);
+  let result = "";
+  const tatweel = "\u0640";
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    result += char;
+    if (i < text.length - 1) {
+      const nextChar = text[i + 1];
+      const isCurrArabic = char.charCodeAt(0) >= 0x0600 && char.charCodeAt(0) <= 0x06FF;
+      const isNextArabic = nextChar.charCodeAt(0) >= 0x0600 && nextChar.charCodeAt(0) <= 0x06FF;
+      if (isCurrArabic && isNextArabic && !nonConnecting.has(char)) {
+        result += tatweel.repeat(count);
+      }
+    }
+  }
+  return result;
+}
+
 const MotionBox = motion.create(Box);
 
 // Custom graphical flag SVGs (renders pixel-perfect flags on Windows / Segoe UI)
@@ -890,33 +913,35 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               cursor: "pointer"
             }}
           >
-            <Stack direction="row" gap={1.5} alignItems="center">
-              <Box 
-                component="img" 
-                src={logoImageUrl || "/brand/logo.png"} 
-                alt="Fashion Gate" 
-                sx={{ 
-                  height: 36, 
-                  width: "auto",
-                  objectFit: "contain"
-                }} 
-              />
-              <Typography 
-                sx={{ 
-                  fontFamily: "var(--heading-font)", 
-                  fontWeight: 600, 
-                  fontSize: { xs: 13, sm: 15, md: 19 }, 
-                  lineHeight: 1, 
-                  textTransform: "uppercase", 
-                  color: "#ffffff",
-                  letterSpacing: "0.08em",
-                  whiteSpace: "nowrap",
-                  display: "block"
-                }}
-              >
-                {lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE"}
-              </Typography>
-            </Stack>
+             <Stack direction="row" gap={{ xs: 1, sm: 1.5, md: lang === "ar" ? 2.5 : 1.5 }} alignItems="center">
+               <Box 
+                 component="img" 
+                 src={logoImageUrl || "/brand/logo.png"} 
+                 alt="Fashion Gate" 
+                 sx={{ 
+                   height: { xs: 40, sm: 36 }, 
+                   width: "auto",
+                   objectFit: "contain"
+                 }} 
+               />
+               <Typography 
+                 sx={{ 
+                   fontFamily: "var(--heading-font)", 
+                   fontWeight: 600, 
+                   fontSize: { xs: 17.5, sm: 15, md: 19 }, 
+                   lineHeight: 1, 
+                   textTransform: "uppercase", 
+                   color: "#ffffff",
+                   letterSpacing: "0.08em",
+                   whiteSpace: "nowrap",
+                   display: "block",
+                   transform: lang === "ar" ? "scale(1.25)" : "none",
+                   mr: lang === "ar" ? 1.5 : 0
+                 }}
+               >
+                 {stretchArabicText(lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE", 2)}
+               </Typography>
+             </Stack>
           </Box>
 
           {/* Search, Language Selector, User Profile Icon on the right */}
@@ -1357,7 +1382,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
             <Stack direction="row" gap={1.2} alignItems="center">
               <Box component="img" src={logoImageUrl || "/brand/logo.png"} alt="Fashion Gate" sx={{ height: 26, width: "auto" }} />
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 16, color: "#fff", fontWeight: 700, letterSpacing: "0.05em" }}>
-                {lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE"}
+                {stretchArabicText(lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE", 2)}
               </Typography>
             </Stack>
             <IconButton onClick={() => setOpen(false)} sx={{ color: "#fff", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 0 }}>

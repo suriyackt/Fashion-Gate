@@ -240,8 +240,7 @@ export default function HeroSection({
               textShadow: "0 4px 25px rgba(0,0,0,0.5)",
               textAlign: "center",
               width: "100%",
-              display:"inline-block",
-              transform: lang === "ar" ? "scale(1.25)" : "none",
+              display:"inline-block"
             }}
           >
             {headlinePart2 ? (
@@ -285,10 +284,10 @@ export default function HeroSection({
               textTransform: "none",
               fontWeight: 400,
               alignSelf: "flex-end",
-              mr: lang === "ar" ? "10rem !important" : { xs: 1, md: 3 },
+              mr: lang === "ar" ? { xs: "1.5rem !important", sm: "10rem !important" } : { xs: 1, md: 3 },
               // ml: lang === "ar" ? "120px" : 0,
-              mt: lang === "ar" ? "24px !important" : 0.5,
-              lineHeight: 1.7,
+              mt: lang === "ar" ? "24px !important" : 1.2,
+              lineHeight:lang === "ar" ? 1.3 : 1,
               textAlign: lang === "ar" ? "left" : "right",
             }}
           >
