@@ -121,6 +121,11 @@ export const aboutPage = defineType({
       title: "Commitment Text",
       type: "localizedText",
     }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   initialValue: {
     title: { en: "About Fashion Gate", ar: "عن فاشن غيت" },

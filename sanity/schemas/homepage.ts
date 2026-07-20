@@ -46,34 +46,8 @@ export default defineType({
     defineField({
       name: 'seo',
       title: 'SEO Settings',
-      type: 'object',
+      type: 'seo',
       group: 'seo',
-      fields: [
-        {
-          name: 'metaTitle',
-          type: 'object',
-          title: 'Meta Title',
-          fields: [
-            { name: 'en', type: 'string', title: 'English' },
-            { name: 'ar', type: 'string', title: 'Arabic' },
-          ],
-        },
-        {
-          name: 'metaDescription',
-          type: 'object',
-          title: 'Meta Description',
-          fields: [
-            { name: 'en', type: 'text', title: 'English', rows: 3 },
-            { name: 'ar', type: 'text', title: 'Arabic', rows: 3 },
-          ],
-        },
-        {
-          name: 'ogImage',
-          type: 'image',
-          title: 'Social Share Image',
-          options: { hotspot: true },
-        },
-      ],
     }),
   ],
   preview: {

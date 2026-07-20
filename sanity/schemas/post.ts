@@ -195,34 +195,8 @@ export default defineType({
     }),
     defineField({
       name: 'seo',
-      title: 'SEO',
-      type: 'object',
-      fields: [
-        {
-          name: 'metaTitle',
-          type: 'object',
-          title: 'Meta Title',
-          fields: [
-            { name: 'en', type: 'string', title: 'English' },
-            { name: 'ar', type: 'string', title: 'Arabic' },
-          ],
-        },
-        {
-          name: 'metaDescription',
-          type: 'object',
-          title: 'Meta Description',
-          fields: [
-            { name: 'en', type: 'text', title: 'English', rows: 3 },
-            { name: 'ar', type: 'text', title: 'Arabic', rows: 3 },
-          ],
-        },
-        {
-          name: 'keywords',
-          type: 'array',
-          title: 'Keywords',
-          of: [{ type: 'string' }],
-        },
-      ],
+      title: 'SEO Settings',
+      type: 'seo',
     }),
     // Engagement tracking fields (hidden from editors, managed via API)
     defineField({

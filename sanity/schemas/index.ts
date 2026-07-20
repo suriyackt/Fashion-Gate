@@ -11,6 +11,7 @@ import brand from "./brand";
 import { localizedString } from "./objects/localizedString";
 import { localizedText } from "./objects/localizedText";
 import imageSeparator from "./objects/imageSeparator";
+import { seo } from "./objects/seo";
 
 // Section objects
 import { heroSection } from "./objects/sections/heroSection";
@@ -59,6 +60,7 @@ export const schemaTypes = [
   localizedString,
   localizedText,
   imageSeparator,
+  seo,
 
   // Section Objects
   heroSection,
