@@ -286,7 +286,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           py: 0.9, 
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           position: "relative",
-          minHeight: 38,
+          minHeight: 45,
           overflow: "hidden",
           display: "flex",
           alignItems: "center"

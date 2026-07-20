@@ -408,101 +408,219 @@ export async function getAllSanityProducts(): Promise<any[]> {
   }
 }
 
+const arabicBlogPostFallbacks: Record<string, { titleAr: string; excerptAr: string; paragraphsAr: string[]; contentAr: any[] }> = {
+  "blog-fashion-gate-mall-syria": {
+    titleAr: "مول بوابة الأزياء دمشق: أول مول فاخر عالمي في سوريا",
+    excerptAr: "تستعد دمشق لاستقبال أول تجربة تجارة تجزئة فاخرة عالمية. يفتح مول بوابة الأزياء دمشق أبوابه هذا العام كأول وجهة تسوق فاخرة تجمع أشهر دور الأزياء العالمية.",
+    paragraphsAr: [
+      "مول بوابة الأزياء دمشق: أول مركز تسوق تجاري فاخر بمواصفات عالمية في دمشق.",
+      "تستعد العاصمة السورية دمشق لاستقبال وجهة التسوق الأرقى على الإطلاق، حيث يجمع مول بوابة الأزياء دمشق أفخم دور الأزياء العالمية، والمطاعم الراقية، وتجارب الترفيه الاستثنائية تحت سقف واحد."
+    ],
+    contentAr: [
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "تستعد العاصمة السورية دمشق لاستقبال تجربة تجزئة فاخرة وغير مسبوقة. يفتتح مول بوابة الأزياء دمشق أبوابه هذا العام كأول مركز تسوق فاخر بمواصفات عالمية، ليجمع أشهر دور الأزياء العالمية وتجارب التسوق المتكاملة في قلب المدينة." }]
+      },
+      {
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "معيار جديد للتسوق الفاخر في دمشق" }]
+      },
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "يقع المشروع في موقع حيوي متميز، وقد تم تصميمه بعناية فائقة ليعكس أحدث التوجهات المعمارية في قطاع الضيافة والتجزئة الفاخرة، مما يوفر للزوار بيئة تسوق مريحة وأنيقة." }]
+      }
+    ]
+  },
+  "fashion-gate-mall-syria-grand-opening-event": {
+    titleAr: "كواليس الافتتاح الكبير: ماذا تتوقع في حفل إطلاق مول بوابة الأزياء دمشق",
+    excerptAr: "يتم التخطيط لإطلاق مول بوابة الأزياء دمشق كاحتفالية كبرى تجمع وسائل الإعلام الإقليمية والنخب للاحتفاء بأول مجمع تجاري فاخر في سوريا.",
+    paragraphsAr: [
+      "استعدادات مكثفة لإطلاق أول وجهة تسوق فاخرة في العاصمة دمشق.",
+      "يشهد حفل الافتتاح المرتقب لمول بوابة الأزياء دمشق حضور كبار الشخصيات، والنخب، ووسائل الإعلام الإقليمية للاحتفال بهذا الإنجاز المعماري والتجاري الفريد."
+    ],
+    contentAr: [
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "تجري الاستعدادات على قدم وساق لإطلاق مول بوابة الأزياء دمشق في احتفالية كبرى تجمع كبار الشخصيات ووسائل الإعلام والإعلاميين للاحتفاء ببدء مرحلة جديدة في قطاع التجزئة الفاخرة." }]
+      },
+      {
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "ماذا تتوقع خلال أيام الافتتاح" }]
+      },
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "عروض أزياء حصرية، وتجارب ضيافة فاخرة، وجولات استكشافية داخل أقسام المول المختلفة التي تضم أرقى العلامات التجارية العالمية." }]
+      }
+    ]
+  },
+  "why-unlimited-is-betting-on-damascus": {
+    titleAr: "لماذا تراهن أنليميتد على دمشق لإطلاق أول مول فاخر في سوريا",
+    excerptAr: "لماذا يتم إطلاق مول فاخر في دمشق الآن؟ تكشف شركة أنليميتد عن حجم الطلب، والتوقيت، والرهان الأكبر خلف مول بوابة الأزياء دمشق.",
+    paragraphsAr: [
+      "رؤية استثمارية طموحة تعزز حضور العلامات التجارية الفاخرة في دمشق.",
+      "تسلط شركة أنليميتد الضوء على الفرص الاستثمارية الواعدة والطلب المتزايد على التجزئة الفاخرة في سوريا، مما يجعل مول بوابة الأزياء وجهة استثنائية."
+    ],
+    contentAr: [
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "تأتي هذه الخطوة الاستثمارية انطلاقاً من إيمان شركة أنليميتد بالقوة الاقتصادية والطلب المتزايد على المنتجات والتجارب الفاخرة في دمشق." }]
+      },
+      {
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "الرؤية المستقبلية للتجزئة الفاخرة" }]
+      },
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "يمثل مول بوابة الأزياء نقطة انطلاق نحو بناء منظومة تسوق متكاملة تعيد تعزيز موقع دمشق كمركز إقليمي للجمال والأناقة." }]
+      }
+    ]
+  },
+  "countdown-fashion-gate-mall-syria-opens-soon": {
+    titleAr: "بدأ العد التنازلي: مول بوابة الأزياء دمشق يفتح أبوابه قريباً",
+    excerptAr: "يدخل مول بوابة الأزياء دمشق مرحلة العد التنازلي النهائية قبل الافتتاح في دمشق. إليك ما يمكنك توقعه مع اقتراب موعد الإطلاق.",
+    paragraphsAr: [
+      "اللمسات الأخيرة تكتمل مع اقتراب موعد الافتتاح الرسمي.",
+      "يدخل المشروع مراحله النهائية استعداداً لاستقبال الزوار وتوفير تجربة تسوق راقية تلبي تطلعات عشاق الموضة والأناقة."
+    ],
+    contentAr: [
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "وصلت أعمال التجهيز والتشطيبات النهائية لمول بوابة الأزياء دمشق إلى المراحل الأخيرة، حيث يُنتظر الإعلان عن الموعد الرسمي للافتتاح الفعلي." }]
+      },
+      {
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "الاستعداد لتجربة تسوق استثنائية" }]
+      },
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "سيكون الزوار على موعد مع أحدث صيحات الموضة والديكورات الداخلية الأنيقة والمطاعم الفاخرة فور افتتاح الأبواب." }]
+      }
+    ]
+  },
+  "fashion-gate-mall-design-story": {
+    titleAr: "التصميم خلف مول بوابة الأزياء دمشق: تطبيق معايير الضيافة الفاخرة في قطاع التجزئة",
+    excerptAr: "تساهم خبرة المهندس ماهر محاجر في تصميم الضيافة الفاخرة في تشكيل مول بوابة الأزياء دمشق، لنقل معايير الخمس نجوم إلى قطاع التجزئة في دمشق لأول مرة.",
+    paragraphsAr: [
+      "رؤية معمارية مستلهمة من قطاع الضيافة الفاخرة بخمس نجوم.",
+      "يقود تصميم المشروع فريق مهندسي مهاجر الدولية لإعادة تعريف تجربة التسوق والتصميم الداخلي للمراكز التجارية في المنطقة."
+    ],
+    contentAr: [
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "يعتمد التصميم المعماري لمول بوابة الأزياء دمشق على معايير الفنادق الفاخرة ذات الخمس نجوم، حيث أشرف المهندس ماهر محاجر وفريقه في مهاجر الدولية على تصميم كافة التفاصيل الداخلية والأنارة والمساحات الفسيحة." }]
+      },
+      {
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "أهمية تصميم الضيافة في مراكز التسوق" }]
+      },
+      {
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "يسهم استخدام فلسفة تصميم الضيافة في إتاحة الراحة والهدوء للزوار وتشجيعهم على قضاء أوقات ممتعة داخل المعرض والمطاعم والمساحات الترفيهية." }]
+      }
+    ]
+  }
+};
+
 export async function getSanityBlogPosts(): Promise<any[]> {
   try {
-    const pageData = await sanityClient.fetch(`*[_type == "blogsPage" && _id == "blogsPage"][0] {
-      blogs[] {
-        label { en, ar },
-        href
+    const rawList = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
+      _id,
+      title { en, ar },
+      slug,
+      excerpt { en, ar },
+      format,
+      category,
+      mainImage { asset->{ url } },
+      content,
+      readTime,
+      tags,
+      publishedAt,
+      author {
+        name,
+        role { en, ar },
+        image { asset->{ url } }
       }
     }`);
 
-    let rawList = pageData?.blogs;
-
-    if (rawList && rawList.length > 0) {
-      const slugMappings = rawList.map((item: any) => {
-        const href = item.href || "";
-        const parts = href.split("/").filter(Boolean);
-        const slug = parts[parts.length - 1] || "";
-        return { slug, customLabel: item.label };
-      }).filter((m: any) => m.slug);
-
-      const slugs = slugMappings.map((m: any) => m.slug);
-
-      const posts = await sanityClient.fetch(`*[_type == "post" && slug.current in $slugs] {
-        _id,
-        title { en, ar },
-        slug,
-        excerpt { en, ar },
-        format,
-        category,
-        mainImage { asset->{ url } },
-        content,
-        publishedAt
-      }`, { slugs });
-
-      const orderedPosts = slugMappings.map((mapping: any) => {
-        const post = posts.find((p: any) => p.slug?.current === mapping.slug);
-        if (!post) return null;
-
-        const finalTitle = {
-          en: mapping.customLabel?.en || post.title?.en || "",
-          ar: mapping.customLabel?.ar || post.title?.ar || ""
-        };
-
-        return {
-          ...post,
-          title: finalTitle
-        };
-      }).filter(Boolean);
-
-      if (orderedPosts.length > 0) {
-        rawList = orderedPosts;
-      } else {
-        rawList = null;
-      }
+    if (!rawList || !Array.isArray(rawList) || rawList.length === 0) {
+      return [];
     }
 
-    if (!rawList || rawList.length === 0) {
-      rawList = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
-        _id,
-        title { en, ar },
-        slug,
-        excerpt { en, ar },
-        format,
-        category,
-        mainImage { asset->{ url } },
-        content,
-        publishedAt
-      }`);
-    }
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     return rawList.map((raw: any) => {
       if (!raw) return null;
-      const contentArray = Array.isArray(raw.content)
-        ? raw.content
+      const rawContent = raw.content;
+      const contentEn = Array.isArray(rawContent) ? rawContent : (Array.isArray(rawContent?.en) ? rawContent.en : []);
+      const contentAr = Array.isArray(rawContent) ? rawContent : (Array.isArray(rawContent?.ar) ? rawContent.ar : contentEn);
+
+      const contentArrayEn = Array.isArray(contentEn)
+        ? contentEn
             .filter((block: any) => block._type === "block" && block.children)
             .map((block: any) => block.children.map((child: any) => child.text).join(""))
         : [];
 
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       const pubDate = raw.publishedAt ? new Date(raw.publishedAt) : new Date();
       const month = monthNames[pubDate.getMonth()];
 
+      const slugCurrent = raw.slug?.current || "";
+      const fallback = arabicBlogPostFallbacks[slugCurrent];
+
+      const contentArrayAr = (fallback?.paragraphsAr && fallback.paragraphsAr.length > 0)
+        ? fallback.paragraphsAr
+        : (Array.isArray(contentAr)
+            ? contentAr
+                .filter((block: any) => block._type === "block" && block.children)
+                .map((block: any) => block.children.map((child: any) => child.text).join(""))
+            : contentArrayEn);
+
+      const rawTitleAr = typeof raw.title === "object" ? raw.title?.ar : (typeof raw.title === "string" ? raw.title : undefined);
+      const isTitleArValid = rawTitleAr && typeof rawTitleAr === "string" && !rawTitleAr.startsWith("blog/") && !rawTitleAr.startsWith("http");
+
+      const titleEn = typeof raw.title === "string" ? raw.title : (raw.title?.en || raw.title?.ar || "Untitled");
+      const titleAr = isTitleArValid ? rawTitleAr! : (fallback?.titleAr || titleEn);
+
+      const rawExcerptAr = typeof raw.excerpt === "object" ? raw.excerpt?.ar : (typeof raw.excerpt === "string" ? raw.excerpt : undefined);
+      const excerptEn = typeof raw.excerpt === "string" ? raw.excerpt : (raw.excerpt?.en || raw.excerpt?.ar || "");
+      const excerptAr = (rawExcerptAr && typeof rawExcerptAr === "string" && rawExcerptAr.trim().length > 0)
+        ? rawExcerptAr
+        : (fallback?.excerptAr || excerptEn);
+
       return {
-        slug: raw.slug?.current || "",
-        title: raw.title?.en || "",
-        titleAr: raw.title?.ar || raw.title?.en || "",
+        id: raw._id,
+        slug: slugCurrent,
+        title: titleEn,
+        titleAr: titleAr,
         format: raw.format || "Blog post",
+        category: raw.category || "design-trends",
         month: month,
         priority: "Medium",
         audience: "",
         keywordFocus: "",
         goal: "",
-        excerpt: raw.excerpt?.en || "",
-        excerptAr: raw.excerpt?.ar || raw.excerpt?.en || "",
-        content: contentArray,
-        image: raw.mainImage?.asset?.url || "/brand-pages/page_01.jpg"
+        excerpt: excerptEn,
+        excerptAr: excerptAr,
+        content: contentArrayEn,
+        contentAr: contentArrayAr,
+        image: raw.mainImage?.asset?.url || "/brand-pages/page_01.jpg",
+        readTime: raw.readTime || 5,
+        tags: raw.tags || [],
+        publishedAt: raw.publishedAt
       };
     }).filter(Boolean);
   } catch (err) {
@@ -566,23 +684,45 @@ export async function getSanityBlogPost(slug: string): Promise<any> {
     const pubDate = raw.publishedAt ? new Date(raw.publishedAt) : new Date();
     const month = monthNames[pubDate.getMonth()];
 
+    const slugCurrent = raw.slug?.current || "";
+    const fallback = arabicBlogPostFallbacks[slugCurrent];
+
+    const rawTitleAr = typeof raw.title === "object" ? raw.title?.ar : (typeof raw.title === "string" ? raw.title : undefined);
+    const isTitleArValid = rawTitleAr && typeof rawTitleAr === "string" && !rawTitleAr.startsWith("blog/") && !rawTitleAr.startsWith("http");
+
+    const titleEn = typeof raw.title === "string" ? raw.title : (raw.title?.en || raw.title?.ar || "Untitled");
+    const titleAr = isTitleArValid ? rawTitleAr! : (fallback?.titleAr || titleEn);
+
+    const rawExcerptAr = typeof raw.excerpt === "object" ? raw.excerpt?.ar : (typeof raw.excerpt === "string" ? raw.excerpt : undefined);
+    const excerptEn = typeof raw.excerpt === "string" ? raw.excerpt : (raw.excerpt?.en || raw.excerpt?.ar || "");
+    const excerptAr = (rawExcerptAr && typeof rawExcerptAr === "string" && rawExcerptAr.trim().length > 0)
+      ? rawExcerptAr
+      : (fallback?.excerptAr || excerptEn);
+
+    const rawContent = raw.content;
+    const contentEn = Array.isArray(rawContent) ? rawContent : (rawContent?.en || []);
+    const contentAr = (fallback?.contentAr && fallback.contentAr.length > 0)
+      ? fallback.contentAr
+      : (Array.isArray(rawContent) ? rawContent : (rawContent?.ar || contentEn));
+
     return {
-      slug: raw.slug?.current || "",
-      title: raw.title?.en || "",
-      titleAr: raw.title?.ar || raw.title?.en || "",
+      slug: slugCurrent,
+      title: titleEn,
+      titleAr: titleAr,
       format: raw.format || "Blog post",
       month: month,
       priority: "Medium",
-      excerpt: raw.excerpt?.en || "",
-      excerptAr: raw.excerpt?.ar || raw.excerpt?.en || "",
-      content: raw.content || [],
+      excerpt: excerptEn,
+      excerptAr: excerptAr,
+      content: contentEn,
+      contentAr: contentAr,
       image: raw.mainImage?.asset?.url || "/brand-pages/page_01.jpg",
       readTime: raw.readTime || 5,
       tags: raw.tags || [],
       author: {
         name: raw.author?.name || "Editor",
-        role: raw.author?.role?.en || "Editorial Director",
-        roleAr: raw.author?.role?.ar || raw.author?.role?.en || "مدير التحرير",
+        role: typeof raw.author?.role === "string" ? raw.author?.role : (raw.author?.role?.en || "Editorial Director"),
+        roleAr: typeof raw.author?.role === "string" ? raw.author?.role : (raw.author?.role?.ar || raw.author?.role?.en || "مدير التحرير"),
         imageUrl: raw.author?.image?.asset?.url || "/brand/logo.png"
       }
     };
