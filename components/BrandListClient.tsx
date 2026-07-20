@@ -48,12 +48,8 @@ const brandVectorLogos: Record<string, React.ReactNode> = {
     <svg width="100%" height="32" viewBox="0 0 100 30" fill="currentColor">
       <text x="50%" y="22" fontFamily="'Didot', 'Times New Roman', serif" fontSize="21" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">moje</text>
     </svg>
-  ),
-  "sandro-moje": (
-    <svg width="100%" height="32" viewBox="0 0 200 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Futura', serif" fontSize="17" fontWeight="bold" letterSpacing="0.15em" textAnchor="middle">SANDRO moje</text>
-    </svg>
   )
+ 
 };
 
 interface BrandListClientProps {

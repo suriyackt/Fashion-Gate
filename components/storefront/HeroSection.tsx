@@ -245,7 +245,7 @@ export default function HeroSection({
           >
             {headlinePart2 ? (
               <>
-                <Box component="span" sx={{ display: "block", lineHeight: 1.0, whiteSpace: "nowrap" }}>
+                <Box component="span" sx={{ display: "block", lineHeight: 1.0, whiteSpace: { xs: "normal", sm: "nowrap" } }}>
                   {headlinePart1}
                 </Box>
                 <Box
@@ -283,25 +283,24 @@ export default function HeroSection({
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
-              alignSelf: "flex-end",
-              mr: lang === "ar" ? { xs: "1.5rem !important", sm: "10rem !important" } : { xs: 1, md: 3 },
-              // ml: lang === "ar" ? "120px" : 0,
+              alignSelf: lang === "ar" ? { xs: "center", sm: "flex-end" } : "flex-end",
+              mr: lang === "ar" ? { xs: 0, sm: "10rem !important" } : { xs: 1, md: 3 },
               mt: lang === "ar" ? "24px !important" : 1.2,
-              lineHeight:lang === "ar" ? 1.3 : 1,
-              textAlign: lang === "ar" ? "left" : "right",
+              lineHeight: lang === "ar" ? 1.3 : 1,
+              textAlign: lang === "ar" ? { xs: "center", sm: "left" } : "right",
             }}
           >
             {lang === "ar" ? (
               <>
-                <span style={{ marginLeft: "70px" }}>{subHeadlineLine1}</span>
+                <Box component="span" sx={{ marginLeft: { xs: 0, sm: "70px" } }}>{subHeadlineLine1}</Box>
                 <br />
-                <span>{subHeadlineLine2}</span>
+                <Box component="span">{subHeadlineLine2}</Box>
               </>
             ) : (
               <>
-                <span style={{ marginRight: "50px" }}>{subHeadlineLine1}</span>
+                <Box component="span" sx={{ marginRight: { xs: 0, sm: "50px" } }}>{subHeadlineLine1}</Box>
                 <br />
-                <span>{subHeadlineLine2}</span>
+                <Box component="span">{subHeadlineLine2}</Box>
               </>
             )}
           </Typography>

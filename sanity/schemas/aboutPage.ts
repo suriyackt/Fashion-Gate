@@ -70,9 +70,32 @@ export const aboutPage = defineType({
       type: "localizedString",
     }),
     defineField({
+      name: "videoSourceType",
+      title: "Video Source Type",
+      type: "string",
+      options: {
+        list: [
+          { title: "Upload Video File (MP4/WebM/MOV)", value: "file" },
+          { title: "Embed Video URL (YouTube/Vimeo)", value: "url" }
+        ],
+        layout: "radio"
+      },
+      initialValue: "url",
+    }),
+    defineField({
+      name: "videoFile",
+      title: "Upload Video File Directly (Sanity CMS)",
+      type: "file",
+      options: { accept: "video/*" },
+      description: "Upload a video file directly to Sanity CMS (just like uploading an image).",
+      hidden: ({ document }) => document?.videoSourceType === "url",
+    }),
+    defineField({
       name: "videoUrl",
       title: "Video Embed URL (YouTube/Vimeo)",
       type: "string",
+      description: "Enter external embed URL (YouTube/Vimeo).",
+      hidden: ({ document }) => document?.videoSourceType === "file",
     }),
 
     // Vision

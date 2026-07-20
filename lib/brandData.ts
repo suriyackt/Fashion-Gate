@@ -91,17 +91,7 @@ export const brands: Brand[] = [
     descriptionAr: "استكمالاً للمجموعة بلمسة فنية وفردية، تمثل موهي الالتزام بالتصميم المستقل والإبداع البسيط. تقدم العلامة التجارية قواماً فريداً، وأشكالاً انسيابية، ولوحات ألوان مدروسة توفر للزوار بديلاً شخصياً للغاية ومتعدد الاستخدامات للموضة السائدة.",
     backdropUrl: "/brand-pages/page_11.jpg"
   },
-  {
-    id: "sandro-moje",
-    name: "SANDRO moje",
-    nameAr: "ساندرو وموهي",
-    headline: "A Joint Showcase of Parisian Refinement & Independent Creativity",
-    headlineAr: "معرض مشترك للرقي الباريسي والإبداع المستقل",
-    description: "Unifying the effortless refinement of Parisian street style with the thoughtful textures of independent design houses. This combined experience offers a dialogue between high-concept tailoring and raw creative expression.",
-    descriptionAr: "توحيد الرقي العفوي لأسلوب الشارع الباريسي مع الأنسجة المدروسة لدور التصميم المستقلة. يقدم هذا المعرض الحصري حواراً بين الخياطة عالية المفهوم والتعبير الإبداعي الخام.",
-    backdropUrl: "/brand-pages/page_12.jpg",
-    isActive: false
-  },
+ 
   {
     id: "elie-saab",
     name: "Elie Saab",

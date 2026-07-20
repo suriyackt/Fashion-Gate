@@ -1189,9 +1189,10 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                               ? {
                                   position: "absolute",
                                   top: "100%",
-                                  left: lang === "ar" ? "auto" : { xs: "-100px", md: "-320px" },
-                                  right: lang === "ar" ? { xs: "-100px", md: "-320px" } : "auto",
+                                  left: lang === "ar" ? "auto" : { xs: 0, md: "-320px" },
+                                  right: lang === "ar" ? { xs: 0, md: "-320px" } : "auto",
                                   width: { xs: "90vw", sm: "650px", md: "860px" },
+                                  maxWidth: "90vw",
                                   bgcolor: "#ffffff",
                                   border: "1px solid rgba(0,0,0,0.08)",
                                   borderTop: "3px solid #CB6116",

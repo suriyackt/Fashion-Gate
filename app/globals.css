@@ -35,8 +35,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--fg-white);
-  overflow-x: hidden;
-  max-width: 100%;
+  overflow-x: clip;
 }
 
 body {
@@ -44,8 +43,7 @@ body {
   color: #111111;
   background: var(--fg-white);
   font-family: Cairo, sans-serif;
-  overflow-x: hidden;
-  max-width: 100%;
+  overflow-x: clip;
   width: 100%;
 }
 
