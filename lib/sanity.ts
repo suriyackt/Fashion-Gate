@@ -148,7 +148,9 @@ export async function getAboutPageData() {
       collageImage1 { asset->{ url } },
       collageImage2 { asset->{ url } },
       videoBgImage { asset->{ url } },
+      videoSourceType,
       videoUrl,
+      videoFile { asset->{ url } },
       videoTitle,
       videoSubtitle
     }`);

@@ -7,16 +7,25 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CloseIcon from "@mui/icons-material/Close";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
-import { getLocalizedValue } from "@/lib/sanity";
+import { getLocalizedValue, getAboutPageData } from "@/lib/sanity";
 
 export default function AboutClient({ initialLang, initialData }: { initialLang: "en" | "ar"; initialData?: any }) {
   const router = useRouter();
   const [lang, setLang] = useState<"en" | "ar">(initialLang);
+  const [pageData, setPageData] = useState<any>(initialData);
   const [videoOpen, setVideoOpen] = useState(false);
+  const [isPlayingInline, setIsPlayingInline] = useState(false);
 
-  // Scroll to top on load
+  // Fetch live CMS data on client mount and scroll to top
   useEffect(() => {
+    getAboutPageData()
+      .then((res) => {
+        if (res) setPageData(res);
+      })
+      .catch(console.error);
+
     const timer = setTimeout(() => {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
@@ -90,29 +99,32 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
     }
   }[lang];
 
-  // Resolve values dynamically
-  const title = getLocalizedValue(initialData?.title, lang, fallbackData.title);
-  const eyebrow = getLocalizedValue(initialData?.eyebrow, lang, fallbackData.eyebrow);
-  const headline = getLocalizedValue(initialData?.headline, lang, fallbackData.headline);
-  const p1 = getLocalizedValue(initialData?.p1, lang, fallbackData.p1);
-  const p2 = getLocalizedValue(initialData?.p2, lang, fallbackData.p2);
-  const p3 = getLocalizedValue(initialData?.p3, lang, fallbackData.p3);
-  const p4 = getLocalizedValue(initialData?.p4, lang, fallbackData.p4);
-  const p5 = getLocalizedValue(initialData?.p5, lang, fallbackData.p5);
-  const p6 = getLocalizedValue(initialData?.p6, lang, fallbackData.p6);
-  const p7 = getLocalizedValue(initialData?.p7, lang, fallbackData.p7);
-  const visionTitle = getLocalizedValue(initialData?.visionTitle, lang, fallbackData.visionTitle);
-  const visionText = getLocalizedValue(initialData?.visionText, lang, fallbackData.visionText);
-  const commitmentTitle = getLocalizedValue(initialData?.commitmentTitle, lang, fallbackData.commitmentTitle);
-  const commitmentText = getLocalizedValue(initialData?.commitmentText, lang, fallbackData.commitmentText);
-  const videoTitle = getLocalizedValue(initialData?.videoTitle, lang, fallbackData.videoTitle);
-  const videoSubtitle = getLocalizedValue(initialData?.videoSubtitle, lang, fallbackData.videoSubtitle);
+  // Resolve values dynamically from live Sanity CMS data
+  const data = pageData || initialData;
+  const title = getLocalizedValue(data?.title, lang, fallbackData.title);
+  const eyebrow = getLocalizedValue(data?.eyebrow, lang, fallbackData.eyebrow);
+  const headline = getLocalizedValue(data?.headline, lang, fallbackData.headline);
+  const p1 = getLocalizedValue(data?.p1, lang, fallbackData.p1);
+  const p2 = getLocalizedValue(data?.p2, lang, fallbackData.p2);
+  const p3 = getLocalizedValue(data?.p3, lang, fallbackData.p3);
+  const p4 = getLocalizedValue(data?.p4, lang, fallbackData.p4);
+  const p5 = getLocalizedValue(data?.p5, lang, fallbackData.p5);
+  const p6 = getLocalizedValue(data?.p6, lang, fallbackData.p6);
+  const p7 = getLocalizedValue(data?.p7, lang, fallbackData.p7);
+  const visionTitle = getLocalizedValue(data?.visionTitle, lang, fallbackData.visionTitle);
+  const visionText = getLocalizedValue(data?.visionText, lang, fallbackData.visionText);
+  const commitmentTitle = getLocalizedValue(data?.commitmentTitle, lang, fallbackData.commitmentTitle);
+  const commitmentText = getLocalizedValue(data?.commitmentText, lang, fallbackData.commitmentText);
+  const videoTitle = getLocalizedValue(data?.videoTitle, lang, fallbackData.videoTitle);
+  const videoSubtitle = getLocalizedValue(data?.videoSubtitle, lang, fallbackData.videoSubtitle);
 
-  const heroImage = initialData?.heroImage?.asset?.url || "/brand/luxury_about_bg.jpg";
-  const collageImage1 = initialData?.collageImage1?.asset?.url || "/brand-pages/page_08.jpg";
-  const collageImage2 = initialData?.collageImage2?.asset?.url || "/brand-pages/page_32.jpg";
-  const videoBgImage = initialData?.videoBgImage?.asset?.url || "/brand-pages/page_18.jpg";
-  const videoUrl = initialData?.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1";
+  const heroImage = data?.heroImage?.asset?.url || "/brand/luxury_about_bg.jpg";
+  const collageImage1 = data?.collageImage1?.asset?.url || "/brand-pages/page_08.jpg";
+  const collageImage2 = data?.collageImage2?.asset?.url || "/brand-pages/page_32.jpg";
+  const videoBgImage = data?.videoBgImage?.asset?.url || "/brand-pages/page_18.jpg";
+  const videoSourceType = data?.videoSourceType || (data?.videoFile?.asset?.url ? "file" : "url");
+  const videoFileUrl = data?.videoFile?.asset?.url;
+  const videoUrl = data?.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1";
 
   return (
     <ThemeProvider theme={theme}>
@@ -251,55 +263,195 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
         </Container>
 
         {/* SECTION 3: Video Atelier Section */}
-        <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: "#F5F2EB" }}>
+        <Box sx={{ py: { xs: 10, md: 14 }, bgcolor: "#FAF8F5" }}>
           <Container maxWidth="xl">
+            {/* Section Header */}
+            <Stack spacing={1.5} alignItems="center" sx={{ textAlign: "center", mb: 5 }}>
+              <Typography sx={{ color: "#CB6116", fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                {lang === "ar" ? "معرض البوليفارد والتصميم" : "ATELIER & SPATIAL EXPERIENCE"}
+              </Typography>
+              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 40 }, fontWeight: 500, color: "#111111", letterSpacing: "0.02em" }}>
+                {videoTitle}
+              </Typography>
+              <Divider sx={{ borderColor: "rgba(203, 97, 22, 0.3)", width: 60, my: 1 }} />
+              <Typography sx={{ color: "rgba(17, 17, 17, 0.7)", fontSize: 15, fontFamily: '"Cairo", sans-serif', maxWidth: 640, lineHeight: 1.6 }}>
+                {videoSubtitle}
+              </Typography>
+            </Stack>
+
+            {/* Video Showcase Card Frame */}
             <Box 
               sx={{
                 position: "relative",
-                height: { xs: "300px", sm: "400px", md: "520px" },
-                backgroundImage: `url('${videoBgImage}')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  bgcolor: "rgba(250, 248, 245, 0.45)", // Light wash overlay
-                  zIndex: 1
-                }
+                width: "100%",
+                aspectRatio: "16 / 9",
+                maxHeight: { xs: "380px", sm: "520px", md: "620px" },
+                borderRadius: "2px",
+                overflow: "hidden",
+                bgcolor: "#0D0B0A",
+                boxShadow: "0 25px 60px rgba(0,0,0,0.18)",
+                border: "1px solid rgba(203, 97, 22, 0.25)",
+                transition: "all 0.5s ease"
               }}
             >
-              <Stack spacing={2.5} alignItems="center" sx={{ position: "relative", zIndex: 2, textAlign: "center", px: 3 }}>
-                {/* Play Button Icon */}
-                <IconButton 
-                  onClick={() => setVideoOpen(true)}
-                  sx={{ 
-                    bgcolor: "primary.main", 
-                    color: "#ffffff", 
-                    width: 76, 
-                    height: 76,
-                    "&:hover": { bgcolor: "primary.dark", transform: "scale(1.08)" },
-                    transition: "all 0.3s ease",
-                    boxShadow: "0 10px 25px rgba(203, 97, 22, 0.3)"
+              {isPlayingInline ? (
+                /* INLINE ACTIVE VIDEO PLAYER */
+                <Box sx={{ position: "relative", width: "100%", height: "100%", bgcolor: "#000" }}>
+                  {/* Top Control Overlay inside Frame */}
+                  <Box 
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      p: 2,
+                      background: "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%)",
+                      zIndex: 10,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", fontFamily: '"Cairo", sans-serif' }}>
+                      {videoTitle}
+                    </Typography>
+
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        size="small"
+                        onClick={() => setVideoOpen(true)}
+                        startIcon={<FullscreenIcon />}
+                        sx={{
+                          color: "#FFF",
+                          borderColor: "rgba(255,255,255,0.3)",
+                          bgcolor: "rgba(255,255,255,0.15)",
+                          fontSize: 12,
+                          px: 1.5,
+                          "&:hover": { bgcolor: "rgba(255,255,255,0.3)" }
+                        }}
+                      >
+                        {lang === "ar" ? "عرض كامل" : "Full View"}
+                      </Button>
+                      <IconButton 
+                        onClick={() => setIsPlayingInline(false)}
+                        sx={{ color: "#FFF", bgcolor: "rgba(255,255,255,0.2)", "&:hover": { bgcolor: "primary.main" } }}
+                        size="small"
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Stack>
+                  </Box>
+
+                  {/* Active Inline Player */}
+                  {videoSourceType === "file" && videoFileUrl ? (
+                    <video 
+                      src={videoFileUrl} 
+                      controls 
+                      autoPlay 
+                      playsInline 
+                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                    />
+                  ) : (
+                    <iframe 
+                      src={videoUrl.includes("autoplay=") ? videoUrl : `${videoUrl}${videoUrl.includes("?") ? "&" : "?"}autoplay=1&mute=0`} 
+                      title="Atelier Video View" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                      style={{ width: "100%", height: "100%", border: "none" }}
+                    />
+                  )}
+                </Box>
+              ) : (
+                /* ELEGANT COVER & PREVIEW OVERLAY */
+                <Box 
+                  sx={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                    backgroundImage: `url('${videoBgImage}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: "linear-gradient(180deg, rgba(15, 12, 10, 0.25) 0%, rgba(15, 12, 10, 0.55) 100%)",
+                      zIndex: 1,
+                      transition: "background 0.4s ease"
+                    },
+                    "&:hover::before": {
+                      background: "linear-gradient(180deg, rgba(15, 12, 10, 0.15) 0%, rgba(15, 12, 10, 0.45) 100%)"
+                    }
                   }}
+                  onClick={() => setIsPlayingInline(true)}
                 >
-                  <PlayArrowIcon sx={{ fontSize: 40 }} />
-                </IconButton>
-                
-                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 20, md: 28 }, fontWeight: 500, letterSpacing: "0.05em", color: "#111111" }}>
-                  {videoTitle}
-                </Typography>
-                <Typography sx={{ color: "rgba(17, 17, 17, 0.72)", fontSize: 13, textTransform: "uppercase", letterSpacing: "0.15em", fontFamily: '"Cairo", sans-serif' }}>
-                  {videoSubtitle}
-                </Typography>
-              </Stack>
+                  <Stack spacing={2.5} alignItems="center" sx={{ position: "relative", zIndex: 2, textAlign: "center", px: 3 }}>
+                    
+                    {/* Animated Pulsing Play Button */}
+                    <Box sx={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                      <Box 
+                        sx={{
+                          position: "absolute",
+                          width: 96,
+                          height: 96,
+                          borderRadius: "50%",
+                          border: "1.5px solid rgba(255, 255, 255, 0.5)",
+                          animation: "pulseRing 2.2s infinite ease-out",
+                          "@keyframes pulseRing": {
+                            "0%": { transform: "scale(0.85)", opacity: 0.8 },
+                            "100%": { transform: "scale(1.45)", opacity: 0 }
+                          }
+                        }}
+                      />
+                      <IconButton 
+                        sx={{ 
+                          background: "linear-gradient(135deg, #CB6116 0%, #9D430C 100%)", 
+                          color: "#ffffff", 
+                          width: 76, 
+                          height: 76,
+                          boxShadow: "0 12px 35px rgba(203, 97, 22, 0.45)",
+                          transition: "all 0.35s ease",
+                          "&:hover": { transform: "scale(1.12)", boxShadow: "0 16px 45px rgba(203, 97, 22, 0.6)" }
+                        }}
+                      >
+                        <PlayArrowIcon sx={{ fontSize: 40, ml: lang === "ar" ? 0 : 0.4 }} />
+                      </IconButton>
+                    </Box>
+
+                    {/* Clean Action Badge */}
+                    <Box 
+                      sx={{ 
+                        display: "inline-flex", 
+                        alignItems: "center", 
+                        gap: 1.2, 
+                        px: 3, 
+                        py: 1.2, 
+                        bgcolor: "rgba(255, 255, 255, 0.15)", 
+                        backdropFilter: "blur(12px)", 
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
+                        borderRadius: "24px",
+                        transition: "all 0.3s ease",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                        "&:hover": { bgcolor: "rgba(255, 255, 255, 0.28)", transform: "translateY(-2px)" }
+                      }}
+                    >
+                      <PlayArrowIcon sx={{ fontSize: 18, color: "#CB6116" }} />
+                      <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", fontFamily: '"Cairo", sans-serif' }}>
+                        {lang === "ar" ? "تشغيل الفيديـو" : "PLAY VIDEO"}
+                      </Typography>
+                    </Box>
+
+                  </Stack>
+                </Box>
+              )}
             </Box>
           </Container>
         </Box>
@@ -363,7 +515,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
           </Grid>
         </Container>
 
-        {/* Video Overlay Modal Popup */}
+        {/* Video Overlay Cinema Modal Popup */}
         {videoOpen && (
           <Box 
             sx={{
@@ -372,37 +524,92 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
               left: 0,
               right: 0,
               bottom: 0,
-              bgcolor: "rgba(250, 248, 245, 0.95)",
+              bgcolor: "rgba(10, 8, 6, 0.94)",
+              backdropFilter: "blur(20px)",
               zIndex: 9999,
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              p: { xs: 2, md: 4 }
             }}
           >
-            {/* Close button */}
-            <IconButton 
-              onClick={() => setVideoOpen(false)}
-              sx={{ position: "absolute", top: 25, right: 25, color: "#111111", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 0 }}
+            {/* Top Modal Header */}
+            <Box 
+              sx={{ 
+                position: "absolute", 
+                top: 20, 
+                left: 30, 
+                right: 30, 
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center",
+                zIndex: 10
+              }}
             >
-              <CloseIcon />
-            </IconButton>
-            
-            <Box sx={{ width: "90%", maxWidth: "900px", position: "relative", pt: "56.25%", bgcolor: "#000" }}>
-              <iframe 
-                src={videoUrl} 
-                title="Atelier Video View" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  border: "none"
+              <Typography sx={{ color: "#CB6116", fontSize: 12, fontWeight: 800, letterSpacing: "0.3em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                FASHION GATE CINEMA
+              </Typography>
+              <IconButton 
+                onClick={() => setVideoOpen(false)}
+                sx={{ 
+                  color: "#FFF", 
+                  bgcolor: "rgba(255,255,255,0.1)", 
+                  border: "1px solid rgba(255,255,255,0.2)", 
+                  borderRadius: "50%",
+                  "&:hover": { bgcolor: "primary.main" }
                 }}
-              />
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            
+            {/* Video Container Box */}
+            <Box 
+              sx={{ 
+                width: "100%", 
+                maxWidth: "1040px", 
+                position: "relative", 
+                pt: "56.25%", 
+                bgcolor: "#000",
+                borderRadius: "4px",
+                overflow: "hidden",
+                boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
+                border: "1px solid rgba(203, 97, 22, 0.4)"
+              }}
+            >
+              {videoSourceType === "file" && videoFileUrl ? (
+                <video 
+                  src={videoFileUrl} 
+                  controls 
+                  autoPlay 
+                  playsInline 
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain"
+                  }}
+                />
+              ) : (
+                <iframe 
+                  src={videoUrl.includes("autoplay=") ? videoUrl : `${videoUrl}${videoUrl.includes("?") ? "&" : "?"}autoplay=1&mute=0`} 
+                  title="Atelier Video View" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    border: "none"
+                  }}
+                />
+              )}
             </Box>
           </Box>
         )}

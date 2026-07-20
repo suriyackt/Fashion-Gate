@@ -6,10 +6,7 @@ export const revalidate = 0;
 export default async function AboutArPage() {
   let initialData = null;
   try {
-    initialData = await Promise.race([
-      getAboutPageData(),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500))
-    ]);
+    initialData = await getAboutPageData();
   } catch (error) {
     console.error("Failed to load about page data from Sanity:", error);
   }

@@ -45,8 +45,10 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   if (isVilamore || isArtoCoffee) {
     return (
       <ThemeProvider theme={theme}>
-        <div dir={lang === "ar" ? "rtl" : "ltr"} style={{ width: "100%", overflowX: "hidden", maxWidth: "100%" }}>
-          {children}
+        <div dir={lang === "ar" ? "rtl" : "ltr"} style={{ width: "100%" }}>
+          <main style={{ width: "100%" }}>
+            {children}
+          </main>
           <SiteFooter />
         </div>
       </ThemeProvider>
@@ -55,9 +57,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   return (
     <ThemeProvider theme={theme}>
-      <div dir={lang === "ar" ? "rtl" : "ltr"} style={{ width: "100%", overflowX: "hidden", maxWidth: "100%" }}>
+      <div dir={lang === "ar" ? "rtl" : "ltr"} style={{ width: "100%" }}>
         <SiteHeader settings={settings} />
-        {children}
+        <main style={{ width: "100%" }}>
+          {children}
+        </main>
         <SiteFooter />
       </div>
     </ThemeProvider>
