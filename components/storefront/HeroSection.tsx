@@ -82,9 +82,9 @@ export default function HeroSection({
       headlinePart2 = headlineText.match(arSyriaRegex)?.[0] || "سوريا";
     }
     // Apply Kashida (Tatweel) letter stretching for elegant typography
-    headlinePart1 = stretchArabicText(headlinePart1, 2);
+    headlinePart1 = stretchArabicText(headlinePart1, 1);
     if (headlinePart2) {
-      headlinePart2 = stretchArabicText(headlinePart2, 2);
+      headlinePart2 = stretchArabicText(headlinePart2, 1);
     }
   } else {
     const enSyriaRegex = /Syria$/i;
@@ -283,16 +283,16 @@ export default function HeroSection({
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
-              alignSelf: lang === "ar" ? { xs: "center", sm: "flex-end" } : "flex-end",
+              alignSelf: lang === "ar" ? { xs: "flex-end", sm: "flex-end" } : "flex-end",
               mr: lang === "ar" ? { xs: 0, sm: "10rem !important" } : { xs: 1, md: 3 },
               mt: lang === "ar" ? "24px !important" : 1.2,
               lineHeight: lang === "ar" ? 1.3 : 1,
-              textAlign: lang === "ar" ? { xs: "center", sm: "left" } : "right",
+              textAlign: lang === "ar" ? { xs: "left", sm: "left" } : "right",
             }}
           >
             {lang === "ar" ? (
               <>
-                <Box component="span" sx={{ marginLeft: { xs: 0, sm: "70px" } }}>{subHeadlineLine1}</Box>
+                <Box component="span" sx={{ marginLeft: { xs: "20px", sm: "70px" } }}>{subHeadlineLine1}</Box>
                 <br />
                 <Box component="span">{subHeadlineLine2}</Box>
               </>

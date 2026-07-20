@@ -21,6 +21,28 @@ export function useLoader() {
   return context;
 }
 
+function stretchArabicText(text: string, count: number = 2): string {
+  if (!text) return "";
+  const nonConnecting = new Set([
+    'ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ة', 'ء'
+  ]);
+  let result = "";
+  const tatweel = "\u0640";
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    result += char;
+    if (i < text.length - 1) {
+      const nextChar = text[i + 1];
+      const isCurrArabic = char.charCodeAt(0) >= 0x0600 && char.charCodeAt(0) <= 0x06FF;
+      const isNextArabic = nextChar.charCodeAt(0) >= 0x0600 && nextChar.charCodeAt(0) <= 0x06FF;
+      if (isCurrArabic && isNextArabic && !nonConnecting.has(char)) {
+        result += tatweel.repeat(count);
+      }
+    }
+  }
+  return result;
+}
+
 export default function LoaderProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -218,28 +240,28 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
               >
                 <Typography 
                   sx={{ 
-                    fontFamily: isAr ? '"Cairo", sans-serif' : "var(--heading-font)", 
+                    fontFamily: "var(--heading-font)", 
                     fontSize: isAr ? { xs: "1.8rem", md: "2.4rem" } : { xs: "1.4rem", md: "1.8rem" }, 
                     fontWeight: isAr ? 700 : 500, 
-                    letterSpacing: isAr ? "0.02em" : "0.25em", 
+                    letterSpacing: isAr ? 0 : "0.25em", 
                     color: "#ffffff",
                     textTransform: "uppercase"
                   }}
                 >
-                  {isAr ? "فاشن غيت" : "FASHION GATE MALL"}
+                  {isAr ? stretchArabicText("فاشن غيت", 1) : "FASHION GATE MALL"}
                 </Typography>
                 <Typography 
                   sx={{ 
-                    fontFamily: '"Cairo", sans-serif', 
+                    fontFamily: 'var(--heading-font)', 
                     fontSize: isAr ? 12 : 10, 
                     fontWeight: 600, 
-                    letterSpacing: isAr ? "0.05em" : "0.4em", 
+                    letterSpacing: isAr ? 0 : "0.4em", 
                     color: "#CB6116", // Brand orange
                     textTransform: "uppercase",
                     mt: 1
                   }}
                 >
-                  {isAr ? "بوليفارد دمشق" : "DAMASCUS BOULEVARD"}
+                  {isAr ? stretchArabicText("بوليفارد دمشق", 1) : "DAMASCUS BOULEVARD"}
                 </Typography>
               </MotionBox>
               

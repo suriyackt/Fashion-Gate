@@ -273,7 +273,8 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
         sx={{ 
           bgcolor: "#050505", 
           color: "#CB6116", 
-          py: 0.9, 
+          pb: 1.3, 
+          pt: 1.9,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           position: "relative",
           minHeight: 38,
@@ -459,7 +460,7 @@ function SearchOption({
         />
       )}
 
-      <Stack direction="row" alignItems="center" sx={{ position: "relative", zIndex: 1000, overflow: "hidden" }}>
+      <Stack direction="row" alignItems="center" sx={{ position: "relative", zIndex: 1000, overflow: "hidden",gap: { xs: 0.5, sm: 0.5 } }}>
         <Box
           component="input"
           type="text"
@@ -499,10 +500,10 @@ function SearchOption({
           }}
           sx={{ 
             color: "#CB6116", 
-            p: 1.14,
+            p: { xs: 1.14, sm: 1.14 },
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 0,
-            ml: 1,
+            ml: { xs: 0, sm: 0 },
             bgcolor: searchActive ? "rgba(255,255,255,0.1)" : "transparent"
           }}
         >
@@ -900,7 +901,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
           direction="row" 
           justifyContent="space-between" 
           alignItems="center" 
-          sx={{ minHeight: 64, px: { xs: 1.5, sm: 2.5, md: 4 } }}
+          sx={{ minHeight: 64, px: { xs: 1, sm: 2.5, md: 4 }, gap: { xs: 0.5, sm: 2 } }}
         >
           {/* Logo on the left */}
           <Box
@@ -910,18 +911,21 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               display: "inline-flex",
               alignItems: "center",
               textDecoration: "none",
-              cursor: "pointer"
+              cursor: "pointer",
+              minWidth: 0,
+              flexShrink: 1
             }}
           >
-             <Stack direction="row" gap={{ xs: 1, sm: 1.5, md: lang === "ar" ? 2.5 : 1.5 }} alignItems="center">
+             <Stack direction="row" gap={{ xs: 0.4, sm: 1.2, md: lang === "ar" ? 0 : 1   }} alignItems="center" sx={{ minWidth: 0 }}>
                <Box 
                  component="img" 
                  src={logoImageUrl || "/brand/logo.png"} 
                  alt="Fashion Gate" 
                  sx={{ 
-                   height: { xs: 40, sm: 36 }, 
+                   height: { xs: 32, sm: 34, md: 36 }, 
                    width: "auto",
-                   objectFit: "contain"
+                   objectFit: "contain",
+                   flexShrink: 0
                  }} 
                />
                <Typography 
@@ -932,20 +936,21 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                    lineHeight: 1, 
                    textTransform: "uppercase", 
                    color: "#ffffff",
-                   letterSpacing: "0.08em",
+                   letterSpacing: lang === "ar" ? 0 : "0.08em",
                    whiteSpace: "nowrap",
                    display: "block",
                    transform: lang === "ar" ? "scale(1.25)" : "none",
-                   mr: lang === "ar" ? 1.5 : 0
+                   transformOrigin: lang === "ar" ? "right center" : "left center",
+                   mr: lang === "ar" ? { xs: 0.8, sm: 0, md: 1.5} : 0
                  }}
                >
-                 {stretchArabicText(lang === "ar" ? logoTitle?.ar || "بوابة الأزياء" : logoTitle?.en || "FASHION GATE", 2)}
+                 {stretchArabicText(lang === "ar" ? logoTitle?.ar || "فاشن غيت" : logoTitle?.en || "FASHION GATE", 1)}
                </Typography>
              </Stack>
           </Box>
 
           {/* Search, Language Selector, User Profile Icon on the right */}
-          <Stack direction="row" spacing={{ xs: 1, sm: 1.5, md: 2 }} alignItems="center">
+          <Stack direction="row" spacing={{ xs: 0.3, sm: 1.5, md: 2 }} alignItems="center" sx={{ flexShrink: 0 }}>
             {/* Search Option */}
             {showSearch && (
               <SearchOption 
@@ -997,7 +1002,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               onClick={() => setOpen(true)} 
               sx={{ 
                 color: "#ffffff", 
-                p: 0.8,
+                p: { xs: 0.5, sm: 0.8 },
                 border: "1px solid rgba(255,255,255,0.08)",
                 display: { xs: "inline-flex", lg: "none" }
               }}

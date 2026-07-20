@@ -20,6 +20,7 @@ interface BlogDetailClientProps {
     excerpt: string;
     excerptAr: string;
     content: any[];
+    contentAr?: any[];
     image: string;
     readTime: number;
     tags: string[];
@@ -32,6 +33,36 @@ interface BlogDetailClientProps {
   };
   initialLang: "ar" | "en";
 }
+
+const formatMonth = (monthStr: string, isAr: boolean) => {
+  if (!isAr) return monthStr;
+  const monthMap: Record<string, string> = {
+    January: "يناير",
+    February: "فبراير",
+    March: "مارس",
+    April: "أبريل",
+    May: "مايو",
+    June: "يونيو",
+    July: "يوليو",
+    August: "أغسطس",
+    September: "سبتمبر",
+    October: "أكتوبر",
+    November: "نوفمبر",
+    December: "ديسمبر"
+  };
+  return monthMap[monthStr] || monthStr;
+};
+
+const formatCategoryName = (formatStr: string, isAr: boolean) => {
+  if (!isAr) return formatStr;
+  const formatMap: Record<string, string> = {
+    "All": "الكل",
+    "Blog post": "مقال",
+    "Case study": "دراسة حالة",
+    "Thought leadership": "رؤى قيادية"
+  };
+  return formatMap[formatStr] || formatStr;
+};
 
 export default function BlogDetailClient({ post, initialLang }: BlogDetailClientProps) {
   const router = useRouter();
@@ -56,9 +87,11 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
     router.replace(`/blogs/${post.slug}/${nextLang}`);
   };
 
-  const postTitle = lang === "ar" ? (post.titleAr || post.title) : post.title;
-  const postExcerpt = lang === "ar" ? (post.excerptAr || post.excerpt) : post.excerpt;
-  const authorRole = lang === "ar" ? post.author.roleAr : post.author.role;
+  const isAr = lang === "ar";
+  const postTitle = isAr ? (post.titleAr || post.title) : post.title;
+  const postExcerpt = isAr ? (post.excerptAr || post.excerpt) : post.excerpt;
+  const authorRole = isAr ? (post.author.roleAr || post.author.role) : post.author.role;
+  const postContent = isAr ? (post.contentAr && post.contentAr.length > 0 ? post.contentAr : post.content) : post.content;
 
   // Custom Portable Text Renderers
   const portableTextComponents = {
@@ -104,7 +137,7 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
   return (
     <ThemeProvider theme={theme}>
       <Box 
-        dir={lang === "ar" ? "rtl" : "ltr"}
+        dir={isAr ? "rtl" : "ltr"}
         sx={{ 
           bgcolor: "#FAF8F5", 
           color: "#111111", 
@@ -118,13 +151,13 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
         {/* Header Cover Info */}
         <Box component="section" sx={{ pt: { xs: 8, md: 12 }, pb: 6 }}>
           <Container maxWidth="md">
-            <Stack spacing={3.5} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
+            <Stack spacing={3.5} sx={{ textAlign: isAr ? "right" : "left" }}>
               {/* Back to Blogs */}
               <Button
                 component={Link}
                 href={`/blogs/${lang}`}
-                startIcon={lang === "en" && <ArrowBackIcon />}
-                endIcon={lang === "ar" && <ArrowBackIcon sx={{ transform: "scaleX(-1)" }} />}
+                startIcon={!isAr && <ArrowBackIcon />}
+                endIcon={isAr && <ArrowBackIcon sx={{ transform: "scaleX(-1)" }} />}
                 sx={{
                   color: "rgba(0,0,0,0.64)",
                   border: "1px solid rgba(0,0,0,0.12)",
@@ -142,23 +175,23 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
                   }
                 }}
               >
-                {lang === "ar" ? "رجوع للمجلة" : "Journal Home"}
+                {isAr ? "رجوع للمجلة" : "Journal Home"}
               </Button>
 
               <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
                 <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                  {post.format}
+                  {formatCategoryName(post.format, isAr)}
                 </Typography>
                 <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 11 }}>/</Typography>
                 <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: "rgba(0,0,0,0.48)" }}>
                   <CalendarMonthIcon sx={{ fontSize: 14 }} />
-                  <Typography sx={{ fontSize: 11, fontWeight: 700 }}>{post.month}</Typography>
+                  <Typography sx={{ fontSize: 11, fontWeight: 700 }}>{formatMonth(post.month, isAr)}</Typography>
                 </Stack>
                 <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 11 }}>/</Typography>
                 <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: "rgba(0,0,0,0.48)" }}>
                   <AccessTimeIcon sx={{ fontSize: 14 }} />
                   <Typography sx={{ fontSize: 11, fontWeight: 700 }}>
-                    {post.readTime} {lang === "ar" ? "دقائق قراءة" : "min read"}
+                    {post.readTime} {isAr ? "دقائق قراءة" : "min read"}
                   </Typography>
                 </Stack>
               </Stack>
@@ -167,7 +200,7 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
                 {postTitle}
               </Typography>
 
-              <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 18, lineHeight: 1.8, fontFamily: '"Cairo", sans-serif', borderLeft: lang === "en" ? "2.5px solid #CB6116" : "none", borderRight: lang === "ar" ? "2.5px solid #CB6116" : "none", pl: lang === "en" ? 2.5 : 0, pr: lang === "ar" ? 2.5 : 0 }}>
+              <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 18, lineHeight: 1.8, fontFamily: '"Cairo", sans-serif', borderLeft: !isAr ? "2.5px solid #CB6116" : "none", borderRight: isAr ? "2.5px solid #CB6116" : "none", pl: !isAr ? 2.5 : 0, pr: isAr ? 2.5 : 0 }}>
                 {postExcerpt}
               </Typography>
             </Stack>
@@ -203,12 +236,12 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
         {/* Portable Text Rich Content */}
         <Box component="section" sx={{ pb: 8 }}>
           <Container maxWidth="md">
-            <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-              {Array.isArray(post.content) && post.content.length > 0 ? (
-                <PortableText value={post.content} components={portableTextComponents} />
+            <Box sx={{ textAlign: isAr ? "right" : "left" }}>
+              {Array.isArray(postContent) && postContent.length > 0 ? (
+                <PortableText value={postContent} components={portableTextComponents} />
               ) : (
                 <Typography sx={{ color: "rgba(0,0,0,0.64)", fontSize: 16.5, lineHeight: 1.85 }}>
-                  {lang === "ar" ? "لا يوجد محتوى متوفر حالياً." : "No content available yet."}
+                  {isAr ? "لا يوجد محتوى متوفر حالياً." : "No content available yet."}
                 </Typography>
               )}
             </Box>
@@ -220,7 +253,7 @@ export default function BlogDetailClient({ post, initialLang }: BlogDetailClient
               {/* Author details */}
               <Stack direction="row" spacing={2} alignItems="center">
                 <Avatar src={post.author.imageUrl} alt={post.author.name} sx={{ width: 52, height: 52, border: "1px solid rgba(0,0,0,0.08)" }} />
-                <Stack spacing={0.3} sx={{ textAlign: "left" }}>
+                <Stack spacing={0.3} sx={{ textAlign: isAr ? "right" : "left" }}>
                   <Typography sx={{ fontWeight: 700, fontSize: 14.5, color: "#111111" }}>{post.author.name}</Typography>
                   <Typography sx={{ fontSize: 12, color: "rgba(0,0,0,0.54)" }}>{authorRole}</Typography>
                 </Stack>

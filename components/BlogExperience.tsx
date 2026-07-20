@@ -12,10 +12,39 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { blogPosts, featuredBlogPost, type BlogPost } from "@/lib/blogData";
+import { getSanityBlogPosts } from "@/lib/sanity";
 
 const MotionBox = motion.create(Box);
 
+const formatMonth = (monthStr: string, isAr: boolean) => {
+  if (!isAr) return monthStr;
+  const monthMap: Record<string, string> = {
+    January: "يناير",
+    February: "فبراير",
+    March: "مارس",
+    April: "أبريل",
+    May: "مايو",
+    June: "يونيو",
+    July: "يوليو",
+    August: "أغسطس",
+    September: "سبتمبر",
+    October: "أكتوبر",
+    November: "نوفمبر",
+    December: "ديسمبر"
+  };
+  return monthMap[monthStr] || monthStr;
+};
 
+const formatCategoryName = (formatStr: string, isAr: boolean) => {
+  if (!isAr) return formatStr;
+  const formatMap: Record<string, string> = {
+    "All": "الكل",
+    "Blog post": "مقال",
+    "Case study": "دراسة حالة",
+    "Thought leadership": "رؤى قيادية"
+  };
+  return formatMap[formatStr] || formatStr;
+};
 
 export default function BlogExperience({ 
   initialPosts, 
@@ -26,14 +55,28 @@ export default function BlogExperience({
   settings?: any; 
   initialLang?: "en" | "ar";
 }) {
-  const activePostsList = initialPosts || blogPosts;
+  const [posts, setPosts] = useState<any[]>(initialPosts && initialPosts.length > 0 ? initialPosts : []);
+  const activePostsList = posts.length > 0 ? posts : ((initialPosts && initialPosts.length > 0) ? initialPosts : blogPosts);
+  
   const featured = activePostsList[0] || featuredBlogPost;
   const featuredTitle = initialLang === "ar" ? featured.titleAr || featured.title : featured.title;
   const featuredExcerpt = initialLang === "ar" ? featured.excerptAr || featured.excerpt : featured.excerpt;
+  const featuredContent = initialLang === "ar" ? (featured.contentAr && featured.contentAr.length > 0 ? featured.contentAr : featured.content) : featured.content;
 
   const [activeFormat, setActiveFormat] = useState("All");
   const [mounted, setMounted] = useState(false);
   const [isLangTransitioning, setIsLangTransitioning] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    getSanityBlogPosts()
+      .then((res) => {
+        if (res && res.length > 0) {
+          setPosts(res);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const eyebrowText = initialLang === "ar" 
     ? (settings?.eyebrow?.ar || "مجلة بوابة الأزياء") 
@@ -59,10 +102,6 @@ export default function BlogExperience({
     ? (settings?.stat3?.ar || "١٢ مذكرة يومية") 
     : (settings?.stat3?.en || "12 Journal Notes");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const theme = createTheme({
     palette: {
       mode: "dark",
@@ -79,13 +118,16 @@ export default function BlogExperience({
   const formats = ["All", "Blog post", "Case study", "Thought leadership"];
 
   // Filter posts based on format filter
+  const gridPosts = activePostsList.length > 1 ? activePostsList.slice(1) : activePostsList;
   const filteredPosts = activeFormat === "All"
-    ? activePostsList.slice(1)
-    : activePostsList.slice(1).filter(post => post.format === activeFormat);
+    ? gridPosts
+    : gridPosts.filter(post => post.format === activeFormat);
+
+  const isAr = initialLang === "ar";
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ bgcolor: "#FAF8F5", color: "#111111", minHeight: "100vh" }}>
+      <Box sx={{ bgcolor: "#FAF8F5", color: "#111111", minHeight: "100vh" }} dir={isAr ? "rtl" : "ltr"}>
 
         <Box 
           sx={{ 
@@ -152,11 +194,11 @@ export default function BlogExperience({
               <Stack spacing={3} sx={{ maxWidth: 840, mx: "auto", px: { xs: 1, sm: 3 } }}>
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <Typography sx={{ color: "primary.main", fontSize: 10.5, fontWeight: 800, letterSpacing: "0.2em", textTransform: "none" }}>
-                    Featured Article
+                    {isAr ? "مقالة مميزة" : "Featured Article"}
                   </Typography>
                   <Typography sx={{ color: "rgba(0,0,0,0.3)", fontSize: 11.5 }}>/</Typography>
                   <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
-                    {featured.month}
+                    {formatMonth(featured.month, isAr)}
                   </Typography>
                 </Stack>
 
@@ -169,7 +211,7 @@ export default function BlogExperience({
                 </Typography>
 
                 <Stack spacing={2} sx={{ borderTop: "1px solid rgba(0,0,0,0.06)", pt: 3 }}>
-                  {featured.content?.slice(0, 2).map((paragraph) => (
+                  {featuredContent?.slice(0, 2).map((paragraph: any) => (
                     <Typography key={paragraph} sx={{ color: "rgba(0,0,0,0.62)", fontSize: 14.5, lineHeight: 1.85, fontFamily: '"Cairo", sans-serif' }}>
                       {paragraph}
                     </Typography>
@@ -179,7 +221,7 @@ export default function BlogExperience({
                 <Button 
                   component={Link}
                   href={`/blogs/${featured.slug}/${initialLang}`}
-                  endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />} 
+                  endIcon={<ArrowForwardIcon sx={{ fontSize: 15, transform: isAr ? "scaleX(-1)" : "none" }} />} 
                   sx={{ 
                     color: "primary.main",
                     justifyContent: "flex-start",
@@ -196,7 +238,7 @@ export default function BlogExperience({
                     "&:hover": { bgcolor: "transparent", color: "#111111", borderColor: "#111111" }
                   }}
                 >
-                  {initialLang === "ar" ? "اقرأ المقال" : "Read Article"}
+                  {isAr ? "اقرأ المقال" : "Read Article"}
                 </Button>
               </Stack>
             </Stack>
@@ -216,10 +258,10 @@ export default function BlogExperience({
               >
                 <Stack spacing={1}>
                   <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "none" }}>
-                    The Journal Catalog
+                    {isAr ? "كتالوج المجلة" : "The Journal Catalog"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2.4rem", md: "3.8rem" }, lineHeight: 1.1, color: "#111111" }}>
-                    Refining Design & Engineering
+                    {isAr ? "صياغة التصميم والهندسة" : "Refining Design & Engineering"}
                   </Typography>
                 </Stack>
 
@@ -249,7 +291,7 @@ export default function BlogExperience({
                           }
                         }}
                       >
-                        {format}
+                        {formatCategoryName(format, isAr)}
                       </Button>
                     );
                   })}
@@ -265,8 +307,8 @@ export default function BlogExperience({
                 }}
               >
                 {filteredPosts.map((post, index) => {
-                  const postTitle = initialLang === "ar" ? post.titleAr || post.title : post.title;
-                  const postExcerpt = initialLang === "ar" ? post.excerptAr || post.excerpt : post.excerpt;
+                  const postTitle = isAr ? post.titleAr || post.title : post.title;
+                  const postExcerpt = isAr ? post.excerptAr || post.excerpt : post.excerpt;
 
                   return (
                     <Link
@@ -312,11 +354,11 @@ export default function BlogExperience({
                         <Stack spacing={2} sx={{ p: 3, flexGrow: 1 }}>
                           <Stack direction="row" spacing={1.2} alignItems="center">
                             <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
-                              {post.format}
+                              {formatCategoryName(post.format, isAr)}
                             </Typography>
                             <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 10 }}>•</Typography>
                             <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
-                              {post.month}
+                              {formatMonth(post.month, isAr)}
                             </Typography>
                           </Stack>
 
@@ -328,9 +370,11 @@ export default function BlogExperience({
                             {postExcerpt}
                           </Typography>
 
-                          <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
-                            {post.audience}
-                          </Typography>
+                          {post.audience && (
+                            <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
+                              {post.audience}
+                            </Typography>
+                          )}
                         </Stack>
                       </MotionBox>
                     </Link>
@@ -346,13 +390,16 @@ export default function BlogExperience({
           <Container maxWidth="xl">
             <Stack spacing={2.5} alignItems="center" textAlign="center">
               <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.22em", textTransform: "none" }}>
-                Editorial Vision
+                {isAr ? "الرؤية التحريرية" : "Editorial Vision"}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2rem", md: "3.2rem" }, lineHeight: 1.15, fontWeight: 500, maxWidth: 820 }}>
-                "Real projects translated into search relevance, client trust, and brand authority."
+                {isAr 
+                  ? '"مشاريع حقيقية تترجم إلى مصداقية، وثقة العملاء، ورسوخ العلامة التجارية."'
+                  : '"Real projects translated into search relevance, client trust, and brand authority."'
+                }
               </Typography>
               <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
-                Fashion Gate Damascus
+                {isAr ? "بوابة الأزياء دمشق" : "Fashion Gate Damascus"}
               </Typography>
             </Stack>
           </Container>
