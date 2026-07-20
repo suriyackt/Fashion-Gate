@@ -52,6 +52,11 @@ export const product = defineType({
       title: "Related Testimonials",
       type: "array",
       of: [{ type: "reference", to: [{ type: "testimonial" }] }]
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo"
     })
   ],
   orderings: [{ title: "Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],

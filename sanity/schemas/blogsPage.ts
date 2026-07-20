@@ -53,6 +53,11 @@ export const blogsPage = defineType({
         }
       ],
       description: "Select and order the blog posts to display on this page."
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo"
     })
   ]
 });

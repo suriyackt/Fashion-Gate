@@ -53,6 +53,11 @@ export const termsPage = defineType({
           ]
         }
       ]
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
     })
   ],
   preview: {

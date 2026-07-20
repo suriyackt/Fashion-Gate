@@ -19,7 +19,8 @@ export const siteSettings = defineType({
       of: [{ type: "reference", to: [{ type: "menuItem" }] }]
     }),
     defineField({ name: "socialLabel", title: "Social Label", type: "string" }),
-    defineField({ name: "socialUrl", title: "Social URL", type: "url" })
+    defineField({ name: "socialUrl", title: "Social URL", type: "url" }),
+    defineField({ name: "seo", title: "Global SEO Fallback Settings", type: "seo" })
   ],
   preview: {
     select: { title: "title", media: "logo" }

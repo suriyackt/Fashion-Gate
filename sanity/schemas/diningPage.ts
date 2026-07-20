@@ -142,6 +142,11 @@ export const diningPage = defineType({
       type: "object",
       fields: diningPlaceFields,
     }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   initialValue: {
     title: "Dining Page",

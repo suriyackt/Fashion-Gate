@@ -135,6 +135,11 @@ export const contactPage = defineType({
       type: "image",
       options: { hotspot: true },
     }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   initialValue: {
     eyebrow: { en: "client services", ar: "خدمات العملاء" },

@@ -411,6 +411,11 @@ export const restaurantPage = defineType({
       type: "localizedString",
       group: "location",
     }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   preview: {
     select: {

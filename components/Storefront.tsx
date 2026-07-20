@@ -24,6 +24,7 @@ import BoulevardSelectionSection from "./storefront/BoulevardSelectionSection";
 import EditorialSection from "./storefront/EditorialSection";
 import AtelierShowcaseSection from "./storefront/AtelierShowcaseSection";
 import BrandMarquee from "./storefront/BrandMarquee";
+import ContactInquirySection from "./storefront/ContactInquirySection";
 
 
 const MotionBox = motion.create(Box);
@@ -797,11 +798,10 @@ export default function Storefront({
               </Box>
             );
           })}
-          <FaqSection lang={lang} />
+          {/* Have a Question / Contact Us Section */}
+          {/* <ContactInquirySection lang={lang} /> */}
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
-
-

@@ -10,6 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 import { getLocalizedValue, getAboutPageData } from "@/lib/sanity";
+import FaqSection from "@/components/storefront/FaqSection";
 
 export default function AboutClient({ initialLang, initialData }: { initialLang: "en" | "ar"; initialData?: any }) {
   const router = useRouter();
@@ -473,7 +474,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                 }}
               >
                 <Stack spacing={3}>
-                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                     I. {lang === "ar" ? "الاتجاه الاستراتيجي" : "STRATEGIC DIRECTION"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 24, md: 32 }, fontWeight: 500, color: "#111111" }}>
@@ -499,7 +500,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                 }}
               >
                 <Stack spacing={3}>
-                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.25em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                     II. {lang === "ar" ? "ميثاق التميز" : "CHARTER OF EXCELLENCE"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 24, md: 32 }, fontWeight: 500, color: "#111111" }}>
@@ -613,6 +614,9 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
             </Box>
           </Box>
         )}
+
+        {/* SECTION: Frequently Asked Questions (FAQ) */}
+        <FaqSection lang={lang} />
 
       </Box>
     </ThemeProvider>

@@ -152,7 +152,8 @@ export async function getAboutPageData() {
       videoUrl,
       videoFile { asset->{ url } },
       videoTitle,
-      videoSubtitle
+      videoSubtitle,
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
     }`);
   } catch (err) {
     console.error("Error fetching about page data:", err);
@@ -209,7 +210,8 @@ export async function getContactPageData() {
     successHeader,
     successDesc,
     sendAnother,
-    heroImage { asset->{ url } }
+    heroImage { asset->{ url } },
+    seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
   }`);
 }
 
@@ -281,7 +283,8 @@ export async function getSanityBrand(slug: string) {
       "description": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].description, description) { en, ar },
       "bgImage": coalesce(*[_type == "brandPage" && brand._ref == ^._id][0].bgImage, bgImage) { asset->{ url } },
       "buttonText": *[_type == "brandPage" && brand._ref == ^._id][0].buttonText { en, ar },
-      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink
+      "buttonLink": *[_type == "brandPage" && brand._ref == ^._id][0].buttonLink,
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
     }`, { slug });
   } catch (err) {
     console.error("Error fetching single sanity brand:", err);
@@ -637,7 +640,8 @@ export async function getBlogsPageSettings(): Promise<any> {
       description { en, ar },
       stat1 { en, ar },
       stat2 { en, ar },
-      stat3 { en, ar }
+      stat3 { en, ar },
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
     }`);
     return raw || null;
   } catch (err) {
@@ -675,7 +679,8 @@ export async function getSanityBlogPost(slug: string): Promise<any> {
         name,
         role { en, ar },
         image { asset->{ url } }
-      }
+      },
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
     }`, { slug });
 
     if (!raw) return null;
@@ -813,7 +818,8 @@ export async function getRestaurantPageData(restaurantId: string) {
       hoursVal,
       contactTitle,
       contactVal,
-      addressVal
+      addressVal,
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
     }`, { restaurantId });
   } catch (err) {
     console.error("Error fetching restaurant page data:", err);

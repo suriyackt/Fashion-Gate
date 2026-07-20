@@ -54,6 +54,11 @@ export const privacyPage = defineType({
           ]
         }
       ]
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
     })
   ],
   preview: {
