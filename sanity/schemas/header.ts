@@ -151,6 +151,8 @@ export const header = defineType({
                   { title: "Designers Section", value: "/designers" },
                   { title: "Perfumes Section", value: "/perfumes" },
                   { title: "Skincare Section", value: "/skincare" },
+                  { title: "Beauty Section", value: "/category/beauty" },
+                  { title: "Makeup Section", value: "/category/makeup" },
                   { title: "Dining Section", value: "/dining" },
                   { title: "Women Anchor (#women)", value: "#women" },
                   { title: "Men Anchor (#men)", value: "#men" },

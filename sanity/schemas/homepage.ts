@@ -39,6 +39,7 @@ export default defineType({
         { type: 'certificationsSection' },
         { type: 'faqSection' },
         { type: 'contactSection' },
+        { type: 'contactInquirySection' },
       ],
     }),
 

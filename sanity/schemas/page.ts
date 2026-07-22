@@ -22,7 +22,8 @@ export const page = defineType({
         { type: "lookbookSection" },
         { type: "boulevardSelectionSection" },
         { type: "editorialSection" },
-        { type: "atelierShowcaseSection" }
+        { type: "atelierShowcaseSection" },
+        { type: "contactInquirySection" }
       ]
     })
   ],

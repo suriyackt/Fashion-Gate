@@ -274,12 +274,15 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   }), []);
 
   const getPlacePath = (p: any, fallbackPath: string) => {
+    let rawPath = fallbackPath;
     if (p.redirectionType === "reference" && p.pageReference?.restaurantId) {
-      return `/dining/${p.pageReference.restaurantId}/${lang}`;
+      rawPath = `/dining/${p.pageReference.restaurantId}/${lang}`;
+    } else {
+      rawPath = p.buttonPath || fallbackPath;
     }
-    const rawPath = p.buttonPath || fallbackPath;
-    if (rawPath.startsWith("/") && !rawPath.includes("/en") && !rawPath.includes("/ar")) {
-      return `${rawPath}/${lang}`;
+    if (rawPath.startsWith("/")) {
+      let clean = rawPath.replace(/\/(ar|en)$/, "").replace(/\/(ar|en)\//, "/");
+      return `${clean}/${lang}`;
     }
     return rawPath;
   };
@@ -586,57 +589,24 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                 >
                   {categoryId === "fashion" ? (
                     <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      <Grid container spacing={3} sx={{ mb: 6 }}>
+                      <Grid container spacing={4} sx={{ mb: 8 }}>
                         {/* Women Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "280px", sm: "400px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "280px", sm: "440px" },
                                 backgroundImage: 'url("/brand/hero-woman.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.2)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "النساء" : "WOMEN"}
                               </Typography>
-                              <Typography sx={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "تشكيلة النساء" : "WOMEN COLLECTION"}
                               </Typography>
                             </Stack>
@@ -645,54 +615,21 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
 
                         {/* Men Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "280px", sm: "400px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "280px", sm: "440px" },
                                 backgroundImage: 'url("/brand/hero-look-03.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.2)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "الرجال" : "MEN"}
                               </Typography>
-                              <Typography sx={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "تشكيلة الرجال" : "MEN COLLECTION"}
                               </Typography>
                             </Stack>
@@ -738,7 +675,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                       component="img"
                                       src={brand.logoUrl}
                                       alt={brand.name}
-                                      sx={{ maxHeight: 30, maxWidth: "80%", objectFit: "contain" }}
+                                      sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
                                     />
                                   ) : (
                                     brandVectorLogos[brand.id] || (
@@ -773,57 +710,24 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                   ) : categoryId === "perfumes" ? (
                     <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
                       {/* Row 1: Men and Women Perfume Banners */}
-                      <Grid container spacing={3} sx={{ mb: 3 }}>
+                      <Grid container spacing={4} sx={{ mb: 4 }}>
                         {/* Women Perfumes Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "240px", sm: "320px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "240px", sm: "380px" },
                                 backgroundImage: 'url("/brand/hero-woman.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.25)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 22, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "العطور النسائية" : "WOMEN'S FRAGRANCES"}
                               </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "رقة وجمال" : "ELEGANT & FEMININE"}
                               </Typography>
                             </Stack>
@@ -832,54 +736,21 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
 
                         {/* Men Perfumes Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "240px", sm: "320px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "240px", sm: "380px" },
                                 backgroundImage: 'url("/brand/hero-look-03.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.25)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 22, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "العطور الرجالية" : "MEN'S FRAGRANCES"}
                               </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "جاذبية وقوة" : "BOLD & SOPHISTICATED"}
                               </Typography>
                             </Stack>
@@ -888,55 +759,21 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                       </Grid>
 
                       {/* Row 2: Unisex Perfume Banner */}
-                      <Box
-                        sx={{
-                          height: { xs: "260px", sm: "380px" },
-                          position: "relative",
-                          overflow: "hidden",
-                          border: "1px solid rgba(0,0,0,0.06)",
-                          cursor: "default",
-                          mb: 6,
-                          "&:hover": {
-                            "& .banner-img": { transform: "scale(1.04)" },
-                            "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.3)" }
-                          }
-                        }}
-                      >
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 8 }}>
                         <Box
-                          className="banner-img"
                           sx={{
-                            position: "absolute",
-                            inset: 0,
+                            height: { xs: "260px", sm: "420px" },
                             backgroundImage: 'url("/brand/hero-unisex-perfume.jpg")',
                             backgroundSize: "cover",
                             backgroundPosition: "center center",
-                            transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                            border: "1px solid rgba(0,0,0,0.05)"
                           }}
                         />
-                        <Box
-                          className="banner-overlay"
-                          sx={{
-                            position: "absolute",
-                            inset: 0,
-                            bgcolor: "rgba(0,0,0,0.2)",
-                            transition: "background-color 0.4s ease"
-                          }}
-                        />
-                        <Stack
-                          justifyContent="flex-end"
-                          alignItems="center"
-                          sx={{
-                            position: "absolute",
-                            inset: 0,
-                            p: 4,
-                            zIndex: 3,
-                            color: "#ffffff"
-                          }}
-                        >
-                          <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 26, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                        <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                          <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                             {lang === "ar" ? "العطور المشتركة (للجنسين)" : "UNISEX FRAGRANCES"}
                           </Typography>
-                          <Typography sx={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                          <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                             {lang === "ar" ? "تناغم وتفرد" : "UNIVERSAL HARMONY"}
                           </Typography>
                         </Stack>
@@ -984,7 +821,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                         component="img"
                                         src={brand.logoUrl}
                                         alt={brand.name}
-                                        sx={{ maxHeight: 30, maxWidth: "80%", objectFit: "contain" }}
+                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
                                       />
                                     ) : (
                                       brandVectorLogos[brand.id] || (
@@ -1018,57 +855,24 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                     </Box>
                   ) : categoryId === "skincare" ? (
                     <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      <Grid container spacing={3} sx={{ mb: 6 }}>
+                      <Grid container spacing={4} sx={{ mb: 8 }}>
                         {/* Women Skincare Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "280px", sm: "400px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "280px", sm: "440px" },
                                 backgroundImage: 'url("/brand/hero-woman.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.2)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "العناية بالبشرة للنساء" : "WOMEN'S SKINCARE"}
                               </Typography>
-                              <Typography sx={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "جمال ونضارة" : "GLOW & RADIANCE"}
                               </Typography>
                             </Stack>
@@ -1077,54 +881,21 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
 
                         {/* Men Skincare Banner */}
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box
-                            sx={{
-                              height: { xs: "280px", sm: "400px" },
-                              position: "relative",
-                              overflow: "hidden",
-                              border: "1px solid rgba(0,0,0,0.06)",
-                              cursor: "default",
-                              "&:hover": {
-                                "& .banner-img": { transform: "scale(1.04)" },
-                                "& .banner-overlay": { bgcolor: "rgba(0,0,0,0.35)" }
-                              }
-                            }}
-                          >
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Box
-                              className="banner-img"
                               sx={{
-                                position: "absolute",
-                                inset: 0,
+                                height: { xs: "280px", sm: "440px" },
                                 backgroundImage: 'url("/brand/hero-look-03.jpg")',
                                 backgroundSize: "cover",
                                 backgroundPosition: "center top",
-                                transition: "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                                border: "1px solid rgba(0,0,0,0.05)"
                               }}
                             />
-                            <Box
-                              className="banner-overlay"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                bgcolor: "rgba(0,0,0,0.2)",
-                                transition: "background-color 0.4s ease"
-                              }}
-                            />
-                            <Stack
-                              justifyContent="flex-end"
-                              alignItems="center"
-                              sx={{
-                                position: "absolute",
-                                inset: 0,
-                                p: 4,
-                                zIndex: 3,
-                                color: "#ffffff"
-                              }}
-                            >
-                              <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
                                 {lang === "ar" ? "العناية بالبشرة للرجال" : "MEN'S SKINCARE"}
                               </Typography>
-                              <Typography sx={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", mt: 1, borderBottom: "1.5px solid #ffffff", pb: 0.5 }}>
+                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
                                 {lang === "ar" ? "عناية يومية" : "DAILY ESSENTIALS"}
                               </Typography>
                             </Stack>
@@ -1174,7 +945,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                         component="img"
                                         src={brand.logoUrl}
                                         alt={brand.name}
-                                        sx={{ maxHeight: 30, maxWidth: "80%", objectFit: "contain" }}
+                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
                                       />
                                     ) : (
                                       brandVectorLogos[brand.id] || (

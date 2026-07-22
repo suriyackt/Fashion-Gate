@@ -229,6 +229,7 @@ export default function BrandListClient({ initialBrands, initialLang }: BrandLis
                       border: "1px solid rgba(0,0,0,0.06)",
                       p: 4.5,
                       height: "260px",
+                      minHeight: "200px",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
@@ -253,7 +254,7 @@ export default function BrandListClient({ initialBrands, initialLang }: BrandLis
                           component="img"
                           src={brand.logoUrl}
                           alt={brand.name}
-                          sx={{ maxHeight: 35, maxWidth: "80%", objectFit: "contain" }}
+                          sx={{ maxHeight: 160, maxWidth: "80%", objectFit: "contain" }}
                         />
                       ) : (
                         brandVectorLogos[brand.id] || (

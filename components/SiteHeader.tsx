@@ -5,6 +5,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Box, Button, Container, Drawer, IconButton, Stack, Typography, Divider, Link as MuiLink } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -29,7 +31,7 @@ export function resolvePath(href: string, lang: "ar" | "en") {
     return `/brand/${lang}`;
   }
 
-  const categories = ["women", "men", "perfumes", "skincare", "fashion", "designers"];
+  const categories = ["women", "men", "perfumes", "skincare", "beauty", "makeup", "fashion", "designers"];
   const parts = cleanHref.split("/");
   const firstPart = parts[0];
   
@@ -664,6 +666,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
   // Dropdown states for mega-menus
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [hoveredFashionCategory, setHoveredFashionCategory] = useState<"women-fashion" | "men-fashion" | null>(null);
+  const [beautyHoveredSub, setBeautyHoveredSub] = useState<"skincare" | "makeup" | null>(null);
   const [sanityBrands, setSanityBrands] = useState<any[]>([]);
   const [headerMenuItems, setHeaderMenuItems] = useState<any[]>([]);
   const [expandedMobileItem, setExpandedMobileItem] = useState<number | null>(null);
@@ -1112,8 +1115,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 ]
               },
               { 
-                label: { en: "Skincare", ar: "العناية بالبشرة" }, 
-                href: "/category/skincare",
+                label: { en: "Beauty", ar: "الجمال" }, 
+                href: "/category/beauty",
                 designerCategories: [
                   {
                     title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
@@ -1132,8 +1135,9 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
               const isFashion = item.href?.includes("/category/fashion");
               const isPerfumes = item.href?.includes("/category/perfumes");
               const isSkincare = item.href?.includes("/category/skincare");
+              const isBeauty = item.href?.includes("/category/beauty") || isSkincare || item.label?.en?.toLowerCase() === "beauty" || item.label?.en?.toLowerCase() === "skincare";
               const isDining = item.href?.includes("/dining");
-              const isCategoryDropdown = isFashion || isPerfumes || isSkincare || isDining;
+              const isCategoryDropdown = isFashion || isPerfumes || isBeauty || isDining;
               const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
               const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
               
@@ -1188,7 +1192,7 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.18 }}
                           onMouseEnter={() => setActiveDropdown(idx)}
-                          onMouseLeave={() => setActiveDropdown(null)}
+                          onMouseLeave={() => { setActiveDropdown(null); setBeautyHoveredSub(null); }}
                           sx={
                             (!isCategoryDropdown && item.designerCategories.length > 2)
                               ? {
@@ -1206,6 +1210,24 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                                   zIndex: 99,
                                   textAlign: lang === "ar" ? "right" : "left",
                                   color: "#111111"
+                                }
+                              : isBeauty
+                              ? {
+                                  position: "absolute",
+                                  top: "100%",
+                                  left: lang === "ar" ? "auto" : 0,
+                                  right: lang === "ar" ? 0 : "auto",
+                                  width: beautyHoveredSub === "skincare" ? "300px" : "165px",
+                                  bgcolor: "#ffffff",
+                                  border: "1px solid rgba(0,0,0,0.1)",
+                                  borderTop: "3px solid #CB6116",
+                                  boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
+                                  borderRadius: 0,
+                                  p: 0,
+                                  zIndex: 99,
+                                  textAlign: lang === "ar" ? "right" : "left",
+                                  overflow: "hidden",
+                                  transition: "width 0.18s cubic-bezier(0.4, 0, 0.2, 1)"
                                 }
                               : {
                                   position: "absolute",
@@ -1248,6 +1270,134 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                                     {opt.label}
                                   </Typography>
                                 ))
+                              ) : isBeauty ? (
+                                <Box
+                                  onMouseLeave={() => setBeautyHoveredSub(null)}
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: lang === "ar" ? "row-reverse" : "row",
+                                    width: "100%"
+                                  }}
+                                >
+                                  {/* Left Main Categories */}
+                                  <Box
+                                    sx={{
+                                      width: "165px",
+                                      bgcolor: "#ffffff",
+                                      borderRight: (lang !== "ar" && beautyHoveredSub === "skincare") ? "1px solid rgba(0,0,0,0.06)" : "none",
+                                      borderLeft: (lang === "ar" && beautyHoveredSub === "skincare") ? "1px solid rgba(0,0,0,0.06)" : "none",
+                                      py: 1.5
+                                    }}
+                                  >
+                                    {/* Skincare item */}
+                                    <Box
+                                      onMouseEnter={() => setBeautyHoveredSub("skincare")}
+                                      component={Link}
+                                      href={`/category/skincare/${lang}`}
+                                      onClick={() => { setActiveDropdown(null); setBeautyHoveredSub(null); }}
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        px: 2.2,
+                                        py: 1.2,
+                                        textDecoration: "none",
+                                        color: beautyHoveredSub === "skincare" ? "#CB6116" : "#333333",
+                                        bgcolor: "transparent",
+                                        fontWeight: 600,
+                                        fontSize: 12.5,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.05em",
+                                        fontFamily: '"Cairo", sans-serif',
+                                        "&:hover": {
+                                          color: "#CB6116",
+                                          transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                        },
+                                        transition: "all 0.2s ease"
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: 600 }}>{lang === "ar" ? "العناية بالبشرة" : "SKINCARE"}</span>
+                                    </Box>
+
+                                    {/* Make up item */}
+                                    <Box
+                                      onMouseEnter={() => setBeautyHoveredSub("makeup")}
+                                      component={Link}
+                                      href={`/category/makeup/${lang}`}
+                                      onClick={() => { setActiveDropdown(null); setBeautyHoveredSub(null); }}
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        px: 2.2,
+                                        py: 1.2,
+                                        textDecoration: "none",
+                                        color: beautyHoveredSub === "makeup" ? "#CB6116" : "#333333",
+                                        bgcolor: "transparent",
+                                        fontWeight: 600,
+                                        fontSize: 12.5,
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.05em",
+                                        fontFamily: '"Cairo", sans-serif',
+                                        "&:hover": {
+                                          color: "#CB6116",
+                                          transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                        },
+                                        transition: "all 0.2s ease"
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: 600 }}>{lang === "ar" ? "المكياج" : "MAKE UP"}</span>
+                                    </Box>
+                                  </Box>
+
+                                  {/* Right Sub-Panel - ONLY when hovering Skincare */}
+                                  {beautyHoveredSub === "skincare" && (
+                                    <Box sx={{ width: "135px", p: 1.2, bgcolor: "#ffffff", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                      <AnimatePresence mode="wait">
+                                        <MotionBox
+                                          key="skincare-sub-bold"
+                                          initial={{ opacity: 0, x: lang === "ar" ? -6 : 6 }}
+                                          animate={{ opacity: 1, x: 0 }}
+                                          exit={{ opacity: 0, x: lang === "ar" ? -6 : 6 }}
+                                          transition={{ duration: 0.14 }}
+                                        >
+                                          <Stack spacing={1.5}>
+                                            {[
+                                              { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/skincare/${lang}?sub=women` },
+                                              { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/skincare/${lang}?sub=men` }
+                                            ].map((opt) => (
+                                              <Typography
+                                                key={opt.label}
+                                                component={Link}
+                                                href={opt.href}
+                                                onClick={() => { setActiveDropdown(null); setBeautyHoveredSub(null); }}
+                                                sx={{
+                                                  color: "#333333",
+                                                  textDecoration: "none",
+                                                  fontSize: 12.5,
+                                                  fontWeight: 600,
+                                                  textTransform: "uppercase",
+                                                  letterSpacing: "0.05em",
+                                                  fontFamily: '"Cairo", sans-serif',
+                                                  px: 1,
+                                                  py: 0.5,
+                                                  display: "block",
+                                                  transition: "all 0.2s ease",
+                                                  "&:hover": {
+                                                    color: "#CB6116",
+                                                    transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                                  }
+                                                }}
+                                              >
+                                                {opt.label}
+                                              </Typography>
+                                            ))}
+                                          </Stack>
+                                        </MotionBox>
+                                      </AnimatePresence>
+                                    </Box>
+                                  )}
+                                </Box>
                               ) : (isFashion || isSkincare) ? (
                                 [
                                   { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=women` },
@@ -1483,8 +1633,8 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                   ]
                 },
                 { 
-                  label: { en: "Skincare", ar: "العناية بالبشرة" }, 
-                  href: "/category/skincare",
+                  label: { en: "Beauty", ar: "الجمال" }, 
+                  href: "/category/beauty",
                   designerCategories: [
                     {
                       title: { en: "Premium Beauty & Skincare", ar: "العناية بالبشرة والجمال الفاخر" },
@@ -1502,8 +1652,9 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                 const isFashion = item.href?.includes("/category/fashion");
                 const isPerfumes = item.href?.includes("/category/perfumes");
                 const isSkincare = item.href?.includes("/category/skincare");
+                const isBeauty = item.href?.includes("/category/beauty") || isSkincare || item.label?.en?.toLowerCase() === "beauty" || item.label?.en?.toLowerCase() === "skincare";
                 const isDining = item.href?.includes("/dining");
-                const isCategoryDropdown = isFashion || isPerfumes || isSkincare;
+                const isCategoryDropdown = isFashion || isPerfumes || isBeauty;
                 const hasDropdown = isCategoryDropdown || (item.designerCategories && item.designerCategories.length > 0);
                 const labelStr = lang === "ar" ? item.label?.ar || item.label?.en : item.label?.en || item.label?.ar;
                 
@@ -1577,6 +1728,72 @@ export default function SiteHeader({ settings, onLangToggleStart }: SiteHeaderPr
                                         {opt.label}
                                       </MuiLink>
                                     ))
+                                  ) : isBeauty ? (
+                                    <Stack spacing={2} sx={{ width: "100%", alignItems: "center" }}>
+                                      <Box sx={{ textAlign: "center" }}>
+                                        <MuiLink
+                                          component={Link}
+                                          href={`/category/skincare/${lang}`}
+                                          onClick={() => setOpen(false)}
+                                          sx={{
+                                            color: "#CB6116",
+                                            fontSize: 13,
+                                            fontWeight: 700,
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.1em",
+                                            textDecoration: "none",
+                                            display: "block",
+                                            mb: 0.8,
+                                            fontFamily: '"Cairo", sans-serif'
+                                          }}
+                                        >
+                                          {lang === "ar" ? "العناية بالبشرة" : "SKINCARE"}
+                                        </MuiLink>
+                                        <Stack spacing={0.8} sx={{ alignItems: "center" }}>
+                                          {[
+                                            { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/skincare/${lang}?sub=women` },
+                                            { label: lang === "ar" ? "الرجال" : "MEN", href: `/category/skincare/${lang}?sub=men` }
+                                          ].map((opt) => (
+                                            <MuiLink
+                                              key={opt.label}
+                                              component={Link}
+                                              href={opt.href}
+                                              onClick={() => setOpen(false)}
+                                              sx={{
+                                                color: "rgba(255,255,255,0.75)",
+                                                fontSize: 12.5,
+                                                textDecoration: "none",
+                                                fontFamily: '"Cairo", sans-serif',
+                                                "&:hover": { color: "#ffffff" }
+                                              }}
+                                            >
+                                              {opt.label}
+                                            </MuiLink>
+                                          ))}
+                                        </Stack>
+                                      </Box>
+
+                                      <Box sx={{ textAlign: "center" }}>
+                                        <MuiLink
+                                          component={Link}
+                                          href={`/category/makeup/${lang}`}
+                                          onClick={() => setOpen(false)}
+                                          sx={{
+                                            color: "rgba(255,255,255,0.85)",
+                                            fontSize: 13,
+                                            fontWeight: 600,
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.1em",
+                                            textDecoration: "none",
+                                            display: "block",
+                                            fontFamily: '"Cairo", sans-serif',
+                                            "&:hover": { color: "#CB6116" }
+                                          }}
+                                        >
+                                          {lang === "ar" ? "المكياج" : "MAKE UP"}
+                                        </MuiLink>
+                                      </Box>
+                                    </Stack>
                                   ) : (isFashion || isSkincare) ? (
                                     [
                                       { label: lang === "ar" ? "النساء" : "WOMEN", href: `/category/${isFashion ? "fashion" : "skincare"}/${lang}?sub=women` },
