@@ -11,7 +11,7 @@ import { Box, Button, Container, Drawer, IconButton, Stack, Typography, Divider,
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoader } from "@/components/LoaderProvider";
 import type { Product } from "@/lib/productData";
 import { getBrandById } from "@/lib/brandData";
@@ -202,6 +202,16 @@ const categoriesConfig = [
 
 function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+  const [marqueeSpeed, setMarqueeSpeed] = useState(400);
+
+  const marqueeItems = useMemo(() => {
+    const items: typeof announcements = [];
+    for (let i = 0; i < 20; i++) {
+      items.push(...announcements);
+    }
+    return items;
+  }, [announcements]);
 
   useEffect(() => {
     getAnnouncements().then((data) => {
@@ -237,13 +247,32 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
     });
   }, [lang]);
 
-  if (announcements.length === 0) return null;
+  useEffect(() => {
+    const container = marqueeRef.current;
+    if (!container) return;
 
-  // Duplicate items sufficiently to cover screen width and ensure seamless loops
-  const marqueeItems = [];
-  for (let i = 0; i < 20; i++) {
-    marqueeItems.push(...announcements);
-  }
+    const updateSpeed = () => {
+      const totalWidth = container.scrollWidth;
+      const duplicates = 20;
+      const singleSetWidth = totalWidth / duplicates;
+      const minSpeed = 80;
+      const maxSpeed = 700;
+      const normalizedSpeed = Math.max(
+        minSpeed,
+        Math.min(
+          maxSpeed,
+          Math.round(100 + announcements.length * 40 + singleSetWidth / 500)
+        )
+      );
+      setMarqueeSpeed(normalizedSpeed);
+    };
+
+    updateSpeed();
+    window.addEventListener("resize", updateSpeed);
+    return () => window.removeEventListener("resize", updateSpeed);
+  }, [announcements]);
+
+  if (announcements.length === 0) return null;
 
   const isAr = lang === "ar";
 
@@ -263,7 +292,6 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           align-items: center;
           white-space: nowrap;
           width: max-content;
-          animation: marquee-header-scroll-left 175s linear infinite;
         }
         .marquee-header-container:hover {
           animation-play-state: paused;
@@ -285,7 +313,7 @@ function AnnouncementBar({ lang }: { lang: "ar" | "en" }) {
           alignItems: "center"
         }}
       >
-        <Box className="marquee-header-container" dir="ltr">
+        <Box className="marquee-header-container" dir="ltr" ref={marqueeRef} sx={{ animation: `marquee-header-scroll-left ${marqueeSpeed}s linear infinite` }}>
           {marqueeItems.map((item, idx) => (
             <Box 
               key={idx} 
