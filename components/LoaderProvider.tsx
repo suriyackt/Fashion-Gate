@@ -241,9 +241,9 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
                 <Typography 
                   sx={{ 
                     fontFamily: "var(--heading-font)", 
-                    fontSize: isAr ? { xs: "1.8rem", md: "2.4rem" } : { xs: "1.4rem", md: "1.8rem" }, 
+                    fontSize: isAr ? { xs: "2rem", md: "2.6rem" } : { xs: "1.2rem", md: "1.8rem" }, 
                     fontWeight: isAr ? 700 : 500, 
-                    letterSpacing: isAr ? 0 : "0.25em", 
+                    letterSpacing: isAr ? 0 : "0.15em", 
                     color: "#ffffff",
                     textTransform: "uppercase"
                   }}
