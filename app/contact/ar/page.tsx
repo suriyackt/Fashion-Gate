@@ -32,10 +32,7 @@ export async function generateMetadata() {
 export default async function ContactArPage() {
   let initialData = null;
   try {
-    initialData = await Promise.race([
-      getContactPageData(),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500))
-    ]);
+    initialData = await getContactPageData();
   } catch (error) {
     console.error("Failed to load contact page data from Sanity:", error);
   }

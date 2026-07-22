@@ -799,7 +799,10 @@ export default function Storefront({
             );
           })}
           {/* Have a Question / Contact Us Section */}
-          {/* <ContactInquirySection lang={lang} /> */}
+          {(() => {
+            const contactInquirySec = sections.find((s: any) => s._type === "contactInquirySection" || s.type === "contactInquiry");
+            return <ContactInquirySection lang={lang} section={contactInquirySec} />;
+          })()}
         </Box>
       </Box>
     </ThemeProvider>

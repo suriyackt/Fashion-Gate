@@ -1152,5 +1152,160 @@
       "dior-sauvage-elixir",
       "ysl-libre-perfume"
     ]
+  },
+  {
+    "id": "lancome-labsolu-rouge-lipstick",
+    "title": "Lancôme L'Absolu Rouge Lipstick",
+    "titleAr": "أحمر شفاة لانكوم لابصولو روج الفاخر",
+    "category": "Makeup",
+    "categoryAr": "المكياج",
+    "subcategory": "makeup",
+    "subcategoryAr": "المكياج",
+    "slogan": "Luminous matte color enriched with rose extracts.",
+    "sloganAr": "لون مطفأ مشرق غني بمستخلصات الورد.",
+    "description": "Indulge in rich, vibrant color and intense hydration with Lancôme L'Absolu Rouge. Infused with hyaluronic acid and grand rose extracts.",
+    "descriptionAr": "استمتعي بلون غني ومشرق وترطيب مكثف مع أحمر الشفاه لانكوم لابصولو روج المعزز بحمض الهيالورونيك وخلاصة الورد الفاخر.",
+    "details": [
+      "Creamy satin finish",
+      "Infused with Grand Rose Extracts & Hyaluronic Acid",
+      "Iconic luxury click case",
+      "3.4g net weight"
+    ],
+    "detailsAr": [
+      "لمسة نهائية ساتانية كريمية",
+      "مستخلصات الورد الفاخرة وحمض الهيالورونيك",
+      "أنبوب ضغط أيقوني فاخر",
+      "الوزن الصافي ٣.٤ جرام"
+    ],
+    "imageUrl": "/brand/hero-look-07.jpg",
+    "brandId": "lancome",
+    "relatedIds": [
+      "ysl-touche-eclat-radiance-pen",
+      "gucci-poudre-de-beaute-powder"
+    ]
+  },
+  {
+    "id": "ysl-touche-eclat-radiance-pen",
+    "title": "Saint Laurent Touche Éclat Radiance Pen",
+    "titleAr": "قلم إضاءة وتصحيح البشرة توش إيكلا من سان لوران",
+    "category": "Makeup",
+    "categoryAr": "المكياج",
+    "subcategory": "makeup",
+    "subcategoryAr": "المكياج",
+    "slogan": "The iconic click pen for effortless glow and perfection.",
+    "sloganAr": "قلم الإضاءة الأيقوني لإشراقة طبيعية ومظهر مثالي.",
+    "description": "Saint Laurent's award-winning magic pen brightens the complexion, smooths fine lines, and erases signs of fatigue with a weightless, natural finish.",
+    "descriptionAr": "قلم سان لوران السحري الحائز على جوائز يعزز إشراق البشرة وينعم الخطوط الدقيقة ويزيل علامات التعب بلمسة طبيعية خفيفة الوزن.",
+    "details": [
+      "Light-reflecting pigments for natural radiance",
+      "Multi-use concealer & highlighter",
+      "Precision brush click pen in signature gold",
+      "2.5ml pen"
+    ],
+    "detailsAr": [
+      "صبغات عاكسة للضوء لإشراقة طبيعية",
+      "مصحح ومضيء بشرة متعدد الاستخدامات",
+      "قلم فاخر بفرشاة دقيقة باللون الذهبي الأيقوني",
+      "سعة ٢.٥ مل"
+    ],
+    "imageUrl": "/brand/hero-look-05.jpg",
+    "brandId": "ysl",
+    "relatedIds": [
+      "lancome-labsolu-rouge-lipstick",
+      "giorgio-armani-luminous-silk-foundation"
+    ]
+  },
+  {
+    "id": "gucci-poudre-de-beaute-powder",
+    "title": "Gucci Poudre De Beauté Matte Beauty Powder",
+    "titleAr": "بودرة التجميل المطفأة بودر دي بوتيه من غوتشي",
+    "category": "Makeup",
+    "categoryAr": "المكياج",
+    "subcategory": "makeup",
+    "subcategoryAr": "المكياج",
+    "slogan": "Silky smoothing powder encased in vintage pale pink compact.",
+    "sloganAr": "بودرة حريرية ملساء في علبة وردية كلاسيكية أنيقة.",
+    "description": "Formulated with micro-reflecting lamellar powders, Gucci Poudre De Beauté creates a unified, smooth complexion with a delicate floral fragrance.",
+    "descriptionAr": "بودرة غوتشي الفاخرة تمنحك بشرة موحدة ومخملية بفضل جزيئاتها الدقيقة، مأطرة بعطر زهري ناعم وعلبة كلاسيكية جذابة.",
+    "details": [
+      "Ultra-fine buildable coverage",
+      "Delicate floral scent",
+      "Pale pink vintage compact with gold trim",
+      "10g compact"
+    ],
+    "detailsAr": [
+      "تغطية قابلة للبناء فائقة النعومة",
+      "رائحة زهرية رقيقة",
+      "علبة وردية كلاسيكية بحواف ذهبية",
+      "الوزن الصافي ١٠ جرام"
+    ],
+    "imageUrl": "/brand/hero-look-01.jpg",
+    "brandId": "gucci",
+    "relatedIds": [
+      "lancome-labsolu-rouge-lipstick",
+      "chanel-les-beiges-foundation"
+    ]
+  },
+  {
+    "id": "giorgio-armani-luminous-silk-foundation",
+    "title": "Giorgio Armani Luminous Silk Foundation",
+    "titleAr": "كريم أساس لومينوس سيلك من جورجيو أرماني",
+    "category": "Makeup",
+    "categoryAr": "المكياج",
+    "subcategory": "makeup",
+    "subcategoryAr": "المكياج",
+    "slogan": "The award-winning liquid foundation inspired by charm of silk.",
+    "sloganAr": "كريم الأساس السائل الأيقوني المستوحى من نعومة الحرير.",
+    "description": "An iconic oil-free liquid foundation that delivers medium buildable coverage and a luminous, glowy skin finish.",
+    "descriptionAr": "كريم أساس سائل خالي من الزيوت يقدم تغطية متوسطة قابلة للبناء وإشراقة طبيعية حريرية للبشرة.",
+    "details": [
+      "Micro-fil technology for weightless wear",
+      "Medium buildable glow finish",
+      "Frosted glass bottle with Armani emblem",
+      "30ml bottle"
+    ],
+    "detailsAr": [
+      "تقنية ميكرو-فيل لخفة الوزن والراحة",
+      "لمسة حريرية متميزة",
+      "زجاجة متجمدة أنيقة بشعار أرماني",
+      "سعة ٣٠ مل"
+    ],
+    "imageUrl": "/brand/hero-look-02.jpg",
+    "brandId": "giorgio-armani",
+    "relatedIds": [
+      "ysl-touche-eclat-radiance-pen",
+      "lancome-labsolu-rouge-lipstick"
+    ]
+  },
+  {
+    "id": "chanel-les-beiges-foundation",
+    "title": "Chanel Les Beiges Healthy Glow Foundation",
+    "titleAr": "كريم أساس ليس بيج هيثي غلو من شانيل",
+    "category": "Makeup",
+    "categoryAr": "المكياج",
+    "subcategory": "makeup",
+    "subcategoryAr": "المكياج",
+    "slogan": "Natural skin perfection with a fresh, radiant glow.",
+    "sloganAr": "كمال البشرة الطبيعي مع إشراقة نضرة ومتميزة.",
+    "description": "Chanel Les Beiges enhances skin texture with a subtle, radiant veil while protecting against urban pollution.",
+    "descriptionAr": "يعزز كريم أساس شانيل ملمس البشرة بطبقة ناعمة ومشرقة مع حماية البشرة من التلوث اليومي.",
+    "details": [
+      "Hydrating formula with plant oils",
+      "Natural glowing finish",
+      "Signature Chanel CC emblem bottle",
+      "30ml bottle"
+    ],
+    "detailsAr": [
+      "تركيبة مرطبة بزيوت نباتية",
+      "لمسة نضارة طبيعية",
+      "زجاجة أنيقة بشعار شانيل الأيقوني",
+      "سعة ٣٠ مل"
+    ],
+    "imageUrl": "/brand/hero-look-04.jpg",
+    "brandId": "chanel",
+    "relatedIds": [
+      "gucci-poudre-de-beaute-powder",
+      "giorgio-armani-luminous-silk-foundation"
+    ]
   }
 ]

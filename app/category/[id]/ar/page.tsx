@@ -6,7 +6,7 @@ import { getAllSanityProducts } from "@/lib/sanity";
 export const revalidate = 0;
 
 export async function generateStaticParams() {
-  const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
+  const categories = ["women", "men", "perfumes", "skincare", "beauty", "makeup", "dining", "fashion", "designers"];
   return categories.map((id) => ({ id }));
 }
 
@@ -21,7 +21,7 @@ export default async function CategoryPage({ params }: PageProps) {
   if (id === "designers") {
     redirect("/brand/ar");
   }
-  const categories = ["women", "men", "perfumes", "skincare", "dining", "fashion", "designers"];
+  const categories = ["women", "men", "perfumes", "skincare", "beauty", "makeup", "dining", "fashion", "designers"];
   
   if (!categories.includes(id)) {
     notFound();

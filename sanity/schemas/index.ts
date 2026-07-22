@@ -23,6 +23,7 @@ import { lookbookSection } from "./objects/sections/lookbookSection";
 import { boulevardSelectionSection } from "./objects/sections/boulevardSelectionSection";
 import { editorialSection } from "./objects/sections/editorialSection";
 import { atelierShowcaseSection } from "./objects/sections/atelierShowcaseSection";
+import { contactInquirySection } from "./objects/sections/contactInquirySection";
 
 import post from "./post";
 import testimonial from "./testimonial";
@@ -72,6 +73,7 @@ export const schemaTypes = [
   boulevardSelectionSection,
   editorialSection,
   atelierShowcaseSection,
+  contactInquirySection,
 
   // Content
   post,

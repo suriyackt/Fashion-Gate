@@ -100,10 +100,17 @@ export default function DiningClient({ initialLang, initialData }: DiningClientP
   const fallbackCafe = fallbackData.places[1];
 
   const getPlacePath = (p: any, fallbackPath: string) => {
+    let rawPath = fallbackPath;
     if (p.redirectionType === "reference" && p.pageReference?.restaurantId) {
-      return `/dining/${p.pageReference.restaurantId}`;
+      rawPath = `/dining/${p.pageReference.restaurantId}/${lang}`;
+    } else {
+      rawPath = p.buttonPath || fallbackPath;
     }
-    return p.buttonPath || fallbackPath;
+    if (rawPath.startsWith("/")) {
+      let clean = rawPath.replace(/\/(ar|en)$/, "").replace(/\/(ar|en)\//, "/");
+      return `${clean}/${lang}`;
+    }
+    return rawPath;
   };
 
   const restaurant = useMemo(() => {
@@ -147,8 +154,12 @@ export default function DiningClient({ initialLang, initialData }: DiningClientP
   const places = useMemo(() => [restaurant, cafe], [restaurant, cafe]);
 
   const handleContainerClick = (path: string) => {
-    const cleanPath = path.replace(/^\/+|\/+$/g, "");
-    router.push(`/${cleanPath}/${lang}`);
+    if (path.startsWith("/")) {
+      router.push(path);
+    } else {
+      const cleanPath = path.replace(/^\/+|\/+$/g, "");
+      router.push(`/${cleanPath}/${lang}`);
+    }
   };
 
   return (

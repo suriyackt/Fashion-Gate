@@ -75,6 +75,7 @@ export type Section = {
   descriptionAr?: string;
   bgType?: "image" | "video";
   bgImage?: SanityImage;
+  bgImageMobile?: SanityImage;
   bgVideo?: { asset?: { url?: string } };
   mobileBgPosition?: string;
   cta?: {

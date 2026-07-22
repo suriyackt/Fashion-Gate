@@ -54,6 +54,7 @@ export async function getHomepageData() {
         bgType,
         mobileBgPosition,
         bgImage,
+        bgImageMobile,
         bgVideo { asset->{ url } },
         image,
         video { asset->{ url } },
@@ -105,7 +106,10 @@ export async function getHomepageData() {
           title { en, ar },
           description { en, ar },
           image
-        }
+        },
+        buttonText { en, ar },
+        buttonPath,
+        modelImage { asset->{ url } }
       }
     },
     "brands": *[_type == "brand" && isActive == true] | order(title asc) {
@@ -188,18 +192,29 @@ export async function getLoginPageData() {
 
 export async function getContactPageData() {
   return sanityClient.fetch(`*[_type == "contactPage"][0] {
-    eyebrow,
+    heroImage { asset->{ url } },
+    heroCursive,
     title,
+    headline,
+    subheadline,
+    eyebrow,
     subtitle,
+    locationTitle,
     addressLabel,
     addressValue,
+    hoursTitle,
     hoursLabel,
     hoursValue,
+    emailTitle,
     digitalLabel,
     digitalValue,
+    whatsappTitle,
     whatsappLabel,
     whatsappValue,
+    whatsappLink,
     chatConcierge,
+    formImage { asset->{ url } },
+    formCursive,
     formTitle,
     formSubtitle,
     fullNameLabel,
@@ -210,7 +225,8 @@ export async function getContactPageData() {
     successHeader,
     successDesc,
     sendAnother,
-    heroImage { asset->{ url } },
+    mapTitle,
+    mapEmbedUrl,
     seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
   }`);
 }

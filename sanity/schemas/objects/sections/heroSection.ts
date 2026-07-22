@@ -24,6 +24,7 @@ export const heroSection = defineType({
       initialValue: "image"
     }),
     defineField({ name: "bgImage", title: "Background Image", type: "image", options: { hotspot: true } }),
+    defineField({ name: "bgImageMobile", title: "Background Image (Mobile)", type: "image", options: { hotspot: true } }),
     defineField({ name: "bgVideo", title: "Background Video File", type: "file", options: { accept: "video/*" } }),
     defineField({
       name: "cta",

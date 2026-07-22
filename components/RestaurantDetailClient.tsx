@@ -688,15 +688,15 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               sx={{
                 position: "absolute",
                 top: "50%",
-                left: { md: 24, lg: 60 },
+                left: { md: 16, lg: 60 },
                 transform: "translateY(-50%)",
                 zIndex: 999,
                 bgcolor: accentColor,
                 color: "#ffffff",
                 border: "2px solid #ffffff",
                 borderRadius: "16px",
-                px: 5,
-                py: 2,
+                px: { md: 3, lg: 5 },
+                py: { md: 1.5, lg: 2 },
                 cursor: "pointer",
                 boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                 display: "flex",
@@ -709,7 +709,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               }}
             >
               <MenuIcon sx={{ fontSize: 20 }} />
-              <Typography sx={{ fontFamily: "var(--heading-font)", fontWeight: 700, fontSize: "1.1rem", letterSpacing: "0.1em" }}>
+              <Typography sx={{ fontFamily: "var(--heading-font)", fontWeight: 700, fontSize: { md: "0.95rem", lg: "1.1rem" }, letterSpacing: "0.1em" }}>
                 {t.menuText}
               </Typography>
             </Box>
@@ -734,6 +734,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   height: { 
                     md: `${initialSanityData?.logoHeight || 50}px` 
                   },
+                  maxHeight: { md: "50px", lg: "70px" },
+                  maxWidth: { md: "140px", lg: "220px" },
                   width: initialSanityData?.logoWidth ? `${initialSanityData.logoWidth}px` : "auto",
                   objectFit: "contain",
                   display: "block" 
@@ -747,12 +749,12 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               sx={{
                 position: "absolute",
                 top: "50%",
-                right: { md: 24, lg: 60 },
+                right: { md: 16, lg: 60 },
                 transform: "translateY(-50%)",
                 zIndex: 999,
                 display: "flex",
                 flexDirection: "row",
-                gap: 2,
+                gap: { md: 1, lg: 2 },
                 alignItems: "center"
               }}
             >
@@ -765,8 +767,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   color: charcoalText,
                   border: `1.5px solid ${charcoalText}`,
                   borderRadius: "16px",
-                  px: 4,
-                  py: 1.8,
+                  px: { md: 2, lg: 4 },
+                  py: { md: 1.2, lg: 1.8 },
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -775,7 +777,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   fontFamily: "Cairo, sans-serif",
                   fontWeight: 700,
                   textTransform: "uppercase",
-                  fontSize: "0.9rem",
+                  fontSize: { md: "0.8rem", lg: "0.9rem" },
                   transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                   "&:hover": {
                     bgcolor: charcoalText,
@@ -795,8 +797,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   color: charcoalText,
                   border: `1.5px solid ${charcoalText}`,
                   borderRadius: "16px",
-                  px: 4,
-                  py: 1.8,
+                  px: { md: 2, lg: 4 },
+                  py: { md: 1.2, lg: 1.8 },
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -805,7 +807,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   fontFamily: "Cairo, sans-serif",
                   fontWeight: 700,
                   textTransform: "uppercase",
-                  fontSize: "0.9rem",
+                  fontSize: { md: "0.8rem", lg: "0.9rem" },
                   transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                   "&:hover": {
                     bgcolor: charcoalText,
@@ -819,7 +821,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   alt={lang === "en" ? "Syria Flag" : "UK Flag"}
                   sx={{ width: 22, height: 15, objectFit: "cover", borderRadius: "2px" }}
                 />
-                {t.langToggleText}
+                <Box component="span" sx={{ display: { md: "none", lg: "inline" } }}>
+                  {t.langToggleText}
+                </Box>
               </Box>
 
               {/* VISIT US Link */}
@@ -837,13 +841,13 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   color: accentColor,
                   border: `2px solid ${accentColor}`,
                   borderRadius: "16px",
-                  px: 5,
-                  py: 1.8,
+                  px: { md: 3, lg: 5 },
+                  py: { md: 1.2, lg: 1.8 },
                   cursor: "pointer",
                   boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
                   fontFamily: "var(--heading-font)",
                   fontWeight: 700,
-                  fontSize: "0.95rem",
+                  fontSize: { md: "0.80rem", lg: "0.95rem" },
                   letterSpacing: "0.05em",
                   transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                   "&:hover": {
@@ -869,7 +873,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               left: 0,
               right: 0,
               zIndex: 1100,
-              bgcolor: headerScrolled ? "rgba(253, 251, 248, 0.95)" : "transparent",
+              bgcolor: headerScrolled ? "rgba(253, 251, 248, 0.95)" : "rgba(253, 251, 248, 0.95)",
               backdropFilter: headerScrolled ? "blur(8px)" : "none",
               borderBottom: headerScrolled ? "1px solid rgba(44, 37, 34, 0.08)" : "none",
               justifyContent: "space-between",
@@ -884,8 +888,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             <IconButton 
               onClick={() => setDrawerOpen(true)} 
               sx={{ 
-                color: "#ffffff", 
-                bgcolor: headerScrolled ? "rgba(44, 37, 34, 0.75)" : "rgba(44, 37, 34, 0.4)",
+                color: "#000000", 
+                // bgcolor: headerScrolled ? "rgba(44, 37, 34, 0.75)" : "rgba(44, 37, 34, 0.4)",
                 borderRadius: "50%",
                 width: 44,
                 height: 44,
@@ -908,6 +912,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
             >
               <Box 
@@ -915,7 +922,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 src={resolvedLogoUrl} 
                 alt="Logo" 
                 sx={{ 
-                  height: `${initialSanityData?.logoHeightMobile || 30}px`,
+                  height: `${initialSanityData?.logoHeightMobile || 60}px`,
+                  maxHeight: "60px",
+                  maxWidth: { xs: "90px", sm: "140px" },
                   width: "auto",
                   objectFit: "contain",
                   display: "block" 
@@ -932,14 +941,25 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   color: charcoalText,
                   border: "1px solid rgba(44, 37, 34, 0.2)",
                   borderRadius: "8px",
-                  px: 1.5,
+                  px: { xs: 1, sm: 1.5 },
                   py: 0.6,
                   fontSize: "0.75rem",
                   fontWeight: 700,
-                  fontFamily: "Cairo, sans-serif"
+                  fontFamily: "Cairo, sans-serif",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: { xs: 32, sm: "auto" },
+                  height: 32,
+                  ml:lang === "ar" ? "8px !important" : 0,
                 }}
               >
-                {getVal(initialSanityData?.backButtonLabel, isAr ? "الرئيسية" : "HOME")}
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                  {getVal(initialSanityData?.backButtonLabel, isAr ? "الرئيسية" : "HOME")}
+                </Box>
+                <Box component="span" sx={{ display: { xs: "inline-flex", sm: "none" }, alignItems: "center" }}>
+                  {lang === "ar" ? <ArrowForwardIcon sx={{ fontSize: 16 }} /> : <ArrowBackIcon sx={{ fontSize: 16 }} />}
+                </Box>
               </Box>
               <Box
                 component={Link}
@@ -949,23 +969,27 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   color: charcoalText,
                   border: "1px solid rgba(44, 37, 34, 0.2)",
                   borderRadius: "8px",
-                  px: 1.5,
+                  px: { xs: 1, sm: 1.5 },
                   py: 0.6,
                   fontSize: "0.75rem",
                   fontWeight: 700,
                   fontFamily: "Cairo, sans-serif",
                   display: "flex",
                   alignItems: "center",
-                  gap: 0.5
+                  gap: 0.5,
+                  minWidth: { xs: 32, sm: "auto" },
+                  height: 32
                 }}
               >
                 <Box 
                   component="img" 
                   src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
                   alt={lang === "en" ? "Syria Flag" : "UK Flag"}
-                  sx={{ width: 14, height: 10, objectFit: "cover", borderRadius: "1px" }}
+                  sx={{ width: 18, height: 12, objectFit: "cover", borderRadius: "1px" }}
                 />
-                {t.langToggleText}
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                  {t.langToggleText}
+                </Box>
               </Box>
             </Stack>
           </Box>
@@ -976,6 +1000,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             open={drawerOpen}
             onClose={() => setDrawerOpen(false)}
             PaperProps={{
+              "data-lenis-prevent": "true",
               sx: {
                 width: { xs: "100%", sm: "450px" },
                 bgcolor: beigeBg,
@@ -985,13 +1010,15 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 flexDirection: "column",
                 borderRight: isAr ? "none" : "1.5px solid rgba(44,37,34,0.1)",
                 borderLeft: isAr ? "1.5px solid rgba(44,37,34,0.1)" : "none",
-                zIndex: 10000
+                zIndex: 10000,
+                overflowY: "auto",
+                maxHeight: "100vh"
               }
             }}
             sx={{ zIndex: 10000 }}
           >
             {/* Drawer Header */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 8 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" >
               <Box component="img" src={resolvedLogoUrl} alt="Logo" sx={{ height: `${initialSanityData?.logoHeightMobile || 45}px`, objectFit: "contain" }} />
               <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: charcoalText, zIndex: 10 }}>
                 <CloseIcon sx={{ fontSize: 30 }} />
@@ -999,7 +1026,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             </Stack>
 
             {/* Menu Links */}
-            <Stack spacing={4} sx={{ flexGrow: 1, justifyContent: "center" }}>
+            <Stack spacing={4} sx={{ my: "auto", py: 4 }}>
               {resolvedHeaderLinks.map((item: any, idx: number) => (
                 <Box
                   key={idx}
@@ -1088,7 +1115,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               sx={{
                 position: "absolute",
                 inset: 0,
-                background: "radial-gradient(circle, rgba(44,37,34,0.3) 0%, rgba(44,37,34,0.7) 100%)",
+                background: "radial-gradient(circle, rgba(0,0,0,0.4) 100%, rgba(0,0,0,0.48) 100%)",
                 zIndex: 2
               }}
             />
@@ -1102,20 +1129,17 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 px: { xs: 3, sm: 6 }
               }}
             >
-              {/* Premium Glassmorphic Card */}
+              {/* Premium Direct Overlay Typography */}
               <Box
                 component={motion.div}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 sx={{
-                  bgcolor: "rgba(253, 251, 248, 0.88)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: "32px",
-                  border: "1.5px solid rgba(253, 251, 248, 0.5)",
-                  boxShadow: "0 24px 60px rgba(0,0,0,0.25)",
-                  p: { xs: 4, sm: 6, md: 8 },
-                  textAlign: "center"
+                  textAlign: "center",
+                  maxWidth: "800px",
+                  mx: "auto",
+                  px: { xs: 1, sm: 3 }
                 }}
               >
                 <Typography
@@ -1126,7 +1150,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                     letterSpacing: "0.25em",
                     fontSize: { xs: "0.85rem", md: "1rem" },
                     mb: 2,
-                    display: "block"
+                    display: "block",
+                    textShadow: "0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.8)"
                   }}
                 >
                   {t.narrativeSubtitle}
@@ -1139,9 +1164,10 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                     fontWeight: 700,
                     textTransform: "uppercase",
                     fontSize: { xs: "3rem", sm: "4.5rem", md: "5.5rem" },
-                    color: charcoalText,
+                    color: "#ffffff",
                     lineHeight: 1.1,
-                    mb: 3
+                    mb: 3,
+                    textShadow: "0 4px 30px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,0.8)"
                   }}
                 >
                   {t.heroTitle}
@@ -1151,8 +1177,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                   sx={{
                     fontSize: { xs: 16, md: 19 },
                     lineHeight: 1.8,
-                    color: charcoalText,
-                    mb: 4
+                    color: "rgba(255, 255, 255, 0.95)",
+                    mb: 4,
+                    textShadow: "0 2px 12px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.85)"
                   }}
                 >
                   {highlightText(t.vilamoreHeroSub, highlightsList)}
@@ -1164,7 +1191,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                     height: "2px",
                     bgcolor: accentColor,
                     mx: "auto",
-                    my: 3
+                    my: 3,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.5)"
                   }}
                 />
 
@@ -1173,8 +1201,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                     fontFamily: "var(--heading-font)",
                     fontStyle: "italic",
                     fontSize: { xs: "1.1rem", md: "1.35rem" },
-                    color: "rgba(44,37,34,0.8)",
-                    px: { xs: 1, md: 4 }
+                    color: "rgba(255, 255, 255, 0.9)",
+                    px: { xs: 1, md: 4 },
+                    textShadow: "0 2px 10px rgba(0,0,0,0.85)"
                   }}
                 >
                   {t.quoteAesthetic}
@@ -1184,7 +1213,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           </Box>
           
 {/* ==================== 2. TILTED CATEGORY NAVIGATION COLLAGE CARD ==================== */}
-          <Box sx={{ position: "relative", height: { xs: "120vh", md: "115vh", lg: "125vh" }, overflow: "hidden", mt: { xs: 15, md: 20 } }}>
+          <Box sx={{ position: "relative", height: { xs: "120vh", md: "115vh", lg: "125vh" }, overflow: "hidden" }}>
             {/* Full-bleed high-end background image */}
             <Box
               sx={{
@@ -2316,15 +2345,15 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             sx={{
               position: "absolute",
               top: "50%",
-              left: { md: 24, lg: 60 },
+              left: { md: 16, lg: 60 },
               transform: "translateY(-50%)",
               zIndex: 999,
               bgcolor: "#000000",
               color: "#ffffff",
               border: "2px solid #ffffff",
               borderRadius: "16px",
-              px: 5,
-              py: 2,
+              px: { md: 3, lg: 5 },
+              py: { md: 1.5, lg: 2 },
               cursor: "pointer",
               boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
               display: "flex",
@@ -2337,7 +2366,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             }}
           >
             <MenuIcon sx={{ fontSize: 20 }} />
-            <Typography sx={{ fontFamily: "Cairo, sans-serif", fontWeight: 700, fontSize: "1.1rem", letterSpacing: "0.1em" }}>
+            <Typography sx={{ fontFamily: "Cairo, sans-serif", fontWeight: 700, fontSize: { md: "0.95rem", lg: "1.1rem" }, letterSpacing: "0.1em" }}>
               {t.menuText}
             </Typography>
           </Box>
@@ -2362,6 +2391,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 height: { 
                   md: `${initialSanityData?.logoHeight || 50}px` 
                 },
+                maxHeight: { md: "50px", lg: "70px" },
+                maxWidth: { md: "140px", lg: "220px" },
                 width: initialSanityData?.logoWidth ? `${initialSanityData.logoWidth}px` : "auto",
                 objectFit: "contain",
                 display: "block" 
@@ -2375,12 +2406,12 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
             sx={{
               position: "absolute",
               top: "50%",
-              right: { md: 24, lg: 60 },
+              right: { md: 16, lg: 60 },
               transform: "translateY(-50%)",
               zIndex: 999,
               display: "flex",
               flexDirection: "row",
-              gap: 2,
+              gap: { md: 1, lg: 2 },
               alignItems: "center"
             }}
           >
@@ -2393,8 +2424,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 color: "#000000",
                 border: `1.5px solid #000000`,
                 borderRadius: "16px",
-                px: 4,
-                py: 1.8,
+                px: { md: 2, lg: 4 },
+                py: { md: 1.2, lg: 1.8 },
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -2403,7 +2434,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 fontFamily: "Cairo, sans-serif",
                 fontWeight: 700,
                 textTransform: "uppercase",
-                fontSize: "0.9rem",
+                fontSize: { md: "0.8rem", lg: "0.9rem" },
                 transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                 "&:hover": {
                   bgcolor: "#000000",
@@ -2423,8 +2454,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 color: "#000000",
                 border: `1.5px solid #000000`,
                 borderRadius: "16px",
-                px: 4,
-                py: 1.8,
+                px: { md: 2, lg: 4 },
+                py: { md: 1.2, lg: 1.8 },
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -2433,7 +2464,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 fontFamily: "Cairo, sans-serif",
                 fontWeight: 700,
                 textTransform: "uppercase",
-                fontSize: "0.9rem",
+                fontSize: { md: "0.8rem", lg: "0.9rem" },
                 transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                 "&:hover": {
                   bgcolor: "#000000",
@@ -2447,7 +2478,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 alt={lang === "en" ? "Syria Flag" : "UK Flag"}
                 sx={{ width: 22, height: 15, objectFit: "cover", borderRadius: "2px" }}
               />
-              {t.langToggleText}
+              <Box component="span" sx={{ display: { md: "none", lg: "inline" } }}>
+                {t.langToggleText}
+              </Box>
             </Box>
 
             {/* VISIT US Link */}
@@ -2465,13 +2498,13 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 color: "#000000",
                 border: `2px solid #000000`,
                 borderRadius: "16px",
-                px: 5,
-                py: 1.8,
+                px: { md: 3, lg: 5 },
+                py: { md: 1.2, lg: 1.8 },
                 cursor: "pointer",
                 boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
                 fontFamily: "Cairo, sans-serif",
                 fontWeight: 700,
-                fontSize: "0.95rem",
+                fontSize: { md: "0.80rem", lg: "0.95rem" },
                 letterSpacing: "0.05em",
                 transition: "background-color 0.2s, color 0.2s, border-color 0.2s",
                 "&:hover": {
@@ -2536,6 +2569,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             <Box 
@@ -2544,6 +2580,8 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               alt="Logo" 
               sx={{ 
                 height: `${initialSanityData?.logoHeightMobile || 30}px`,
+                maxHeight: "32px",
+                maxWidth: { xs: "90px", sm: "140px" },
                 width: "auto",
                 objectFit: "contain",
                 display: "block" 
@@ -2560,14 +2598,24 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 color: "#000000",
                 border: "1px solid rgba(0,0,0,0.2)",
                 borderRadius: "8px",
-                px: 1.5,
+                px: { xs: 1, sm: 1.5 },
                 py: 0.6,
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                fontFamily: "Cairo, sans-serif"
+                fontFamily: "Cairo, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: { xs: 32, sm: "auto" },
+                height: 32
               }}
             >
-              {getVal(initialSanityData?.backButtonLabel, isAr ? "العودة" : "BACK")}
+              <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                {getVal(initialSanityData?.backButtonLabel, isAr ? "العودة" : "BACK")}
+              </Box>
+              <Box component="span" sx={{ display: { xs: "inline-flex", sm: "none" }, alignItems: "center" }}>
+                {lang === "ar" ? <ArrowForwardIcon sx={{ fontSize: 16 }} /> : <ArrowBackIcon sx={{ fontSize: 16 }} />}
+              </Box>
             </Box>
             <Box
               component={Link}
@@ -2577,23 +2625,27 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
                 color: "#000000",
                 border: "1px solid rgba(0,0,0,0.2)",
                 borderRadius: "8px",
-                px: 1.5,
+                px: { xs: 1, sm: 1.5 },
                 py: 0.6,
                 fontSize: "0.75rem",
                 fontWeight: 700,
                 fontFamily: "Cairo, sans-serif",
                 display: "flex",
                 alignItems: "center",
-                gap: 0.5
+                gap: 0.5,
+                minWidth: { xs: 32, sm: "auto" },
+                height: 32
               }}
             >
               <Box 
                 component="img" 
                 src={lang === "en" ? "https://flagcdn.com/w40/sy.png" : "https://flagcdn.com/w40/gb.png"} 
                 alt={lang === "en" ? "Syria Flag" : "UK Flag"}
-                sx={{ width: 14, height: 10, objectFit: "cover", borderRadius: "1px" }}
+                sx={{ width: 18, height: 12, objectFit: "cover", borderRadius: "1px" }}
               />
-              {t.langToggleText}
+              <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                {t.langToggleText}
+              </Box>
             </Box>
           </Stack>
         </Box>
@@ -2604,6 +2656,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
           PaperProps={{
+            "data-lenis-prevent": "true",
             sx: {
               width: { xs: "100%", sm: "450px" },
               bgcolor: "#FFFFFF",
@@ -2613,7 +2666,9 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
               flexDirection: "column",
               borderRight: isAr ? "none" : "1.5px solid rgba(0,0,0,0.1)",
               borderLeft: isAr ? "1.5px solid rgba(0,0,0,0.1)" : "none",
-              zIndex: 10000
+              zIndex: 10000,
+              overflowY: "auto",
+              maxHeight: "100vh"
             }
           }}
           sx={{ zIndex: 10000 }}
@@ -2627,7 +2682,7 @@ export default function RestaurantDetailClient({ restaurantId, lang, initialSani
           </Stack>
 
           {/* Menu Links */}
-          <Stack spacing={4} sx={{ flexGrow: 1, justifyContent: "center" }}>
+          <Stack spacing={4} sx={{ my: "auto", py: 4 }}>
             {resolvedHeaderLinks.map((item: any, idx: number) => (
               <Box
                 key={idx}

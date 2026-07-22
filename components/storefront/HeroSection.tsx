@@ -59,6 +59,15 @@ export default function HeroSection({
     bgImageUrl = section.imageUrl;
   }
 
+  let bgImageUrlMobile = bgImageUrl;
+  if (section.bgImageMobile?.asset) {
+    try {
+      bgImageUrlMobile = imageUrl(section.bgImageMobile).url() || bgImageUrlMobile;
+    } catch (e) {
+      console.error("Failed to parse section.bgImageMobile url", e);
+    }
+  }
+
   // Resolve Headline dynamically
   const headlineRaw = getLocalizedValue(
     section.headline,
@@ -154,32 +163,52 @@ export default function HeroSection({
     >
       {/* Background Media Render */}
       {isVideoBg ? (
-        <Box
-          component="video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          src={section.bgVideo?.asset?.url || section.video?.asset?.url}
-          sx={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: "brightness(0.86)",
-            zIndex: 1,
-          }}
-        />
+        <>
+          <Box
+            component="video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={section.bgVideo?.asset?.url || section.video?.asset?.url}
+            sx={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "brightness(0.86)",
+              zIndex: 1,
+              display: section.bgImageMobile?.asset ? { xs: "none", md: "block" } : "block"
+            }}
+          />
+          {section.bgImageMobile?.asset && (
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `url(${bgImageUrlMobile})`,
+                backgroundSize: "cover",
+                backgroundPosition: section.mobileBgPosition || "63% center",
+                filter: "brightness(0.86)",
+                zIndex: 1,
+                display: { xs: "block", md: "none" }
+              }}
+            />
+          )}
+        </>
       ) : (
         <Box
           sx={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `url(${bgImageUrl})`,
+            backgroundImage: {
+              xs: `url(${bgImageUrlMobile})`,
+              md: `url(${bgImageUrl})`
+            },
             backgroundSize: "cover",
             backgroundPosition: {
-              xs: section.mobileBgPosition || "60.3% center",
+              xs: section.mobileBgPosition || "63% center",
               md: "center"
             },
             filter: "brightness(0.86)",
@@ -230,7 +259,7 @@ export default function HeroSection({
                 xs: lang === "ar" ? "min(9.2vw, 2.4rem)" : "min(7.2vw, 2.4rem)",
                 sm: "min(6.5vw, 4.2rem)",
                 md: "min(6vw, 5.2rem)",
-                lg: "7rem",
+                lg: "6.5rem",
               },
               fontWeight:lang === "ar" ? 600 : 500,
               lineHeight: 0.9,
@@ -279,7 +308,7 @@ export default function HeroSection({
           <Typography
             sx={{
               fontFamily: lang === "ar" ? '"DimaShekari", sans-serif' : '"Griphorium", "Griphosium", "Graphion", "Brush Script MT", cursive',
-              fontSize: { xs: "1.1rem", sm: "min(2.5vw, 1.7rem)", md: "min(2.8vw, 2.3rem)" },
+              fontSize: { xs: "1.25rem", sm: "min(2.5vw, 1.7rem)", md: "min(2.8vw, 2.3rem)" },
               color: "#ffffff",
               textTransform: "none",
               fontWeight: 400,
