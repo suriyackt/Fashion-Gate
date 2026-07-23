@@ -124,12 +124,12 @@ export default function ContactInquirySection({
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.2rem", sm: "3.2rem", md: "3.8rem" },
-                  fontWeight: 800, // Bold font weight as requested
-                  lineHeight: 1.14,
+                  fontSize: { xs: 36, md: 54},
+                  fontWeight: 500, // Bold font weight as requested
+                  lineHeight: isAr ? 1.5 : 1.25,
                   color: "#111111",
                   letterSpacing: isAr ? 0 : "-0.03em",
-                  fontFamily: '"Cairo", sans-serif',
+                  fontFamily: 'var(--heading-font)',
                   mb: 3
                 }}
               >
@@ -155,7 +155,7 @@ export default function ContactInquirySection({
               <Button
                 component={Link}
                 href={buttonHref}
-                endIcon={isAr ? <ArrowBackIcon /> : <ArrowForwardIcon />}
+                endIcon={isAr ? <ArrowBackIcon sx={{ marginRight: "12px" }} /> : <ArrowForwardIcon />}
                 sx={{
                   bgcolor: "#111111",
                   color: "#FFFFFF",

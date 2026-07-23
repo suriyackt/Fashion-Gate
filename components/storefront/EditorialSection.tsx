@@ -41,7 +41,7 @@ export default function EditorialSection({
             <Typography sx={{ color: "#ffffff", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.2em", bgcolor: "primary.main", px: 2, py: 0.5, fontFamily: '"Cairo", sans-serif' }}>
               {eyebrowText}
             </Typography>
-            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 58 }, fontWeight: 600, lineHeight: 1.1, color: "#111111" }}>
+            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 58 }, fontWeight: 600, lineHeight:lang === "ar" ?  1.3 : 1.1, color: "#111111" }}>
               {headlineText}
             </Typography>
             <Typography sx={{ color: "rgba(0,0,0,0.72)", fontSize: 16, lineHeight: 1.8, maxWidth: 740, fontFamily: '"Cairo", sans-serif' }}>

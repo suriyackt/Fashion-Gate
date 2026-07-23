@@ -32,7 +32,22 @@ export async function getHomepageData() {
       logo,
       socialLabel,
       socialUrl,
-      navigation[]->{label, anchor, order}
+      navigation[]->{label, anchor, order},
+      cookieConsent {
+        enabled,
+        message { en, ar },
+        acceptAllText { en, ar },
+        rejectAllText { en, ar },
+        customizeText { en, ar },
+        hidePreferencesText { en, ar },
+        savePreferencesText { en, ar },
+        necessaryLabel { en, ar },
+        necessaryDesc { en, ar },
+        analyticsLabel { en, ar },
+        analyticsDesc { en, ar },
+        marketingLabel { en, ar },
+        marketingDesc { en, ar }
+      }
     },
     "page": *[_type == "page" && (slug.current == "homepage" || slug.current == "home" || _id == "home")][0]{
       title,

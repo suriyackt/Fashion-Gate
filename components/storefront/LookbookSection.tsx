@@ -128,7 +128,7 @@ export default function LookbookSection({
             <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif', mb: 2 }}>
               {eyebrowText}
             </Typography>
-            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, sm: 48, md: 62 }, fontWeight: 500, lineHeight: 1.1, color: "#ffffff" }}>
+            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, sm: 48, md: 62 }, fontWeight: 500, lineHeight:lang === "ar" ?  1.3 : 1.1, color: "#ffffff" }}>
               {customHeadlineText ? customHeadlineText : (
                 lang === "ar" ? (
                   <>

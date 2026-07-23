@@ -701,7 +701,7 @@ function SectionRenderer({
   if (type === "boulevard" || type === "boulevard-selection" || type === "boulevardSelection") return <BoulevardSelectionSection section={section} t={t} lang={lang} />;
   if (type === "carousel") return <CarouselSection section={section} t={t} lang={lang} />;
   if (type === "editorial") return <EditorialSection section={section} t={t} lang={lang} />;
-  if (type === "atelierShowcase" || type === "atelierShowcaseSection") return <AtelierShowcaseSection section={section} t={t} lang={lang} />;
+  // if (type === "atelierShowcase" || type === "atelierShowcaseSection") return <AtelierShowcaseSection section={section} t={t} lang={lang} />;
   return null;
 }
 

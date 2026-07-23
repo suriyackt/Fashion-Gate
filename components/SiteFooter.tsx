@@ -212,7 +212,7 @@ export default function SiteFooter() {
                 <Box component="img" src="/brand/logo.png" alt="Fashion Gate" sx={{ width: 28, height: "auto" }} />
               </Box>
               <Stack spacing={0.1} sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, fontWeight: 600, color: "#111111", lineHeight: 1 }}>
+                <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 20, fontWeight: 600, color: "#111111", lineHeight:lang === "ar" ?  1.3 : 1 }}>
                   {stretchArabicText(lang === "ar" ? "فاشن غيت" : "Fashion Gate", 2)}
                 </Typography>
                 <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: lang === "ar" ? "0.05em" : "0.2em", textTransform: "uppercase" }}>

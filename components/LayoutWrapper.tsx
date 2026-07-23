@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import CookieConsent from "@/components/CookieConsent";
 import { useEffect, useState, useMemo } from "react";
 import { getHomepageData } from "@/lib/sanity";
 import { fallbackSettings } from "@/lib/fallbackData";
@@ -50,6 +51,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
             {children}
           </main>
           <SiteFooter />
+          <CookieConsent lang={lang} settings={settings.cookieConsent} />
         </div>
       </ThemeProvider>
     );
@@ -63,6 +65,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           {children}
         </main>
         <SiteFooter />
+        <CookieConsent lang={lang} settings={settings.cookieConsent} />
       </div>
     </ThemeProvider>
   );

@@ -17,8 +17,8 @@ export default function CollectionsSection({
 }) {
   const fallbackCollections = [
     { title: "Designer Collections", headline: "Designer Collections", description: "A curated presentation of international fashion houses, avant-garde silhouettes, and seasonal runway selections for women and men.", imageUrl: "/brand/designer-collections.png" },
-    { title: "Beauty & Accessories", headline: "Luxury Accessories & Beauty", description: "Intimate displays of rare scents, advanced skincare, and hand-finished leather accessories from the world's most refined makers.", imageUrl: "/brand/luxury-beauty.png" },
-    { title: "Gourmet & Fine Foods", headline: "Gourmet & Gifting", description: "An exquisite selection of curated gourmet foods, artisanal confectioneries, and luxury gift hampers sourced from the world's most prestigious makers.", imageUrl: "/brand/luxury-gourmet-epicerie.png" }
+    { title: "Luxury Accessories & Leather Goods", headline: "Refined Details, Timeless Elegance", description: "Intimate displays of hand-finished leather accessories, fine timepieces, and bespoke pieces from the world's most distinguished creators.", imageUrl: "/brand/luxury-beauty.png" },
+    { title: "MAKE UP", headline: "World-Renowned Beauty, Skincare & Perfume Houses", description: "An immersive destination at Fashion Gate Mall dedicated to the world's most prestigious cosmetic brands, advanced dermatological formulas, and rare signature scents. Experience tailored beauty consultations and discover exclusive seasonal collections curated for an elevated daily ritual.", imageUrl: "/brand/luxury-beauty.png" }
   ];
   const collections = (section.collections && section.collections.length > 0) 
     ? (section.collections as any[]) 
@@ -68,8 +68,10 @@ export default function CollectionsSection({
                   image = "/brand/designer-collections.png";
                 } else if (titleLower.includes("beauty") || titleLower.includes("accessories") || index === 1) {
                   image = "/brand/luxury-beauty.png";
-                } else if (titleLower.includes("gourmet") || titleLower.includes("food") || index === 2) {
+                } else if (titleLower.includes("gourmet") || titleLower.includes("food")) {
                   image = "/brand/luxury-gourmet-epicerie.png";
+                } else if (titleLower.includes("make up") || index === 2) {
+                  image = "/brand/luxury-beauty.png";
                 }
               }
               const isEven = index % 2 === 0;

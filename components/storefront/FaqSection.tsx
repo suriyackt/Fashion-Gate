@@ -172,7 +172,7 @@ export default function FaqSection({ lang }: { lang: "ar" | "en" }) {
               fontFamily: "var(--heading-font)",
               fontSize: { xs: 28, md: 38 },
               fontWeight: 500,
-              lineHeight: 1.15,
+              lineHeight:lang === "ar" ?  1.3 : 1.15,
               color: "#111111"
             }}
           >
