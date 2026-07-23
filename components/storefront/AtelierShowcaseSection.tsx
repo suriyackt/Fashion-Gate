@@ -80,7 +80,7 @@ export default function AtelierShowcaseSection({
           
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "0.9fr 1.1fr" }, gap: { xs: 3, md: 8 }, alignItems: "end" }}>
             <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
-              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.2em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
                 {eyebrowText}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, md: 58 }, lineHeight: 1.05, fontWeight: 500 }}>
@@ -118,7 +118,7 @@ export default function AtelierShowcaseSection({
                 />
               </Box>
               <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, textAlign: lang === "ar" ? "right" : "left" }}>
-                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
+                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
                   {leftEyebrow}
                 </Typography>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 500 }}>
@@ -155,7 +155,7 @@ export default function AtelierShowcaseSection({
                 />
               </Box>
               <Stack spacing={1.5} sx={{ p: { xs: 3, md: 4 }, textAlign: lang === "ar" ? "right" : "left" }}>
-                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
+                <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.14em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
                   {rightEyebrow}
                 </Typography>
                 <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 24, fontWeight: 500 }}>

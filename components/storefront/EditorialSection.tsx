@@ -38,7 +38,7 @@ export default function EditorialSection({
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.2fr 0.8fr" }, gap: { xs: 6, md: 8 }, alignItems: "center" }}>
           
           <Stack spacing={3.5} alignItems="flex-start" textAlign={lang === "ar" ? "right" : "left"} sx={{ px: { xs: 1, md: 4 } }}>
-            <Typography sx={{ color: "#ffffff", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", bgcolor: "primary.main", px: 2, py: 0.5, fontFamily: '"Cairo", sans-serif' }}>
+            <Typography sx={{ color: "#ffffff", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.2em", bgcolor: "primary.main", px: 2, py: 0.5, fontFamily: '"Cairo", sans-serif' }}>
               {eyebrowText}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 58 }, fontWeight: 600, lineHeight: 1.1, color: "#111111" }}>

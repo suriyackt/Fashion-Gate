@@ -37,7 +37,7 @@ const brandVectorLogos: Record<string, React.ReactNode> = {
   ),
   editorial: (
     <svg width="260" height="50" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', serif" fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
+      <text x="50%" y="22" fontFamily='"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif"' fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
     </svg>
   ),
   sandro: (

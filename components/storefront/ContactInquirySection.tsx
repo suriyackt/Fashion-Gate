@@ -111,7 +111,7 @@ export default function ContactInquirySection({
                   sx={{
                     fontSize: { xs: 10.5, sm: 11 },
                     fontWeight: 700,
-                    letterSpacing: isAr ? "0.05em" : "0.25em",
+                    letterSpacing: isAr ? 0 : "0.25em",
                     textTransform: "uppercase",
                     fontFamily: '"Cairo", sans-serif'
                   }}

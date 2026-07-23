@@ -82,7 +82,7 @@ export default function CategoryProductSections({
           
           {/* Aligned Editorial Section Header */}
           <Stack spacing={2} sx={{ textAlign: lang === "ar" ? "right" : "left", alignItems: lang === "ar" ? "flex-end" : "flex-start", maxWidth: 820, px: 2 }}>
-            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.24em" }}>
+            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.24em" }}>
               {lang === "ar" ? "بوليفارد بوابة الأزياء" : "Fashion Gate Curations"}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 54 }, fontWeight: 500, lineHeight: 1.1 }}>
@@ -154,7 +154,7 @@ export default function CategoryProductSections({
               pb: 2
             }}
           >
-            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase" }}>
+            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.18em", textTransform: "uppercase" }}>
               {curCategory.eyebrow}
             </Typography>
             <Typography sx={{ color: "rgba(0,0,0,0.58)", fontSize: 14, lineHeight: 1.7, fontStyle: "italic" }}>
@@ -229,7 +229,7 @@ export default function CategoryProductSections({
 
                         {/* Typography & Actions */}
                         <Stack spacing={0.8} sx={{ pt: 2, textAlign: lang === "ar" ? "right" : "left" }}>
-                          <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                          <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.12em", textTransform: "uppercase" }}>
                             {productCategory}
                           </Typography>
                           <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 19, lineHeight: 1.15, fontWeight: 500 }}>
@@ -249,7 +249,7 @@ export default function CategoryProductSections({
                             {lang === "ar" ? product.descriptionAr : product.description}
                           </Typography>
                           <Stack direction="row" spacing={0.8} alignItems="center" sx={{ color: "#111111", pt: 0.5 }}>
-                            <Typography sx={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.12em" }}>
+                            <Typography sx={{ fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.12em" }}>
                               {lang === "ar" ? "عرض التفاصيل" : "View details"}
                             </Typography>
                             <NorthEastIcon sx={{ fontSize: 12, color: "primary.main", transform: lang === "ar" ? "scaleX(-1)" : "none" }} />

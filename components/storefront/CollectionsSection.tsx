@@ -48,7 +48,7 @@ export default function CollectionsSection({
       <Container maxWidth="xl">
         <Stack spacing={{ xs: 8, md: 12 }}>
           <Box sx={{ maxWidth: 840, textAlign: lang === "ar" ? "right" : "left" }}>
-            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", fontFamily: '"Cairo", sans-serif' }}>
+            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 12, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.18em", fontFamily: '"Cairo", sans-serif' }}>
               {eyebrowText}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 36, md: 54 }, fontWeight: 500, lineHeight: 1.15, mt: 1.5 }}>
@@ -156,7 +156,7 @@ export default function CollectionsSection({
                       {String(index + 1).padStart(2, "0")}
                     </Typography>
 
-                    <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", mb: 1, fontFamily: '"Cairo", sans-serif' }}>
+                    <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: lang === "ar" ? 0 : "0.15em", mb: 1, fontFamily: '"Cairo", sans-serif' }}>
                       {itemTitle}
                     </Typography>
                     <Typography sx={{ color: "#111111", fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 36 }, fontWeight: 500, mb: 2, lineHeight: 1.25 }}>

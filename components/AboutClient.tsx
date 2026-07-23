@@ -165,7 +165,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
         >
           <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
             <Stack spacing={3} alignItems="center">
-              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 13, fontWeight: 800, letterSpacing: "0.3em", fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 13, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.3em", fontFamily: '"Cairo", sans-serif' }}>
                 {eyebrow}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, sm: 48, md: 64 }, fontWeight: 500, lineHeight: 1.15, color: "#111111", maxWidth: 900 }}>
@@ -268,7 +268,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
           <Container maxWidth="xl">
             {/* Section Header */}
             <Stack spacing={1.5} alignItems="center" sx={{ textAlign: "center", mb: 5 }}>
-              <Typography sx={{ color: "#CB6116", fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "#CB6116", fontSize: 13, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.1em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                 {lang === "ar" ? "معرض البوليفارد والتصميم" : "ATELIER & SPATIAL EXPERIENCE"}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 28, md: 40 }, fontWeight: 500, color: "#111111", letterSpacing: "0.02em" }}>
@@ -313,7 +313,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                       alignItems: "center"
                     }}
                   >
-                    <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", fontFamily: '"Cairo", sans-serif' }}>
+                    <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 600, letterSpacing: lang === "ar" ? 0 : "0.05em", fontFamily: '"Cairo", sans-serif' }}>
                       {videoTitle}
                     </Typography>
 
@@ -445,7 +445,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                       }}
                     >
                       <PlayArrowIcon sx={{ fontSize: 18, color: "#CB6116" }} />
-                      <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", fontFamily: '"Cairo", sans-serif' }}>
+                      <Typography sx={{ color: "#FFF", fontSize: 13, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.06em", fontFamily: '"Cairo", sans-serif' }}>
                         {lang === "ar" ? "تشغيل الفيديـو" : "PLAY VIDEO"}
                       </Typography>
                     </Box>
@@ -474,7 +474,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                 }}
               >
                 <Stack spacing={3}>
-                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                     I. {lang === "ar" ? "الاتجاه الاستراتيجي" : "STRATEGIC DIRECTION"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 24, md: 32 }, fontWeight: 500, color: "#111111" }}>
@@ -500,7 +500,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                 }}
               >
                 <Stack spacing={3}>
-                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.15em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                     II. {lang === "ar" ? "ميثاق التميز" : "CHARTER OF EXCELLENCE"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 24, md: 32 }, fontWeight: 500, color: "#111111" }}>
@@ -548,7 +548,7 @@ export default function AboutClient({ initialLang, initialData }: { initialLang:
                 zIndex: 10
               }}
             >
-              <Typography sx={{ color: "#CB6116", fontSize: 12, fontWeight: 800, letterSpacing: "0.3em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "#CB6116", fontSize: 12, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.3em", textTransform: "uppercase", fontFamily: '"Cairo", sans-serif' }}>
                 FASHION GATE CINEMA
               </Typography>
               <IconButton 

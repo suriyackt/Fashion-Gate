@@ -140,7 +140,7 @@ export default function BlogExperience({
         <Box component="section" sx={{ pt: { xs: 8, md: 12 }, pb: { xs: 6, md: 8 } }}>
           <Container maxWidth="xl">
             <Stack spacing={4} alignItems="center" textAlign="center">
-              <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.26em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: initialLang === "ar" ? 0 : "0.26em", textTransform: "none", fontFamily: '"Cairo", sans-serif' }}>
                 {eyebrowText}
               </Typography>
               <Typography component="h1" sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2.8rem", sm: "4.8rem", md: "6.5rem" }, fontWeight: 500, lineHeight: 1.1, color: "#111111", maxWidth: 960 }}>
@@ -151,7 +151,7 @@ export default function BlogExperience({
               </Typography>
               
               {/* Minimalist Stats Row */}
-              <Stack direction="row" spacing={3} sx={{ color: "rgba(0,0,0,0.4)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none", pt: 1 }}>
+              <Stack direction="row" spacing={3} sx={{ color: "rgba(0,0,0,0.4)", fontSize: 11, fontWeight: 700, letterSpacing: initialLang === "ar" ? 0 : "0.15em", textTransform: "none", pt: 1 }}>
                 <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>{stat1Text}</Typography>
                 <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>•</Typography>
                 <Typography sx={{ fontSize: "inherit", fontWeight: "inherit" }}>{stat2Text}</Typography>
@@ -193,11 +193,11 @@ export default function BlogExperience({
               {/* Centered Editorial Copy Column */}
               <Stack spacing={3} sx={{ maxWidth: 840, mx: "auto", px: { xs: 1, sm: 3 } }}>
                 <Stack direction="row" spacing={1.5} alignItems="center">
-                  <Typography sx={{ color: "primary.main", fontSize: 10.5, fontWeight: 800, letterSpacing: "0.2em", textTransform: "none" }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 10.5, fontWeight: 800, letterSpacing: isAr ? 0 : "0.2em", textTransform: "none" }}>
                     {isAr ? "مقالة مميزة" : "Featured Article"}
                   </Typography>
                   <Typography sx={{ color: "rgba(0,0,0,0.3)", fontSize: 11.5 }}>/</Typography>
-                  <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
+                  <Typography sx={{ color: "rgba(0,0,0,0.54)", fontSize: 11, fontWeight: 700, letterSpacing: isAr ? 0 : "0.15em", textTransform: "none" }}>
                     {formatMonth(featured.month, isAr)}
                   </Typography>
                 </Stack>
@@ -229,7 +229,7 @@ export default function BlogExperience({
                     p: 0,
                     fontSize: 11.5, 
                     fontWeight: 800,
-                    letterSpacing: "0.15em",
+                    letterSpacing: isAr ? 0 : "0.15em",
                     borderBottom: "1.5px solid",
                     borderColor: "primary.main",
                     borderRadius: 0,
@@ -257,7 +257,7 @@ export default function BlogExperience({
                 alignItems={{ xs: "flex-start", md: "flex-end" }}
               >
                 <Stack spacing={1}>
-                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "none" }}>
+                  <Typography sx={{ color: "primary.main", fontSize: 11, fontWeight: 800, letterSpacing: isAr ? 0 : "0.2em", textTransform: "none" }}>
                     {isAr ? "كتالوج المجلة" : "The Journal Catalog"}
                   </Typography>
                   <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: "2.4rem", md: "3.8rem" }, lineHeight: 1.1, color: "#111111" }}>
@@ -282,7 +282,7 @@ export default function BlogExperience({
                           bgcolor: isSelected ? "primary.main" : "transparent",
                           fontSize: 10.5,
                           fontWeight: 700,
-                          letterSpacing: "0.12em",
+                          letterSpacing: isAr ? 0 : "0.12em",
                           borderRadius: 0,
                           transition: "all 0.3s ease",
                           "&:hover": {
@@ -353,11 +353,11 @@ export default function BlogExperience({
                         {/* Card Content (Wholly underneath the image) */}
                         <Stack spacing={2} sx={{ p: 3, flexGrow: 1 }}>
                           <Stack direction="row" spacing={1.2} alignItems="center">
-                            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "none" }}>
+                            <Typography sx={{ color: "primary.main", fontSize: 10, fontWeight: 800, letterSpacing: isAr ? 0 : "0.14em", textTransform: "none" }}>
                               {formatCategoryName(post.format, isAr)}
                             </Typography>
                             <Typography sx={{ color: "rgba(0,0,0,0.22)", fontSize: 10 }}>•</Typography>
-                            <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
+                            <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 10.5, fontWeight: 700, letterSpacing: isAr ? 0 : "0.15em", textTransform: "none" }}>
                               {formatMonth(post.month, isAr)}
                             </Typography>
                           </Stack>
@@ -371,7 +371,7 @@ export default function BlogExperience({
                           </Typography>
 
                           {post.audience && (
-                            <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
+                            <Typography sx={{ color: "rgba(0,0,0,0.36)", fontSize: 10, letterSpacing: isAr ? 0 : "0.08em", textTransform: "none", mt: "auto", pt: 1.5, borderTop: "1px solid rgba(0,0,0,0.04)" }}>
                               {post.audience}
                             </Typography>
                           )}
@@ -398,7 +398,7 @@ export default function BlogExperience({
                   : '"Real projects translated into search relevance, client trust, and brand authority."'
                 }
               </Typography>
-              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "none" }}>
+              <Typography sx={{ color: "rgba(0,0,0,0.48)", fontSize: 11, fontWeight: 700, letterSpacing: isAr ? 0 : "0.15em", textTransform: "none" }}>
                 {isAr ? "بوابة الأزياء دمشق" : "Fashion Gate Damascus"}
               </Typography>
             </Stack>

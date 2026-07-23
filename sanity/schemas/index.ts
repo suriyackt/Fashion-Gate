@@ -43,6 +43,10 @@ import { brandPage } from "./brandPage";
 import { termsPage } from "./termsPage";
 import { privacyPage } from "./privacyPage";
 import { diningPage } from "./diningPage";
+import { perfumePage } from "./perfumePage";
+import { skincarePage } from "./skincarePage";
+import { makeupPage } from "./makeupPage";
+import { fashionPage } from "./fashionPage";
 
 export const schemaTypes = [
   // E-commerce & Base
@@ -92,4 +96,8 @@ export const schemaTypes = [
   termsPage,
   privacyPage,
   diningPage,
+  perfumePage,
+  skincarePage,
+  makeupPage,
+  fashionPage,
 ];
