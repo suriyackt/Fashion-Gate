@@ -12,8 +12,35 @@ export const fallbackSettings = {
     { label: "Men", anchor: "#men", order: 1 },
     { label: "Beauty", anchor: "#beauty", order: 2 },
     { label: "Home & Deco", anchor: "#home-deco", order: 3 },
-    { label: "Brand", anchor: "#brand", order: 4 }
-  ]
+    { label: "Dining", anchor: "dining", order: 4 }
+  ],
+  cookieConsent: {
+    enabled: true,
+    message: {
+      en: "We use cookies on this site to enhance your user experience. By your continued use of this site you accept our terms and condition.",
+      ar: "نستخدم ملفات تعريف الارتباط على هذا الموقع لتحسين تجربة المستخدم الخاصة بك. بمواصلة استخدامك لهذا الموقع، فإنك تقبل الشروط والأحكام الخاصة بنا."
+    },
+    acceptAllText: { en: "Accept All", ar: "قبول الكل" },
+    rejectAllText: { en: "Reject All", ar: "رفض الكل" },
+    customizeText: { en: "Customize", ar: "تخصيص الخيارات" },
+    hidePreferencesText: { en: "Hide Preferences", ar: "إخفاء التفضيلات" },
+    savePreferencesText: { en: "Save Preferences", ar: "حفظ التفضيلات" },
+    necessaryLabel: { en: "Necessary (Always Required)", ar: "ضرورية (مطلوبة دائماً)" },
+    necessaryDesc: {
+      en: "Required for core security, language preferences, and essential navigation features.",
+      ar: "تُستخدم لتأمين الموقع وحفظ تفضيلات اللغة والخدمات الأساسية للكونسيرج."
+    },
+    analyticsLabel: { en: "Analytics & Performance", ar: "التحليلات والأداء" },
+    analyticsDesc: {
+      en: "Allows us to track traffic sources and understand which luxury boutique pages are visited most frequently.",
+      ar: "تساعدنا في تتبع عدد زيارات المتجر، وتحليل تفاعل الزوار مع العلامات التجارية الفاخرة."
+    },
+    marketingLabel: { en: "Marketing & Personalization", ar: "التسويق والتخصيص" },
+    marketingDesc: {
+      en: "Used to offer personalized notices regarding private trunk shows, store openings, and client events.",
+      ar: "تُستخدم لعرض اقتراحات مخصصة حول الفعاليات، وافتتاح العلامات الجديدة، والعروض الحصرية."
+    }
+  }
 };
 
 export const fallbackSections = [
@@ -74,8 +101,8 @@ export const fallbackSections = [
     description: "Fashion Gate Boulevard unites international fashion designer collections, luxury accessories, premium beauty, and gourmet foods under a single architectural vision.",
     collections: [
       { title: "Designer Collections", headline: "Designer Collections", description: "A curated presentation of international fashion houses, avant-garde silhouettes, and seasonal runway selections for women and men.", imageUrl: "/brand/designer-collections.png" },
-      { title: "Beauty & Accessories", headline: "Luxury Accessories & Beauty", description: "Intimate displays of rare scents, advanced skincare, and hand-finished leather accessories from the world's most refined makers.", imageUrl: "/brand/luxury-beauty.png" },
-      { title: "Gourmet & Fine Foods", headline: "Gourmet & Gifting", description: "An exquisite selection of curated gourmet foods, artisanal confectioneries, and luxury gift hampers sourced from the world's most prestigious makers.", imageUrl: "/brand/luxury-gourmet-epicerie.png" }
+      { title: "Luxury Accessories & Leather Goods", headline: "Refined Details, Timeless Elegance", description: "Intimate displays of hand-finished leather accessories, fine timepieces, and bespoke pieces from the world's most distinguished creators.", imageUrl: "/brand/luxury-beauty.png" },
+      { title: "MAKE UP", headline: "World-Renowned Beauty, Skincare & Perfume Houses", description: "An immersive destination at Fashion Gate Mall dedicated to the world's most prestigious cosmetic brands, advanced dermatological formulas, and rare signature scents. Experience tailored beauty consultations and discover exclusive seasonal collections curated for an elevated daily ritual.", imageUrl: "/brand/luxury-beauty.png" }
     ]
   },
   {

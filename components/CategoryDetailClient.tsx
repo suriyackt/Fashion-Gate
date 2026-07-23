@@ -644,7 +644,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                       sx={{
                                         height: {
                                           xs: "240px",
-                                          sm: gridSize.sm === 12 ? "420px" : "440px"
+                                          sm: gridSize.sm === 12 ? "720px" : "440px"
                                         },
                                         backgroundImage: `url(${bannerImg})`,
                                         backgroundSize: "cover",

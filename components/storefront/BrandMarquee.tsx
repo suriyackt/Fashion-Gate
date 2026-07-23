@@ -309,7 +309,7 @@ export default function BrandMarquee({
             <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
               {t.eyebrow}
             </Typography>
-            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 32, md: 44 }, fontWeight: 400, lineHeight: 1.15, color: "#111111" }}>
+            <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 32, md: 44 }, fontWeight: 400, lineHeight:lang === "ar" ?  1.3 : 1.15, color: "#111111" }}>
               {t.title}
             </Typography>
           </Box>

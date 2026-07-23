@@ -232,7 +232,7 @@ export default function CategoryProductSections({
                           <Typography sx={{ color: "primary.main", fontSize: 9, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.12em", textTransform: "uppercase" }}>
                             {productCategory}
                           </Typography>
-                          <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 19, lineHeight: 1.15, fontWeight: 500 }}>
+                          <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: 19, lineHeight:lang === "ar" ?  1.3 : 1.15, fontWeight: 500 }}>
                             {title}
                           </Typography>
                           <Typography

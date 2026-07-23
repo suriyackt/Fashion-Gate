@@ -20,7 +20,30 @@ export const siteSettings = defineType({
     }),
     defineField({ name: "socialLabel", title: "Social Label", type: "string" }),
     defineField({ name: "socialUrl", title: "Social URL", type: "url" }),
-    defineField({ name: "seo", title: "Global SEO Fallback Settings", type: "seo" })
+    defineField({ name: "seo", title: "Global SEO Fallback Settings", type: "seo" }),
+    defineField({
+      name: "cookieConsent",
+      title: "Cookie Consent Banner Settings",
+      type: "object",
+      fields: [
+        defineField({ name: "enabled", title: "Enable Cookie Consent Banner", type: "boolean", initialValue: true }),
+        defineField({ name: "message", title: "Consent Message", type: "localizedString" }),
+        defineField({ name: "acceptAllText", title: "Accept All Button Text", type: "localizedString" }),
+        defineField({ name: "rejectAllText", title: "Reject All Button Text", type: "localizedString" }),
+        defineField({ name: "customizeText", title: "Customize Button Text", type: "localizedString" }),
+        defineField({ name: "hidePreferencesText", title: "Hide Preferences Button Text", type: "localizedString" }),
+        defineField({ name: "savePreferencesText", title: "Save Preferences Button Text", type: "localizedString" }),
+        
+        defineField({ name: "necessaryLabel", title: "Necessary Cookies Label", type: "localizedString" }),
+        defineField({ name: "necessaryDesc", title: "Necessary Cookies Description", type: "localizedText" }),
+        
+        defineField({ name: "analyticsLabel", title: "Analytics Cookies Label", type: "localizedString" }),
+        defineField({ name: "analyticsDesc", title: "Analytics Cookies Description", type: "localizedText" }),
+        
+        defineField({ name: "marketingLabel", title: "Marketing Cookies Label", type: "localizedString" }),
+        defineField({ name: "marketingDesc", title: "Marketing Cookies Description", type: "localizedText" }),
+      ]
+    })
   ],
   preview: {
     select: { title: "title", media: "logo" }
