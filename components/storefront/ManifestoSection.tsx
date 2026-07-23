@@ -36,7 +36,7 @@ export default function ManifestoSection({
     <Box id={section.anchor} component="section" sx={{ bgcolor: "var(--fg-white)", color: "#111", display: "flex", alignItems: "center", py: { xs: 12, md: 14 } }}>
       <Container maxWidth="lg">
         <Stack spacing={{ xs: 4, md: 6 }} alignItems="center" textAlign="center" sx={{ mx: "auto", maxWidth: 1000 }}>
-          <Typography sx={{ color: "primary.main", letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 12, fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
+          <Typography sx={{ color: "primary.main", letterSpacing: lang === "ar" ? "0em" : "0.2em", textTransform: "uppercase", fontSize: 12, fontWeight: 700, fontFamily: '"Cairo", sans-serif' }}>
             {eyebrowText}
           </Typography>
           <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 22, sm: 32, md: 42 }, fontWeight: 400, lineHeight: 1.35, color: "#111" }}>

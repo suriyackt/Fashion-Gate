@@ -890,3 +890,46 @@ export async function getDiningPageData() {
     return null;
   }
 }
+
+export async function getCategoryPageData(categoryId: string): Promise<any> {
+  try {
+    const docType = categoryId === "perfumes" 
+      ? "perfumePage" 
+      : categoryId === "skincare" 
+      ? "skincarePage" 
+      : categoryId === "makeup"
+      ? "makeupPage"
+      : categoryId === "fashion"
+      ? "fashionPage"
+      : "categoryPage";
+      
+    return sanityClient.fetch(`*[_type == $docType && (categoryId == $categoryId || _id == $categoryId)][0] {
+      _id,
+      categoryId,
+      title { en, ar },
+      description { en, ar },
+      banners[] {
+        _key,
+        title { en, ar },
+        subtitle { en, ar },
+        image { asset->{ url } },
+        link
+      },
+      brandsHeading { en, ar },
+      allowedBrands[]-> {
+        _id,
+        title,
+        titleAr,
+        slug,
+        headline,
+        description,
+        image { asset->{ url } },
+        bgImage { asset->{ url } }
+      },
+      seo { metaTitle, metaDescription, keywords, ogImage { asset->{ url } }, canonicalUrl, noIndex }
+    }`, { docType, categoryId });
+  } catch (err) {
+    console.error("Error fetching category page data:", err);
+    return null;
+  }
+}

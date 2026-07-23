@@ -118,20 +118,44 @@ export const structure: StructureResolver = (S) =>
                     .title("Brand Pages")
                 ),
               S.listItem()
+                .title("Fashion Page")
+                .child(
+                  S.document()
+                    .schemaType("fashionPage")
+                    .documentId("fashion")
+                    .title("Fashion Page")
+                ),
+              S.listItem()
                 .title("Perfume Page")
                 .child(
                   S.document()
-                    .schemaType("page")
+                    .schemaType("perfumePage")
                     .documentId("perfumes")
                     .title("Perfume Page")
                 ),
               S.listItem()
-                .title("Skincare Page")
+                .title("Beauty")
                 .child(
-                  S.document()
-                    .schemaType("page")
-                    .documentId("skincare")
-                    .title("Skincare Page")
+                  S.list()
+                    .title("Beauty Pages")
+                    .items([
+                      S.listItem()
+                        .title("Skincare Page")
+                        .child(
+                          S.document()
+                            .schemaType("skincarePage")
+                            .documentId("skincare")
+                            .title("Skincare Page")
+                        ),
+                      S.listItem()
+                        .title("Makeup Page")
+                        .child(
+                          S.document()
+                            .schemaType("makeupPage")
+                            .documentId("makeup")
+                            .title("Makeup Page")
+                        ),
+                    ])
                 ),
               S.listItem()
                 .title("Dining Page")
@@ -219,7 +243,11 @@ export const structure: StructureResolver = (S) =>
             "footerSettings",
             "section",
             "diningPage",
-            "restaurantPage"
+            "restaurantPage",
+            "perfumePage",
+            "skincarePage",
+            "makeupPage",
+            "fashionPage"
           ].includes(listItem.getId() || "")
       ),
     ]);

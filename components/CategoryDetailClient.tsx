@@ -45,7 +45,7 @@ const brandVectorLogos: Record<string, React.ReactNode> = {
   ),
   editorial: (
     <svg width="100%" height="24" viewBox="0 0 120 30" fill="currentColor">
-      <text x="50%" y="22" fontFamily="'Playfair Display', 'Didot', serif" fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
+      <text x="50%" y="22" fontFamily='"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif"' fontSize="18" fontWeight="bold" letterSpacing="0.3em" textAnchor="middle">EDITORIAL</text>
     </svg>
   ),
   sandro: (
@@ -58,7 +58,7 @@ const brandVectorLogos: Record<string, React.ReactNode> = {
       <text x="50%" y="22" fontFamily="'Didot', 'Times New Roman', serif" fontSize="21" fontStyle="italic" fontWeight="bold" letterSpacing="0.1em" textAnchor="middle">moje</text>
     </svg>
   )
-  
+
 };
 
 interface CategoryDetailClientProps {
@@ -157,6 +157,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   const [brands, setBrands] = useState<any[]>([]);
   const [brandSearchQuery, setSidebarSearchQuery] = useState("");
   const [diningCmsData, setDiningCmsData] = useState<any>(null);
+  const [categoryCmsData, setCategoryCmsData] = useState<any>(null);
 
   useEffect(() => {
     if (categoryId === "dining") {
@@ -164,6 +165,14 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
         getDiningPageData().then((data) => {
           if (data) {
             setDiningCmsData(data);
+          }
+        });
+      });
+    } else if (["fashion", "perfumes", "skincare", "makeup"].includes(categoryId)) {
+      import("@/lib/sanity").then(({ getCategoryPageData }) => {
+        getCategoryPageData(categoryId).then((data) => {
+          if (data) {
+            setCategoryCmsData(data);
           }
         });
       });
@@ -181,46 +190,59 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
   }, []);
 
   const processedBrands = useMemo(() => {
-    const cmsList = Array.isArray(brands) ? brands : [];
-    const list = [...cmsList];
-    fallbackBrands.forEach((fb) => {
-      const exists = list.some((sb) => sb.slug?.current === fb.id);
-      if (!exists) {
-        list.push({
-          title: fb.name,
-          titleAr: fb.nameAr,
-          slug: { current: fb.id },
-          description: { en: fb.description, ar: fb.descriptionAr },
-          headline: { en: fb.headline, ar: fb.headlineAr },
-          bgImage: { asset: { url: fb.backdropUrl } }
-        });
-      }
-    });
+    let rawList: any[] = [];
+    if (categoryCmsData?.allowedBrands && categoryCmsData.allowedBrands.length > 0) {
+      rawList = categoryCmsData.allowedBrands;
+    } else {
+      const cmsList = Array.isArray(brands) ? brands : [];
+      const list = [...cmsList];
+      fallbackBrands.forEach((fb) => {
+        const exists = list.some((sb) => sb.slug?.current === fb.id);
+        if (!exists) {
+          list.push({
+            title: fb.name,
+            titleAr: fb.nameAr,
+            slug: { current: fb.id },
+            description: { en: fb.description, ar: fb.descriptionAr },
+            headline: { en: fb.headline, ar: fb.headlineAr },
+            bgImage: { asset: { url: fb.backdropUrl } }
+          });
+        }
+      });
 
-    return list.map((sb: any) => {
-      const fb = fallbackBrands.find((b) => b.id === sb.slug?.current);
+      if (categoryId === "skincare") {
+        rawList = list.filter((b) => ["lancome", "moje", "sandro-moje", "maxmara", "adidas"].includes(b.slug?.current || b._id));
+      } else if (categoryId === "perfumes") {
+        rawList = list.filter((b) => ["elie-saab", "gucci", "prada", "valentino", "ysl", "cartier", "lancome", "calvin-klein", "giorgio-armani", "hugo-boss"].includes(b.slug?.current || b._id));
+      } else {
+        rawList = list;
+      }
+    }
+
+    return rawList.map((sb: any) => {
+      const fb = fallbackBrands.find((b) => b.id === (sb.slug?.current || sb.id || sb._id));
       const name = sb.title || fb?.name || "";
       const nameAr = sb.titleAr || fb?.nameAr || name;
-      
-      const description = sb.description?.en || fb?.description || "";
-      const descriptionAr = sb.description?.ar || fb?.descriptionAr || description;
 
-      const headline = sb.headline?.en || fb?.headline || "";
-      const headlineAr = sb.headline?.ar || fb?.headlineAr || headline;
+      const description = sb.description?.en || sb.description || fb?.description || "";
+      const descriptionAr = sb.description?.ar || sb.description || fb?.descriptionAr || description;
 
-      const logoUrl = sb.image?.asset?.url || null;
+      const headline = sb.headline?.en || sb.headline || fb?.headline || "";
+      const headlineAr = sb.headline?.ar || sb.headline || fb?.headlineAr || headline;
+
+      const logoUrl = sb.image?.asset?.url || sb.logoUrl || null;
       const fallbackLogo = logoUrl;
 
       return {
-        id: sb.slug?.current || sb._id,
+        id: sb.slug?.current || sb._id || sb.id,
         name: lang === "ar" ? nameAr : name,
         headline: lang === "ar" ? headlineAr : headline,
         description: lang === "ar" ? descriptionAr : description,
         logoUrl: fallbackLogo,
-        bgImage: sb.bgImage?.asset?.url || fb?.backdropUrl || "/brand-pages/page_01.jpg"
+        bgImage: sb.bgImage?.asset?.url || sb.bgImage || fb?.backdropUrl || "/brand-pages/page_01.jpg"
       };
     });
-  }, [brands, lang]);
+  }, [brands, lang, categoryCmsData, categoryId]);
 
   const filteredSidebarBrands = useMemo(() => {
     return processedBrands.filter((brand) =>
@@ -399,7 +421,7 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
       router.push(`/brand/${lang}`);
       return;
     }
-    
+
     if (filterId !== "all" && filterId !== "brands-link") {
       router.push(`/brand/${filterId}/${lang}`);
       return;
@@ -412,7 +434,13 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
     }
   };
 
-  const pageTitle = (typeof t[categoryId as keyof typeof t] === "string" ? t[categoryId as keyof typeof t] : categoryId) as string;
+  const pageTitle = categoryCmsData?.title
+    ? (getLocalizedValue(categoryCmsData.title, lang, "") || ((typeof t[categoryId as keyof typeof t] === "string" ? t[categoryId as keyof typeof t] : categoryId) as string))
+    : ((typeof t[categoryId as keyof typeof t] === "string" ? t[categoryId as keyof typeof t] : categoryId) as string);
+
+  const pageDescription = categoryCmsData?.description
+    ? getLocalizedValue(categoryCmsData.description, lang, "")
+    : "";
 
   const theme = useMemo(() => createTheme({
     palette: {
@@ -433,13 +461,13 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
         <Box sx={{ flexGrow: 1, py: { xs: 6, md: 10 }, opacity: isLangTransitioning ? 0 : 1, transition: "opacity 0.25s ease" }}>
           <Container maxWidth="xl">
             {/* Breadcrumbs Section */}
-            <Box 
-              sx={{ 
-                display: "flex", 
-                alignItems: "center", 
-                gap: 1, 
-                mb: 2.5, 
-                fontSize: 12.5, 
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                mb: 2.5,
+                fontSize: 12.5,
                 fontWeight: 500,
                 color: "rgba(0,0,0,0.4)",
                 fontFamily: '"Cairo", sans-serif',
@@ -462,848 +490,831 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
 
             {/* Header Title Section */}
             <Stack spacing={2} sx={{ mb: 6, textAlign: lang === "ar" ? "right" : "left" }}>
-              <Typography sx={{ color: "#CB6116", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", fontFamily: '"Cairo", sans-serif' }}>
+              <Typography sx={{ color: "#CB6116", textTransform: "uppercase", fontSize: 11, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.2em", fontFamily: '"Cairo", sans-serif' }}>
                 {lang === "ar" ? "فاشن غيت مول" : "Fashion Gate Mall"}
               </Typography>
               <Typography variant="h3" sx={{ fontFamily: "var(--heading-font)", fontWeight: 500, color: "#111111" }}>
                 {pageTitle}
               </Typography>
+              {pageDescription && (
+                <Typography sx={{ fontSize: 14.8, color: "rgba(0,0,0,0.6)", maxWidth: "800px", lineHeight: 1.7, mt: 1, fontFamily: '"Cairo", sans-serif' }}>
+                  {pageDescription}
+                </Typography>
+              )}
               <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mt: 2 }} />
             </Stack>
 
             <Grid container spacing={4}>
-            {/* Sidebar Filter Panel */}
-            {["women", "men"].includes(categoryId) && (
-              <Grid size={{ xs: 12, md: 3 }} sx={{ borderRight: lang === "en" ? "1px solid rgba(0,0,0,0.06)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(0,0,0,0.06)" : "none", px: 2 }}>
-                <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", mb: 2, textAlign: lang === "ar" ? "right" : "left", fontFamily: '"Cairo", sans-serif' }}>
-                  {lang === "ar" ? "العلامات التجارية" : "Brands"}
-                </Typography>
-                
-                {/* Sidebar Search Bar */}
-                <Box sx={{ mb: 3 }}>
-                  <InputBase
-                    placeholder={lang === "ar" ? "ابحث عن علامة..." : "Search brand..."}
-                    value={brandSearchQuery}
-                    onChange={(e) => setSidebarSearchQuery(e.target.value)}
-                    dir={lang === "ar" ? "rtl" : "ltr"}
+              {/* Sidebar Filter Panel */}
+              {["women", "men"].includes(categoryId) && (
+                <Grid size={{ xs: 12, md: 3 }} sx={{ borderRight: lang === "en" ? "1px solid rgba(0,0,0,0.06)" : "none", borderLeft: lang === "ar" ? "1px solid rgba(0,0,0,0.06)" : "none", px: 2 }}>
+                  <Typography sx={{ color: "#111111", fontSize: 12, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.15em", textTransform: "uppercase", mb: 2, textAlign: lang === "ar" ? "right" : "left", fontFamily: '"Cairo", sans-serif' }}>
+                    {lang === "ar" ? "العلامات التجارية" : "Brands"}
+                  </Typography>
+
+                  {/* Sidebar Search Bar */}
+                  <Box sx={{ mb: 3 }}>
+                    <InputBase
+                      placeholder={lang === "ar" ? "ابحث عن علامة..." : "Search brand..."}
+                      value={brandSearchQuery}
+                      onChange={(e) => setSidebarSearchQuery(e.target.value)}
+                      dir={lang === "ar" ? "rtl" : "ltr"}
+                      sx={{
+                        width: "100%",
+                        bgcolor: "rgba(0, 0, 0, 0.02)",
+                        borderBottom: "1.5px solid rgba(0, 0, 0, 0.12)",
+                        px: 1.5,
+                        py: 0.5,
+                        fontSize: 13,
+                        fontFamily: '"Cairo", sans-serif',
+                        "&:focus-within": {
+                          borderColor: "#CB6116"
+                        }
+                      }}
+                    />
+                  </Box>
+
+                  {/* Scrollable Brands List */}
+                  <Box
                     sx={{
-                      width: "100%",
-                      bgcolor: "rgba(0, 0, 0, 0.02)",
-                      borderBottom: "1.5px solid rgba(0, 0, 0, 0.12)",
-                      px: 1.5,
-                      py: 0.5,
-                      fontSize: 13,
-                      fontFamily: '"Cairo", sans-serif',
-                      "&:focus-within": {
-                        borderColor: "#CB6116"
+                      maxHeight: "55vh",
+                      overflowY: "auto",
+                      pr: lang === "en" ? 1 : 0,
+                      pl: lang === "ar" ? 1 : 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 0.5,
+                      "&::-webkit-scrollbar": {
+                        width: "4px"
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        bgcolor: "rgba(0, 0, 0, 0.08)",
+                        borderRadius: "2px"
                       }
                     }}
-                  />
-                </Box>
-                
-                {/* Scrollable Brands List */}
-                <Box 
-                  sx={{ 
-                    maxHeight: "55vh", 
-                    overflowY: "auto", 
-                    pr: lang === "en" ? 1 : 0, 
-                    pl: lang === "ar" ? 1 : 0, 
-                    display: "flex", 
-                    flexDirection: "column", 
-                    gap: 0.5,
-                    "&::-webkit-scrollbar": {
-                      width: "4px"
-                    },
-                    "&::-webkit-scrollbar-thumb": {
-                      bgcolor: "rgba(0, 0, 0, 0.08)",
-                      borderRadius: "2px"
-                    }
-                  }}
-                >
-                  {filteredSidebarBrands.map((brand) => {
-                    const isSelected = activeBrand === brand.id;
-                    return (
-                      <Button
-                        key={brand.id}
-                        onClick={() => selectFilter(brand.id)}
-                        sx={{
-                          color: isSelected ? "#CB6116" : "rgba(0,0,0,0.6)",
-                          fontWeight: isSelected ? 700 : 500,
-                          fontSize: 13,
-                          py: 0.8,
-                          px: 1.5,
-                          width: "100%",
-                          justifyContent: lang === "ar" ? "flex-start" : "flex-start",
-                          textAlign: lang === "ar" ? "right" : "left",
-                          borderRadius: 0,
-                          fontFamily: '"Cairo", sans-serif',
-                          bgcolor: isSelected ? "rgba(203, 97, 22, 0.05)" : "transparent",
-                          borderBottom: "1px solid rgba(0,0,0,0.03)",
-                          "&:hover": {
-                            bgcolor: "rgba(0,0,0,0.03)",
-                            color: "#CB6116"
-                          }
-                        }}
-                      >
-                        {brand.name}
-                      </Button>
-                    );
-                  })}
-                </Box>
+                  >
+                    {filteredSidebarBrands.map((brand) => {
+                      const isSelected = activeBrand === brand.id;
+                      return (
+                        <Button
+                          key={brand.id}
+                          onClick={() => selectFilter(brand.id)}
+                          sx={{
+                            color: isSelected ? "#CB6116" : "rgba(0,0,0,0.6)",
+                            fontWeight: isSelected ? 700 : 500,
+                            fontSize: 13,
+                            py: 0.8,
+                            px: 1.5,
+                            width: "100%",
+                            justifyContent: lang === "ar" ? "flex-start" : "flex-start",
+                            textAlign: lang === "ar" ? "right" : "left",
+                            borderRadius: 0,
+                            fontFamily: '"Cairo", sans-serif',
+                            bgcolor: isSelected ? "rgba(203, 97, 22, 0.05)" : "transparent",
+                            borderBottom: "1px solid rgba(0,0,0,0.03)",
+                            "&:hover": {
+                              bgcolor: "rgba(0,0,0,0.03)",
+                              color: "#CB6116"
+                            }
+                          }}
+                        >
+                          {brand.name}
+                        </Button>
+                      );
+                    })}
+                  </Box>
 
-                {/* Brands Redirection Link */}
-                <Button
-                  onClick={() => selectFilter("brands-link")}
-                  sx={{
-                    color: "#CB6116",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    py: 1,
-                    px: 1.5,
-                    width: "100%",
-                    justifyContent: lang === "ar" ? "flex-start" : "flex-start",
-                    textAlign: lang === "ar" ? "right" : "left",
-                    borderRadius: 0,
-                    fontFamily: '"Cairo", sans-serif',
-                    mt: 2,
-                    borderTop: "1.5px solid rgba(203, 97, 22, 0.15)",
-                    "&:hover": {
-                      bgcolor: "rgba(203, 97, 22, 0.05)"
-                    }
-                  }}
-                >
-                  {lang === "ar" ? "كل العلامات التجارية" : "All Brands Catalog"}
-                </Button>
-              </Grid>
-            )}
+                  {/* Brands Redirection Link */}
+                  <Button
+                    onClick={() => selectFilter("brands-link")}
+                    sx={{
+                      color: "#CB6116",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      py: 1,
+                      px: 1.5,
+                      width: "100%",
+                      justifyContent: lang === "ar" ? "flex-start" : "flex-start",
+                      textAlign: lang === "ar" ? "right" : "left",
+                      borderRadius: 0,
+                      fontFamily: '"Cairo", sans-serif',
+                      mt: 2,
+                      borderTop: "1.5px solid rgba(203, 97, 22, 0.15)",
+                      "&:hover": {
+                        bgcolor: "rgba(203, 97, 22, 0.05)"
+                      }
+                    }}
+                  >
+                    {lang === "ar" ? "كل العلامات التجارية" : "All Brands Catalog"}
+                  </Button>
+                </Grid>
+              )}
 
-            {/* Products Grid Panel */}
-            <Grid size={{ xs: 12, md: ["women", "men"].includes(categoryId) ? 9 : 12 }}>
-              <AnimatePresence mode="wait">
-                <MotionBox
-                  key={`${activeSub}-${activeBrand}-${categoryId}`}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {categoryId === "fashion" ? (
-                    <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      <Grid container spacing={4} sx={{ mb: 8 }}>
-                        {/* Women Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "280px", sm: "440px" },
-                                backgroundImage: 'url("/brand/hero-woman.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "النساء" : "WOMEN"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "تشكيلة النساء" : "WOMEN COLLECTION"}
-                              </Typography>
-                            </Stack>
-                          </Box>
+              {/* Products Grid Panel */}
+              <Grid size={{ xs: 12, md: ["women", "men"].includes(categoryId) ? 9 : 12 }}>
+                <AnimatePresence mode="wait">
+                  <MotionBox
+                    key={`${activeSub}-${activeBrand}-${categoryId}`}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {categoryCmsData?.banners && categoryCmsData.banners.length > 0 ? (
+                      <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
+                        <Grid container spacing={4} sx={{ mb: 8 }}>
+                          {categoryCmsData.banners.map((banner: any, index: number) => {
+                            let gridSize = { xs: 12, sm: 6 };
+                            if (categoryCmsData.banners.length === 3 && index === 2) {
+                              gridSize = { xs: 12, sm: 12 };
+                            } else if (categoryCmsData.banners.length === 1) {
+                              gridSize = { xs: 12, sm: 12 };
+                            }
+
+                            const bannerTitle = getLocalizedValue(banner.title, lang, "");
+                            const bannerSubtitle = getLocalizedValue(banner.subtitle, lang, "");
+                            const bannerImg = banner.image?.asset?.url || "/brand-pages/page_01.jpg";
+                            const bannerHref = banner.link || "#";
+
+                            return (
+                              <Grid size={gridSize} key={banner._key || index}>
+                                <Link href={bannerHref} style={{ textDecoration: "none", color: "inherit" }}>
+                                  <Box sx={{ display: "flex", flexDirection: "column", gap: 2, cursor: "pointer" }}>
+                                    <Box
+                                      sx={{
+                                        height: {
+                                          xs: "240px",
+                                          sm: gridSize.sm === 12 ? "420px" : "440px"
+                                        },
+                                        backgroundImage: `url(${bannerImg})`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center top",
+                                        border: "1px solid rgb(255 255 255) !important",
+
+                                        transition: "transform 0.4s ease",
+                                        "&:hover": {
+                                          transform: "scale(1.01)"
+                                        }
+                                      }}
+                                    />
+                                    <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                      <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111", textAlign: "center" }}>
+                                        {bannerTitle}
+                                      </Typography>
+                                      <Typography sx={{ fontSize: 9.5, letterSpacing: lang === "ar" ? 0 : "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif', textAlign: "center" }}>
+                                        {bannerSubtitle}
+                                      </Typography>
+                                    </Stack>
+                                  </Box>
+                                </Link>
+                              </Grid>
+                            );
+                          })}
                         </Grid>
 
-                        {/* Men Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "280px", sm: "440px" },
-                                backgroundImage: 'url("/brand/hero-look-03.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "الرجال" : "MEN"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "تشكيلة الرجال" : "MEN COLLECTION"}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        </Grid>
-                      </Grid>
+                        {/* Brands Grid Section */}
+                        <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
+                          {getLocalizedValue(categoryCmsData.brandsHeading, lang, lang === "ar" ? "علاماتنا التجارية الفاخرة" : "Our Luxury Brands")}
+                        </Typography>
 
-                      {/* Brands Grid Section */}
-                      <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
-                        {lang === "ar" ? "علاماتنا التجارية الفاخرة" : "Our Luxury Brands"}
-                      </Typography>
-                      
-                      <Grid container spacing={3}>
-                        {processedBrands.map((brand) => (
-                          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
-                            <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        <Grid container spacing={3}>
+                          {processedBrands.map((brand) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
+                              <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                <Box
+                                  sx={{
+                                    bgcolor: "#ffffff",
+                                    border: "1px solid rgba(0,0,0,0.06)",
+                                    p: 3,
+                                    height: "190px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+                                    "&:hover": {
+                                      borderColor: "#CB6116",
+                                      boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
+                                      transform: "translateY(-4px)",
+                                      "& .brand-action-arrow": {
+                                        color: "#CB6116",
+                                        transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
+                                    {brand.logoUrl ? (
+                                      <Box
+                                        component="img"
+                                        src={brand.logoUrl}
+                                        alt={brand.name}
+                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
+                                      />
+                                    ) : (
+                                      brandVectorLogos[brand.id] || (
+                                        <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
+                                          {brand.name}
+                                        </Typography>
+                                      )
+                                    )}
+                                  </Box>
+
+                                  <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
+                                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
+                                      {brand.name}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                      {brand.headline || brand.description}
+                                    </Typography>
+                                  </Stack>
+
+                                  <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
+                                    <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: lang === "ar" ? 0 : "0.12em", fontFamily: '"Cairo", sans-serif' }}>
+                                      {lang === "ar" ? "تصفح المجموعة" : "Explore"}
+                                    </Typography>
+                                    {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
+                                  </Stack>
+                                </Box>
+                              </Link>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
+                    ) : categoryId === "fashion" ? (
+                      <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
+                        <Grid container spacing={4} sx={{ mb: 8 }}>
+                          {/* Women Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                               <Box
                                 sx={{
-                                  bgcolor: "#ffffff",
-                                  border: "1px solid rgba(0,0,0,0.06)",
-                                  p: 3,
-                                  height: "190px",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                  textAlign: "center",
-                                  transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                                  "&:hover": {
-                                    borderColor: "#CB6116",
-                                    boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
-                                    transform: "translateY(-4px)",
-                                    "& .brand-action-arrow": {
-                                      color: "#CB6116",
-                                      transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                  height: { xs: "280px", sm: "440px" },
+                                  backgroundImage: 'url("/brand/hero-woman.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "النساء" : "WOMEN"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "تشكيلة النساء" : "WOMEN COLLECTION"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+
+                          {/* Men Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "280px", sm: "440px" },
+                                  backgroundImage: 'url("/brand/hero-look-03.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "الرجال" : "MEN"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "تشكيلة الرجال" : "MEN COLLECTION"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+                        </Grid>
+
+                        {/* Brands Grid Section */}
+                        <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
+                          {lang === "ar" ? "علاماتنا التجارية الفاخرة" : "Our Luxury Brands"}
+                        </Typography>
+
+                        <Grid container spacing={3}>
+                          {processedBrands.map((brand) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
+                              <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                <Box
+                                  sx={{
+                                    bgcolor: "#ffffff",
+                                    border: "1px solid rgba(0,0,0,0.06)",
+                                    p: 3,
+                                    height: "190px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+                                    "&:hover": {
+                                      borderColor: "#CB6116",
+                                      boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
+                                      transform: "translateY(-4px)",
+                                      "& .brand-action-arrow": {
+                                        color: "#CB6116",
+                                        transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                      }
                                     }
+                                  }}
+                                >
+                                  <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
+                                    {brand.logoUrl ? (
+                                      <Box
+                                        component="img"
+                                        src={brand.logoUrl}
+                                        alt={brand.name}
+                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
+                                      />
+                                    ) : (
+                                      brandVectorLogos[brand.id] || (
+                                        <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
+                                          {brand.name}
+                                        </Typography>
+                                      )
+                                    )}
+                                  </Box>
+
+                                  <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
+                                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
+                                      {brand.name}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                      {brand.headline || brand.description}
+                                    </Typography>
+                                  </Stack>
+
+                                  <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
+                                    <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: lang === "ar" ? 0 : "0.12em", fontFamily: '"Cairo", sans-serif' }}>
+                                      {lang === "ar" ? "تصفح المجموعة" : "Explore"}
+                                    </Typography>
+                                    {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
+                                  </Stack>
+                                </Box>
+                              </Link>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
+                    ) : categoryId === "perfumes" ? (
+                      <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
+                        {/* Row 1: Men and Women Perfume Banners */}
+                        <Grid container spacing={4} sx={{ mb: 4 }}>
+                          {/* Women Perfumes Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "240px", sm: "380px" },
+                                  backgroundImage: 'url("/brand/hero-woman.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "العطور النسائية" : "WOMEN'S FRAGRANCES"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "رقة وجمال" : "ELEGANT & FEMININE"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+
+                          {/* Men Perfumes Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "240px", sm: "380px" },
+                                  backgroundImage: 'url("/brand/hero-look-03.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "العطور الرجالية" : "MEN'S FRAGRANCES"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "جاذبية وقوة" : "BOLD & SOPHISTICATED"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+                        </Grid>
+
+                        {/* Row 2: Unisex Perfume Banner */}
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 8 }}>
+                          <Box
+                            sx={{
+                              height: { xs: "260px", sm: "420px" },
+                              backgroundImage: 'url("/brand/hero-unisex-perfume.jpg")',
+                              backgroundSize: "cover",
+                              backgroundPosition: "center center",
+                              border: "1px solid rgb(255 255 255) !important"
+                            }}
+                          />
+                          <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                            <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                              {lang === "ar" ? "العطور المشتركة (للجنسين)" : "UNISEX FRAGRANCES"}
+                            </Typography>
+                            <Typography sx={{ fontSize: 9.5, letterSpacing: lang === "ar" ? 0 : "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                              {lang === "ar" ? "تناغم وتفرد" : "UNIVERSAL HARMONY"}
+                            </Typography>
+                          </Stack>
+                        </Box>
+
+                        {/* Perfumes Brands Grid Section */}
+                        <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
+                          {lang === "ar" ? "دور العطور العالمية الفاخرة" : "Luxury Fragrance Houses"}
+                        </Typography>
+
+                        <Grid container spacing={3}>
+                          {processedBrands
+                            .filter((brand) =>
+                              ["elie-saab", "gucci", "prada", "valentino", "ysl", "cartier", "lancome", "calvin-klein", "giorgio-armani", "hugo-boss"].includes(brand.id)
+                            )
+                            .map((brand) => (
+                              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
+                                <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                  <Box
+                                    sx={{
+                                      bgcolor: "#ffffff",
+                                      border: "1px solid rgb(255 255 255) !important",
+
+                                      p: 3,
+                                      height: "190px",
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      textAlign: "center",
+                                      transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+                                      "&:hover": {
+                                        borderColor: "#CB6116",
+                                        boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
+                                        transform: "translateY(-4px)",
+                                        "& .brand-action-arrow": {
+                                          color: "#CB6116",
+                                          transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
+                                      {brand.logoUrl ? (
+                                        <Box
+                                          component="img"
+                                          src={brand.logoUrl}
+                                          alt={brand.name}
+                                          sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
+                                        />
+                                      ) : (
+                                        brandVectorLogos[brand.id] || (
+                                          <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
+                                            {brand.name}
+                                          </Typography>
+                                        )
+                                      )}
+                                    </Box>
+
+                                    <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
+                                      <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
+                                        {brand.name}
+                                      </Typography>
+                                      <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                        {brand.headline || brand.description}
+                                      </Typography>
+                                    </Stack>
+
+                                    <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
+                                      <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
+                                        {lang === "ar" ? "تصفح المجموعة" : "Explore"}
+                                      </Typography>
+                                      {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
+                                    </Stack>
+                                  </Box>
+                                </Link>
+                              </Grid>
+                            ))}
+                        </Grid>
+                      </Box>
+                    ) : categoryId === "skincare" ? (
+                      <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
+                        <Grid container spacing={4} sx={{ mb: 8 }}>
+                          {/* Women Skincare Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "280px", sm: "440px" },
+                                  backgroundImage: 'url("/brand/hero-woman.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "العناية بالبشرة للنساء" : "WOMEN'S SKINCARE"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "جمال ونضارة" : "GLOW & RADIANCE"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+
+                          {/* Men Skincare Banner */}
+                          <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "280px", sm: "440px" },
+                                  backgroundImage: 'url("/brand/hero-look-03.jpg")',
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center top",
+                                  border: "1px solid rgb(255 255 255) !important"
+
+                                }}
+                              />
+                              <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
+                                <Typography sx={{ fontFamily: '"Apple Garamond", "EB Garamond", "Cormorant Garamond", serif', fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
+                                  {lang === "ar" ? "العناية بالبشرة للرجال" : "MEN'S SKINCARE"}
+                                </Typography>
+                                <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
+                                  {lang === "ar" ? "عناية يومية" : "DAILY ESSENTIALS"}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          </Grid>
+                        </Grid>
+
+                        {/* Skincare Brands Grid Section */}
+                        <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
+                          {lang === "ar" ? "علامات العناية بالبشرة الفاخرة" : "Luxury Skincare Houses"}
+                        </Typography>
+
+                        <Grid container spacing={3}>
+                          {processedBrands
+                            .filter((brand) =>
+                              ["lancome", "moje", "sandro-moje", "maxmara", "adidas"].includes(brand.id)
+                            )
+                            .map((brand) => (
+                              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
+                                <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                  <Box
+                                    sx={{
+                                      bgcolor: "#ffffff",
+                                      border: "1px solid rgb(255 255 255) !important",
+                                      p: 3,
+                                      height: "190px",
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      textAlign: "center",
+                                      transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
+                                      "&:hover": {
+                                        borderColor: "#CB6116",
+                                        boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
+                                        transform: "translateY(-4px)",
+                                        "& .brand-action-arrow": {
+                                          color: "#CB6116",
+                                          transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
+                                      {brand.logoUrl ? (
+                                        <Box
+                                          component="img"
+                                          src={brand.logoUrl}
+                                          alt={brand.name}
+                                          sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
+                                        />
+                                      ) : (
+                                        brandVectorLogos[brand.id] || (
+                                          <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
+                                            {brand.name}
+                                          </Typography>
+                                        )
+                                      )}
+                                    </Box>
+
+                                    <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
+                                      <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
+                                        {brand.name}
+                                      </Typography>
+                                      <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                        {brand.headline || brand.description}
+                                      </Typography>
+                                    </Stack>
+
+                                    <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
+                                      <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
+                                        {lang === "ar" ? "تصفح المجموعة" : "Explore"}
+                                      </Typography>
+                                      {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
+                                    </Stack>
+                                  </Box>
+                                </Link>
+                              </Grid>
+                            ))}
+                        </Grid>
+                      </Box>
+                    ) : categoryId === "dining" ? (
+                      <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
+                        {/* Dining Intro Description Block */}
+                        <Box
+                          component={motion.div}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.6 }}
+                          sx={{
+                            textAlign: "left",
+                            maxWidth: "850px",
+                            mx: "auto",
+                            mb: 8,
+                            px: 2
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: { xs: 15, md: 17 },
+                              lineHeight: 1.9,
+                              color: "rgba(0,0,0,0.65)",
+                              fontFamily: '"Cairo", sans-serif',
+                              fontWeight: 400
+                            }}
+                          >
+                            {resolvedDiningIntro}
+                          </Typography>
+                        </Box>
+
+                        {/* Vilamore Restaurant & Cafe Showcase */}
+                        <Grid
+                          container
+                          spacing={{ xs: 0, md: 0 }}
+                          sx={{
+                            mb: 10,
+                            alignItems: "stretch",
+                            border: "1px solid rgba(0,0,0,0.06)",
+                            bgcolor: "#ffffff"
+                          }}
+                          component={motion.div}
+                          initial={{ opacity: 0, y: 30 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.8 }}
+                        >
+                          {/* Image Left */}
+                          <Grid size={{ xs: 12, md: 6 }}>
+                            <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                              <Box
+                                sx={{
+                                  height: { xs: "300px", sm: "400px", md: "100%" },
+                                  minHeight: { md: "520px" },
+                                  position: "relative",
+                                  overflow: "hidden",
+                                  cursor: "pointer",
+                                  "&:hover .dining-bg": {
+                                    transform: "scale(1.04)"
                                   }
                                 }}
                               >
-                                <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
-                                  {brand.logoUrl ? (
-                                    <Box
-                                      component="img"
-                                      src={brand.logoUrl}
-                                      alt={brand.name}
-                                      sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
-                                    />
-                                  ) : (
-                                    brandVectorLogos[brand.id] || (
-                                      <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
-                                        {brand.name}
-                                      </Typography>
-                                    )
-                                  )}
-                                </Box>
-
-                                <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
-                                  <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
-                                    {brand.name}
-                                  </Typography>
-                                  <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                    {brand.headline || brand.description}
-                                  </Typography>
-                                </Stack>
-
-                                <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
-                                  <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
-                                    {lang === "ar" ? "تصفح المجموعة" : "Explore"}
-                                  </Typography>
-                                  {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
-                                </Stack>
+                                <Box
+                                  className="dining-bg"
+                                  sx={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    backgroundImage: `url("${resolvedRestaurant.image}")`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center center",
+                                    transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
+                                  }}
+                                />
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    bgcolor: "rgba(0,0,0,0.15)"
+                                  }}
+                                />
                               </Box>
                             </Link>
                           </Grid>
-                        ))}
-                      </Grid>
-                    </Box>
-                  ) : categoryId === "perfumes" ? (
-                    <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      {/* Row 1: Men and Women Perfume Banners */}
-                      <Grid container spacing={4} sx={{ mb: 4 }}>
-                        {/* Women Perfumes Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "240px", sm: "380px" },
-                                backgroundImage: 'url("/brand/hero-woman.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "العطور النسائية" : "WOMEN'S FRAGRANCES"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "رقة وجمال" : "ELEGANT & FEMININE"}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        </Grid>
 
-                        {/* Men Perfumes Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "240px", sm: "380px" },
-                                backgroundImage: 'url("/brand/hero-look-03.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "العطور الرجالية" : "MEN'S FRAGRANCES"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "جاذبية وقوة" : "BOLD & SOPHISTICATED"}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        </Grid>
-                      </Grid>
-
-                      {/* Row 2: Unisex Perfume Banner */}
-                      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 8 }}>
-                        <Box
-                          sx={{
-                            height: { xs: "260px", sm: "420px" },
-                            backgroundImage: 'url("/brand/hero-unisex-perfume.jpg")',
-                            backgroundSize: "cover",
-                            backgroundPosition: "center center",
-                            border: "1px solid rgba(0,0,0,0.05)"
-                          }}
-                        />
-                        <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                          <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 22, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                            {lang === "ar" ? "العطور المشتركة (للجنسين)" : "UNISEX FRAGRANCES"}
-                          </Typography>
-                          <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                            {lang === "ar" ? "تناغم وتفرد" : "UNIVERSAL HARMONY"}
-                          </Typography>
-                        </Stack>
-                      </Box>
-
-                      {/* Perfumes Brands Grid Section */}
-                      <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
-                        {lang === "ar" ? "دور العطور العالمية الفاخرة" : "Luxury Fragrance Houses"}
-                      </Typography>
-                      
-                      <Grid container spacing={3}>
-                        {processedBrands
-                          .filter((brand) =>
-                            ["elie-saab", "gucci", "prada", "valentino", "ysl", "cartier", "lancome", "calvin-klein", "giorgio-armani", "hugo-boss"].includes(brand.id)
-                          )
-                          .map((brand) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
-                              <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
-                                <Box
-                                  sx={{
-                                    bgcolor: "#ffffff",
-                                    border: "1px solid rgba(0,0,0,0.06)",
-                                    p: 3,
-                                    height: "190px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    textAlign: "center",
-                                    transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                                    "&:hover": {
-                                      borderColor: "#CB6116",
-                                      boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
-                                      transform: "translateY(-4px)",
-                                      "& .brand-action-arrow": {
-                                        color: "#CB6116",
-                                        transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
-                                      }
-                                    }
-                                  }}
-                                >
-                                  <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
-                                    {brand.logoUrl ? (
-                                      <Box
-                                        component="img"
-                                        src={brand.logoUrl}
-                                        alt={brand.name}
-                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
-                                      />
-                                    ) : (
-                                      brandVectorLogos[brand.id] || (
-                                        <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
-                                          {brand.name}
-                                        </Typography>
-                                      )
-                                    )}
-                                  </Box>
-
-                                  <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
-                                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
-                                      {brand.name}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                      {brand.headline || brand.description}
-                                    </Typography>
-                                  </Stack>
-
-                                  <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
-                                    <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
-                                      {lang === "ar" ? "تصفح المجموعة" : "Explore"}
-                                    </Typography>
-                                    {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
-                                  </Stack>
-                                </Box>
-                              </Link>
-                            </Grid>
-                          ))}
-                      </Grid>
-                    </Box>
-                  ) : categoryId === "skincare" ? (
-                    <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      <Grid container spacing={4} sx={{ mb: 8 }}>
-                        {/* Women Skincare Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "280px", sm: "440px" },
-                                backgroundImage: 'url("/brand/hero-woman.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "العناية بالبشرة للنساء" : "WOMEN'S SKINCARE"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "جمال ونضارة" : "GLOW & RADIANCE"}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        </Grid>
-
-                        {/* Men Skincare Banner */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Box
-                              sx={{
-                                height: { xs: "280px", sm: "440px" },
-                                backgroundImage: 'url("/brand/hero-look-03.jpg")',
-                                backgroundSize: "cover",
-                                backgroundPosition: "center top",
-                                border: "1px solid rgba(0,0,0,0.05)"
-                              }}
-                            />
-                            <Stack alignItems="center" spacing={0.5} sx={{ py: 1 }}>
-                              <Typography sx={{ fontFamily: "'Playfair Display', 'Didot', 'Times New Roman', serif", fontSize: 20, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "#111111" }}>
-                                {lang === "ar" ? "العناية بالبشرة للرجال" : "MEN'S SKINCARE"}
-                              </Typography>
-                              <Typography sx={{ fontSize: 9.5, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 700, color: "#CB6116", fontFamily: '"Cairo", sans-serif' }}>
-                                {lang === "ar" ? "عناية يومية" : "DAILY ESSENTIALS"}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        </Grid>
-                      </Grid>
-
-                      {/* Skincare Brands Grid Section */}
-                      <Typography sx={{ fontSize: 20, fontWeight: 600, fontFamily: "var(--heading-font)", mb: 4, textAlign: "center", color: "#111111" }}>
-                        {lang === "ar" ? "علامات العناية بالبشرة الفاخرة" : "Luxury Skincare Houses"}
-                      </Typography>
-                      
-                      <Grid container spacing={3}>
-                        {processedBrands
-                          .filter((brand) =>
-                            ["lancome", "moje", "sandro-moje", "maxmara", "adidas"].includes(brand.id)
-                          )
-                          .map((brand) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={brand.id}>
-                              <Link href={`/brand/${brand.id}/${lang}`} style={{ textDecoration: "none", color: "inherit" }}>
-                                <Box
-                                  sx={{
-                                    bgcolor: "#ffffff",
-                                    border: "1px solid rgba(0,0,0,0.06)",
-                                    p: 3,
-                                    height: "190px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    textAlign: "center",
-                                    transition: "all 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-                                    "&:hover": {
-                                      borderColor: "#CB6116",
-                                      boxShadow: "0 10px 24px rgba(203, 97, 22, 0.06)",
-                                      transform: "translateY(-4px)",
-                                      "& .brand-action-arrow": {
-                                        color: "#CB6116",
-                                        transform: lang === "ar" ? "translateX(-4px)" : "translateX(4px)"
-                                      }
-                                    }
-                                  }}
-                                >
-                                  <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 40, width: "100%", color: "#111111" }}>
-                                    {brand.logoUrl ? (
-                                      <Box
-                                        component="img"
-                                        src={brand.logoUrl}
-                                        alt={brand.name}
-                                        sx={{ maxHeight: 120, maxWidth: "80%", objectFit: "contain" }}
-                                      />
-                                    ) : (
-                                      brandVectorLogos[brand.id] || (
-                                        <Typography sx={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }}>
-                                          {brand.name}
-                                        </Typography>
-                                      )
-                                    )}
-                                  </Box>
-
-                                  <Stack spacing={0.5} sx={{ mt: 1.5, width: "100%" }}>
-                                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: "#111111", fontFamily: '"Cairo", sans-serif', textTransform: "uppercase" }}>
-                                      {brand.name}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: 11.5, color: "rgba(0,0,0,0.5)", fontWeight: 300, fontFamily: '"Cairo", sans-serif', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                      {brand.headline || brand.description}
-                                    </Typography>
-                                  </Stack>
-
-                                  <Stack direction="row" alignItems="center" spacing={0.5} className="brand-action-arrow" sx={{ mt: 1.5, color: "rgba(0,0,0,0.3)", transition: "all 0.3s ease" }}>
-                                    <Typography sx={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: '"Cairo", sans-serif' }}>
-                                      {lang === "ar" ? "تصفح المجموعة" : "Explore"}
-                                    </Typography>
-                                    {lang === "ar" ? <ArrowBackIcon sx={{ fontSize: 12 }} /> : <ArrowForwardIcon sx={{ fontSize: 12 }} />}
-                                  </Stack>
-                                </Box>
-                              </Link>
-                            </Grid>
-                          ))}
-                      </Grid>
-                    </Box>
-                  ) : categoryId === "dining" ? (
-                    <Box sx={{ mb: 6 }} dir={lang === "ar" ? "rtl" : "ltr"}>
-                      {/* Dining Intro Description Block */}
-                      <Box
-                        component={motion.div}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        sx={{
-                          textAlign: "left",
-                          maxWidth: "850px",
-                          mx: "auto",
-                          mb: 8,
-                          px: 2
-                        }}
-                      >
-                        <Typography
-                          sx={{
-                            fontSize: { xs: 15, md: 17 },
-                            lineHeight: 1.9,
-                            color: "rgba(0,0,0,0.65)",
-                            fontFamily: '"Cairo", sans-serif',
-                            fontWeight: 400
-                          }}
-                        >
-                          {resolvedDiningIntro}
-                        </Typography>
-                      </Box>
-
-                      {/* Vilamore Restaurant & Cafe Showcase */}
-                      <Grid
-                        container
-                        spacing={{ xs: 0, md: 0 }}
-                        sx={{
-                          mb: 10,
-                          alignItems: "stretch",
-                          border: "1px solid rgba(0,0,0,0.06)",
-                          bgcolor: "#ffffff"
-                        }}
-                        component={motion.div}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.8 }}
-                      >
-                        {/* Image Left */}
-                        <Grid size={{ xs: 12, md: 6 }}>
-                          <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
-                            <Box
-                              sx={{
-                                height: { xs: "300px", sm: "400px", md: "100%" },
-                                minHeight: { md: "520px" },
-                                position: "relative",
-                                overflow: "hidden",
-                                cursor: "pointer",
-                                "&:hover .dining-bg": {
-                                  transform: "scale(1.04)"
-                                }
-                              }}
-                            >
-                              <Box
-                                className="dining-bg"
-                                sx={{
-                                  position: "absolute",
-                                  inset: 0,
-                                  backgroundImage: `url("${resolvedRestaurant.image}")`,
-                                  backgroundSize: "cover",
-                                  backgroundPosition: "center center",
-                                  transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
-                                }}
-                              />
-                              <Box
-                                sx={{
-                                  position: "absolute",
-                                  inset: 0,
-                                  bgcolor: "rgba(0,0,0,0.15)"
-                                }}
-                              />
-                            </Box>
-                          </Link>
-                        </Grid>
-
-                        {/* Content Right */}
-                        <Grid
-                          size={{ xs: 12, md: 6 }}
-                          sx={{
-                            p: { xs: 4, sm: 6, md: 8 },
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            textAlign: lang === "ar" ? "right" : "left"
-                          }}
-                        >
-                          <Link href={resolvedRestaurant.buttonPath}>
-                            <Box
-                              component="img"
-                              src={resolvedRestaurant.logo}
-                              alt="Vilamore Logo"
-                              sx={{
-                                maxHeight: { xs: 65, md: 80 },
-                                maxWidth: "280px",
-                                objectFit: "contain",
-                                alignSelf: "flex-start",
-                                mb: 4,
-                                cursor: "pointer"
-                              }}
-                            />
-                          </Link>
-                          
-                          <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
-                            <Typography
-                              variant="h5"
-                              sx={{
-                                fontFamily: "var(--heading-font)",
-                                fontWeight: 500,
-                                mb: 2,
-                                color: "#111111",
-                                "&:hover": { color: "#CB6116" }
-                              }}
-                            >
-                              {resolvedRestaurant.title}
-                            </Typography>
-                          </Link>
-                          
-                          <Typography
+                          {/* Content Right */}
+                          <Grid
+                            size={{ xs: 12, md: 6 }}
                             sx={{
-                              fontSize: 14.5,
-                              lineHeight: 1.8,
-                              color: "rgba(0,0,0,0.6)",
-                              fontFamily: '"Cairo", sans-serif',
-                              mb: 4
+                              p: { xs: 4, sm: 6, md: 8 },
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              textAlign: lang === "ar" ? "right" : "left"
                             }}
                           >
-                            {resolvedRestaurant.description}
-                          </Typography>
-
-                          <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
-
-                          {/* Metadata */}
-                          <Stack spacing={1.5} sx={{ mb: 4 }}>
-                            <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{resolvedRestaurant.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedRestaurant.operatingHoursValue}
-                            </Typography>
-                            <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{resolvedRestaurant.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedRestaurant.contactUsValue}
-                            </Typography>
-                          </Stack>
-
-                          {/* Buttons */}
-                          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            {resolvedRestaurant.showSecondaryButton && (
-                              <Link href={resolvedRestaurant.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
-                                <Button
-                                  variant="contained"
-                                  sx={{
-                                    bgcolor: "#111111",
-                                    color: "#ffffff",
-                                    px: 4,
-                                    py: 1.5,
-                                    borderRadius: 0,
-                                    textTransform: "uppercase",
-                                    fontSize: 12,
-                                    fontWeight: 700,
-                                    letterSpacing: "0.1em",
-                                    fontFamily: '"Cairo", sans-serif',
-                                    width: "100%",
-                                    "&:hover": {
-                                      bgcolor: "#CB6116"
-                                    }
-                                  }}
-                                >
-                                  {resolvedRestaurant.secondaryButtonText}
-                                </Button>
-                              </Link>
-                            )}
-                            <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none" }}>
-                              <Button
-                                variant="outlined"
+                            <Link href={resolvedRestaurant.buttonPath}>
+                              <Box
+                                component="img"
+                                src={resolvedRestaurant.logo}
+                                alt="Vilamore Logo"
                                 sx={{
-                                  bgcolor: "#111111",
-                                  color: "#ffffff",
-                                  px: 4,
-                                  py: 1.5,
-                                  borderRadius: 0,
-                                  textTransform: "uppercase",
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                  letterSpacing: "0.1em",
-                                  fontFamily: '"Cairo", sans-serif',
-                                  width: "100%",
-                                  "&:hover": {
-                                    bgcolor: "#CB6116"
-                                  }
+                                  maxHeight: { xs: 65, md: 80 },
+                                  maxWidth: "280px",
+                                  objectFit: "contain",
+                                  alignSelf: "flex-start",
+                                  mb: 4,
+                                  cursor: "pointer"
+                                }}
+                              />
+                            </Link>
+
+                            <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{
+                                  fontFamily: "var(--heading-font)",
+                                  fontWeight: 500,
+                                  mb: 2,
+                                  color: "#111111",
+                                  "&:hover": { color: "#CB6116" }
                                 }}
                               >
-                                {resolvedRestaurant.buttonText}
-                              </Button>
+                                {resolvedRestaurant.title}
+                              </Typography>
                             </Link>
-                          </Stack>
-                        </Grid>
-                      </Grid>
 
-                      {/* Arto Coffee Showcase */}
-                      <Grid
-                        container
-                        spacing={{ xs: 0, md: 0 }}
-                        sx={{
-                          mb: 10,
-                          alignItems: "stretch",
-                          border: "1px solid rgba(0,0,0,0.06)",
-                          bgcolor: "#ffffff",
-                          flexDirection: { xs: "column-reverse", md: "row-reverse" }
-                        }}
-                        component={motion.div}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.8 }}
-                      >
-                        {/* Image Right */}
-                        <Grid size={{ xs: 12, md: 6 }}>
-                          <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
-                            <Box
-                              sx={{
-                                height: { xs: "300px", sm: "400px", md: "100%" },
-                                minHeight: { md: "520px" },
-                                position: "relative",
-                                overflow: "hidden",
-                                cursor: "pointer",
-                                "&:hover .dining-bg": {
-                                  transform: "scale(1.04)"
-                                }
-                              }}
-                            >
-                              <Box
-                                className="dining-bg"
-                                sx={{
-                                  position: "absolute",
-                                  inset: 0,
-                                  backgroundImage: `url("${resolvedCafe.image}")`,
-                                  backgroundSize: "cover",
-                                  backgroundPosition: "center center",
-                                  transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
-                                }}
-                              />
-                              <Box
-                                sx={{
-                                  position: "absolute",
-                                  inset: 0,
-                                  bgcolor: "rgba(0,0,0,0.15)"
-                                }}
-                              />
-                            </Box>
-                          </Link>
-                        </Grid>
-
-                        {/* Content Left */}
-                        <Grid
-                          size={{ xs: 12, md: 6 }}
-                          sx={{
-                            p: { xs: 4, sm: 6, md: 8 },
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            textAlign: lang === "ar" ? "right" : "left"
-                          }}
-                        >
-                          <Link href={resolvedCafe.buttonPath}>
-                            <Box
-                              component="img"
-                              src={resolvedCafe.logo}
-                              alt="Arto Coffee Logo"
-                              sx={{
-                                maxHeight: { xs: 65, md: 80 },
-                                maxWidth: "280px",
-                                objectFit: "contain",
-                                alignSelf: "flex-start",
-                                mb: 4,
-                                cursor: "pointer"
-                              }}
-                            />
-                          </Link>
-                          
-                          <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
                             <Typography
-                              variant="h5"
                               sx={{
-                                fontFamily: "var(--heading-font)",
-                                fontWeight: 500,
-                                mb: 2,
-                                color: "#111111",
-                                "&:hover": { color: "#CB6116" }
+                                fontSize: 14.5,
+                                lineHeight: 1.8,
+                                color: "rgba(0,0,0,0.6)",
+                                fontFamily: '"Cairo", sans-serif',
+                                mb: 4
                               }}
                             >
-                              {resolvedCafe.title}
+                              {resolvedRestaurant.description}
                             </Typography>
-                          </Link>
-                          
-                          <Typography
-                            sx={{
-                              fontSize: 14.5,
-                              lineHeight: 1.8,
-                              color: "rgba(0,0,0,0.6)",
-                              fontFamily: '"Cairo", sans-serif',
-                              mb: 4
-                            }}
-                          >
-                            {resolvedCafe.description}
-                          </Typography>
 
-                          <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
+                            <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
 
-                          {/* Metadata */}
-                          <Stack spacing={1.5} sx={{ mb: 4 }}>
-                            <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{resolvedCafe.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedCafe.operatingHoursValue}
-                            </Typography>
-                            <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
-                              <strong>{resolvedCafe.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedCafe.contactUsValue}
-                            </Typography>
-                          </Stack>
+                            {/* Metadata */}
+                            <Stack spacing={1.5} sx={{ mb: 4 }}>
+                              <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
+                                <strong>{resolvedRestaurant.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedRestaurant.operatingHoursValue}
+                              </Typography>
+                              <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
+                                <strong>{resolvedRestaurant.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedRestaurant.contactUsValue}
+                              </Typography>
+                            </Stack>
 
-                          {/* Buttons */}
-                          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            {resolvedCafe.showSecondaryButton && (
-                              <Link href={resolvedCafe.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
+                            {/* Buttons */}
+                            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                              {resolvedRestaurant.showSecondaryButton && (
+                                <Link href={resolvedRestaurant.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
+                                  <Button
+                                    variant="contained"
+                                    sx={{
+                                      bgcolor: "#111111",
+                                      color: "#ffffff",
+                                      px: 4,
+                                      py: 1.5,
+                                      borderRadius: 0,
+                                      textTransform: "uppercase",
+                                      fontSize: 12,
+                                      fontWeight: 700,
+                                      letterSpacing: "0.1em",
+                                      fontFamily: '"Cairo", sans-serif',
+                                      width: "100%",
+                                      "&:hover": {
+                                        bgcolor: "#CB6116"
+                                      }
+                                    }}
+                                  >
+                                    {resolvedRestaurant.secondaryButtonText}
+                                  </Button>
+                                </Link>
+                              )}
+                              <Link href={resolvedRestaurant.buttonPath} style={{ textDecoration: "none" }}>
                                 <Button
                                   variant="outlined"
                                   sx={{
@@ -1323,68 +1334,219 @@ export default function CategoryDetailClient({ categoryId, initialLang, initialP
                                     }
                                   }}
                                 >
-                                  {resolvedCafe.secondaryButtonText}
+                                  {resolvedRestaurant.buttonText}
                                 </Button>
                               </Link>
-                            )}
-                            <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none" }}>
-                              <Button
-                                variant="contained"
+                            </Stack>
+                          </Grid>
+                        </Grid>
+
+                        {/* Arto Coffee Showcase */}
+                        <Grid
+                          container
+                          spacing={{ xs: 0, md: 0 }}
+                          sx={{
+                            mb: 10,
+                            alignItems: "stretch",
+                            border: "1px solid rgba(0,0,0,0.06)",
+                            bgcolor: "#ffffff",
+                            flexDirection: { xs: "column-reverse", md: "row-reverse" }
+                          }}
+                          component={motion.div}
+                          initial={{ opacity: 0, y: 30 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.8 }}
+                        >
+                          {/* Image Right */}
+                          <Grid size={{ xs: 12, md: 6 }}>
+                            <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                              <Box
                                 sx={{
-                                  bgcolor: "#111111",
-                                  color: "#ffffff",
-                                  px: 4,
-                                  py: 1.5,
-                                  borderRadius: 0,
-                                  textTransform: "uppercase",
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                  letterSpacing: "0.1em",
-                                  fontFamily: '"Cairo", sans-serif',
-                                  width: "100%",
-                                  "&:hover": {
-                                    bgcolor: "#CB6116"
+                                  height: { xs: "300px", sm: "400px", md: "100%" },
+                                  minHeight: { md: "520px" },
+                                  position: "relative",
+                                  overflow: "hidden",
+                                  cursor: "pointer",
+                                  "&:hover .dining-bg": {
+                                    transform: "scale(1.04)"
                                   }
                                 }}
                               >
-                                {resolvedCafe.buttonText}
-                              </Button>
+                                <Box
+                                  className="dining-bg"
+                                  sx={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    backgroundImage: `url("${resolvedCafe.image}")`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center center",
+                                    transition: "transform 1s cubic-bezier(0.25, 1, 0.5, 1)"
+                                  }}
+                                />
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    bgcolor: "rgba(0,0,0,0.15)"
+                                  }}
+                                />
+                              </Box>
                             </Link>
-                          </Stack>
+                          </Grid>
+
+                          {/* Content Left */}
+                          <Grid
+                            size={{ xs: 12, md: 6 }}
+                            sx={{
+                              p: { xs: 4, sm: 6, md: 8 },
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              textAlign: lang === "ar" ? "right" : "left"
+                            }}
+                          >
+                            <Link href={resolvedCafe.buttonPath}>
+                              <Box
+                                component="img"
+                                src={resolvedCafe.logo}
+                                alt="Arto Coffee Logo"
+                                sx={{
+                                  maxHeight: { xs: 65, md: 80 },
+                                  maxWidth: "280px",
+                                  objectFit: "contain",
+                                  alignSelf: "flex-start",
+                                  mb: 4,
+                                  cursor: "pointer"
+                                }}
+                              />
+                            </Link>
+
+                            <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none", color: "inherit" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{
+                                  fontFamily: "var(--heading-font)",
+                                  fontWeight: 500,
+                                  mb: 2,
+                                  color: "#111111",
+                                  "&:hover": { color: "#CB6116" }
+                                }}
+                              >
+                                {resolvedCafe.title}
+                              </Typography>
+                            </Link>
+
+                            <Typography
+                              sx={{
+                                fontSize: 14.5,
+                                lineHeight: 1.8,
+                                color: "rgba(0,0,0,0.6)",
+                                fontFamily: '"Cairo", sans-serif',
+                                mb: 4
+                              }}
+                            >
+                              {resolvedCafe.description}
+                            </Typography>
+
+                            <Divider sx={{ borderColor: "rgba(0,0,0,0.06)", mb: 3 }} />
+
+                            {/* Metadata */}
+                            <Stack spacing={1.5} sx={{ mb: 4 }}>
+                              <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
+                                <strong>{resolvedCafe.operatingHoursLabel || (lang === "ar" ? "أوقات العمل:" : "Operating Hours:")}</strong> {resolvedCafe.operatingHoursValue}
+                              </Typography>
+                              <Typography sx={{ fontSize: 13, fontFamily: '"Cairo", sans-serif', color: "rgba(0,0,0,0.7)" }}>
+                                <strong>{resolvedCafe.contactUsLabel || (lang === "ar" ? "اتصل بنا:" : "Contact Us:")}</strong> {resolvedCafe.contactUsValue}
+                              </Typography>
+                            </Stack>
+
+                            {/* Buttons */}
+                            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                              {resolvedCafe.showSecondaryButton && (
+                                <Link href={resolvedCafe.secondaryButtonPath} target="_blank" style={{ textDecoration: "none" }}>
+                                  <Button
+                                    variant="outlined"
+                                    sx={{
+                                      bgcolor: "#111111",
+                                      color: "#ffffff",
+                                      px: 4,
+                                      py: 1.5,
+                                      borderRadius: 0,
+                                      textTransform: "uppercase",
+                                      fontSize: 12,
+                                      fontWeight: 700,
+                                      letterSpacing: "0.1em",
+                                      fontFamily: '"Cairo", sans-serif',
+                                      width: "100%",
+                                      "&:hover": {
+                                        bgcolor: "#CB6116"
+                                      }
+                                    }}
+                                  >
+                                    {resolvedCafe.secondaryButtonText}
+                                  </Button>
+                                </Link>
+                              )}
+                              <Link href={resolvedCafe.buttonPath} style={{ textDecoration: "none" }}>
+                                <Button
+                                  variant="contained"
+                                  sx={{
+                                    bgcolor: "#111111",
+                                    color: "#ffffff",
+                                    px: 4,
+                                    py: 1.5,
+                                    borderRadius: 0,
+                                    textTransform: "uppercase",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    letterSpacing: "0.1em",
+                                    fontFamily: '"Cairo", sans-serif',
+                                    width: "100%",
+                                    "&:hover": {
+                                      bgcolor: "#CB6116"
+                                    }
+                                  }}
+                                >
+                                  {resolvedCafe.buttonText}
+                                </Button>
+                              </Link>
+                            </Stack>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </Box>
-                  ) : (
-                    <Box 
-                      sx={{ 
-                        py: 10, 
-                        px: 3,
-                        textAlign: "center", 
-                        border: "1px solid rgba(0,0,0,0.05)", 
-                        bgcolor: "rgba(0,0,0,0.01)",
-                        borderRadius: 0
-                      }}
-                    >
-                      <Typography 
-                        sx={{ 
-                          color: "rgba(0,0,0,0.42)", 
-                          fontSize: 14, 
-                          fontWeight: 500, 
-                          letterSpacing: "0.05em",
-                          fontFamily: '"Cairo", sans-serif' 
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          py: 10,
+                          px: 3,
+                          textAlign: "center",
+                          border: "1px solid rgb(255 255 255) !important",
+
+                          bgcolor: "rgba(0,0,0,0.01)",
+                          borderRadius: 0
                         }}
                       >
-                        {lang === "ar" ? "لا توجد منتجات متوفرة حالياً في هذا القسم" : "No products available in this category for now"}
-                      </Typography>
-                    </Box>
-                  )}
-                </MotionBox>
-              </AnimatePresence>
+                        <Typography
+                          sx={{
+                            color: "rgba(0,0,0,0.42)",
+                            fontSize: 14,
+                            fontWeight: 500,
+                            letterSpacing: "0.05em",
+                            fontFamily: '"Cairo", sans-serif'
+                          }}
+                        >
+                          {lang === "ar" ? "لا توجد منتجات متوفرة حالياً في هذا القسم" : "No products available in this category for now"}
+                        </Typography>
+                      </Box>
+                    )}
+                  </MotionBox>
+                </AnimatePresence>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </Box>
-      
+          </Container>
+        </Box>
+
       </Box>
     </ThemeProvider>
   );

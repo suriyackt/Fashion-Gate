@@ -306,7 +306,7 @@ export default function BrandMarquee({
           {/* Left Column: Eyebrow + Title */}
           <Box>
             <Box sx={{ width: 40, height: 1, bgcolor: "primary.main", mb: 2, display: "block" }} />
-            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
+            <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 10, fontWeight: 800, letterSpacing: lang === "ar" ? 0 : "0.15em", mb: 1.5, fontFamily: '"Cairo", sans-serif' }}>
               {t.eyebrow}
             </Typography>
             <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 32, md: 44 }, fontWeight: 400, lineHeight: 1.15, color: "#111111" }}>

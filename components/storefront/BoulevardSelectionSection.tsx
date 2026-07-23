@@ -77,7 +77,7 @@ export default function BoulevardSelectionSection({
           
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pr: { md: 4 } }}>
             <Box>
-              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", fontFamily: '"Cairo", sans-serif', mb: 2 }}>
+              <Typography sx={{ color: "primary.main", textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: lang === "ar" ? 0 : "0.2em", fontFamily: '"Cairo", sans-serif', mb: 2 }}>
                 {eyebrowText}
               </Typography>
               <Typography sx={{ fontFamily: "var(--heading-font)", fontSize: { xs: 34, md: 46 }, fontWeight: 500, color: "#111111", lineHeight: 1.15, mb: 4 }}>
@@ -245,7 +245,7 @@ export default function BoulevardSelectionSection({
                           fontFamily: '"Cairo", sans-serif', 
                           fontSize: 12, 
                           fontWeight: 700,
-                          letterSpacing: "0.08em"
+                          letterSpacing: lang === "ar" ? 0 : "0.08em"
                         }}>
                           {lang === "ar" ? "اكتشف" : "Explore"}
                         </Typography>
@@ -269,7 +269,7 @@ export default function BoulevardSelectionSection({
                       fontSize: 10.5, 
                       fontWeight: 700, 
                       textTransform: "uppercase", 
-                      letterSpacing: "0.15em", 
+                      letterSpacing: lang === "ar" ? 0 : "0.15em", 
                       fontFamily: '"Cairo", sans-serif',
                       mt: 0.5
                     }}>
